@@ -1,11 +1,11 @@
-package grails3grooscript
+package grooscript
 
 import grails.plugins.*
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
-import org.grooscript.grails.websocket.SpringWebsocketPlugin
+//import org.grooscript.grails.websocket.SpringWebsocketPlugin
 
-class Grails3GrooscriptGrailsPlugin extends Plugin {
+class GrooscriptGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.0.0.RC1 > *"
@@ -17,6 +17,7 @@ class Grails3GrooscriptGrailsPlugin extends Plugin {
         "grails-app/views/**",
         "src/main/groovy/MyScript.groovy",
         "src/main/web-app/**",
+        '**/test/**'
     ]
 
     // TODO Fill in these fields
@@ -30,13 +31,13 @@ It converts the code to javascript and your groovy code will run in the browser.
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/grails3-grooscript"
+    def documentation = "http://grails.org/plugin/grooscript"
 
     def license = "APACHE"
 
-    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+    def issueManagement = [ system: "Github", url: "https://github.com/chiquitinxx/grooscript-grails3-plugin/issues" ]
 
-    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+    def scm = [ url: "https://github.com/chiquitinxx/grooscript-grails3-plugin" ]
 
     Closure doWithSpring() { {->
             grooscriptConverter(GrooscriptConverter)

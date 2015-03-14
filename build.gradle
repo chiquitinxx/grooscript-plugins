@@ -75,3 +75,7 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
+
+jar {
+    exclude "test/**/**"
+}

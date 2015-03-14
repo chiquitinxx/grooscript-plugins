@@ -2,7 +2,7 @@
 grails:
     profile: web-plugin
     codegen:
-        defaultPackage: grails3grooscript
+        defaultPackage: grooscript
 info:
     app:
         name: '@info.app.name@'
