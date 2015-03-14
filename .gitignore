@@ -1,0 +1,4 @@
+target
+grails3-grooscript.iml
+grails-app/assets/javascripts/app/*.js
+grails-app/assets/javascripts/grooscript-grails.js
