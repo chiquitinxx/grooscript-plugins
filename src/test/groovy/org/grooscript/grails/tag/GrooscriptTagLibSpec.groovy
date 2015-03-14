@@ -1,6 +1,7 @@
 package org.grooscript.grails.tag
 
 import asset.pipeline.grails.AssetsTagLib
+import grails.core.GrailsApplication
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
@@ -20,18 +21,28 @@ import spock.lang.Unroll
 @TestFor(GrooscriptTagLib)
 class GrooscriptTagLibSpec extends Specification {
 
-    GrooscriptConverter grooscriptConverter
-    AssetsTagLib assetsTagLib
-    GrooscriptTemplate template = new GrooscriptTemplate()
-    LinkGenerator linkGenerator = Mock(LinkGenerator)
+    private GrooscriptConverter grooscriptConverter
+    private AssetsTagLib assetsTagLib
+    private GrooscriptTemplate template = new GrooscriptTemplate()
+    private LinkGenerator linkGenerator = Mock(LinkGenerator)
+    private static final String CANONICAL_NAME = 'canonicalName'
+    private stubDomainClass = [
+            name: DOMAIN_CLASS_NAME,
+            fullName: DOMAIN_CLASS_NAME_WITH_PACKAGE,
+            clazz: [canonicalName: CANONICAL_NAME]
+    ]
+
+    static final FAKE_NAME = 'FAKE'
+    static final DOMAIN_CLASS_NAME = 'Domain'
+    static final DOMAIN_CLASS_NAME_WITH_PACKAGE = 'package.Domain'
 
     void setup() {
         grooscriptConverter = Mock(GrooscriptConverter)
         assetsTagLib = Mock(AssetsTagLib)
-        GrooscriptTagLib.metaClass.grooscriptConverter = grooscriptConverter
-        GrooscriptTagLib.metaClass.asset = assetsTagLib
-        GrooscriptTagLib.metaClass.grooscriptTemplate = template
-        GrooscriptTagLib.metaClass.grailsLinkGenerator = linkGenerator
+        tagLib.grooscriptConverter = grooscriptConverter
+        tagLib.metaClass.asset = assetsTagLib
+        tagLib.grooscriptTemplate = template
+        tagLib.grailsLinkGenerator = linkGenerator
     }
 
     void cleanup() {
@@ -150,25 +161,17 @@ class GrooscriptTagLibSpec extends Specification {
         result == ''
     }
 
-    static final FAKE_NAME = 'FAKE'
-    static final DOMAIN_CLASS_NAME = 'Actor'
-    static final DOMAIN_CLASS_NAME_WITH_PACKAGE = 'test.Actor'
-
     @Unroll
     void 'test model with domain class'() {
-        given:
-        GrooscriptTagLib.metaClass.existDomainClass = { String name ->
-            name != FAKE_NAME
-        }
-
         when:
+        stubGrailsApplication()
         applyTemplate("<grooscript:model domainClass='${domainClassName}'/>")
 
         then:
         numberTimes * assetsTagLib.script(['type':'text/javascript'], {
             it() == JS_CODE
         })
-        numberTimes * grooscriptConverter.convertDomainClass(DOMAIN_CLASS_NAME_WITH_PACKAGE) >> JS_CODE
+        numberTimes * grooscriptConverter.convertDomainClass(CANONICAL_NAME) >> JS_CODE
 
         where:
         domainClassName                | numberTimes
@@ -179,19 +182,15 @@ class GrooscriptTagLibSpec extends Specification {
 
     @Unroll
     void 'test remote model with domain class'() {
-        given:
-        GrooscriptTagLib.metaClass.existDomainClass = { String name ->
-            name != FAKE_NAME
-        }
-
         when:
+        stubGrailsApplication()
         applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
 
         then:
         numberTimes * assetsTagLib.script(['type':'text/javascript'], {
             it() == JS_CODE
         })
-        numberTimes * grooscriptConverter.convertRemoteDomainClass(DOMAIN_CLASS_NAME_WITH_PACKAGE) >> JS_CODE
+        numberTimes * grooscriptConverter.convertRemoteDomainClass(CANONICAL_NAME) >> JS_CODE
 
         where:
         domainClassName                | numberTimes
@@ -247,5 +246,9 @@ class GrooscriptTagLibSpec extends Specification {
                     [jsCode: JS_CODE, path: '/myPath', functionName: 'gSonServerEvent0', type: 'Type'])
         })
         0 * _
+    }
+
+    private stubGrailsApplication() {
+        tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
     }
 }

@@ -17,10 +17,8 @@ class GrooscriptGrailsPlugin extends Plugin {
         "grails-app/views/**",
         "src/main/groovy/MyScript.groovy",
         "src/main/web-app/**",
-        '**/test/**'
     ]
 
-    // TODO Fill in these fields
     def title = "Grooscript" // Headline display name of the plugin
     def author = "Jorge Franco"
     def authorEmail = 'grooscript@gmail.com'

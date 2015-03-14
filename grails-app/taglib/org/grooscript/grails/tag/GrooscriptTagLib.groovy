@@ -98,7 +98,7 @@ class GrooscriptTagLib {
     }
 
     private String getDomainClassCanonicalName(domainClass) {
-        grailsApplication.domainClasses.find {
+        grailsApplication.getDomainClasses().find {
             it.fullName == domainClass || it.name == domainClass
         }?.clazz?.canonicalName
     }
@@ -202,7 +202,7 @@ class GrooscriptTagLib {
     }
 
     private boolean existDomainClass(String nameClass) {
-        grailsApplication.domainClasses.find { it.fullName == nameClass || it.name == nameClass }
+        grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
     }
 
     private removeLastSemicolon(String code) {
