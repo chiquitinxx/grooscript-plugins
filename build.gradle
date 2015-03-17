@@ -16,7 +16,7 @@ plugins {
     id "com.jfrog.bintray" version "1.1"
 }
 
-version "0.9-SNAPSHOT"
+version "1.0.0.M1"
 group "org.grails.plugins"
 
 apply plugin: 'maven-publish'
@@ -78,4 +78,25 @@ task wrapper(type: Wrapper) {
 
 jar {
     exclude "test/**/**"
+}
+
+bintray {
+    user = project.hasProperty('bintray_user') ? bintray_user : ''
+    key = project.hasProperty('bintray_key') ? bintray_key : ''
+
+    pkg {
+        name = "${project.group}:grooscript"
+        desc = 'Grooscript Grails 3 Plugin'
+        websiteUrl = 'http://grooscript.org/grails-plugin/index.html'
+        issueTrackerUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin/issues"
+        vcsUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin"
+        licenses = ['Apache-2.0']
+        labels = ['grails', 'javascript', 'grooscript', 'groovy', 'plugin']
+
+        version {
+            name = project.version
+            desc = 'Initial version with tags'
+        }
+    }
+
 }
