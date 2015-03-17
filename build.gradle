@@ -25,9 +25,6 @@ apply plugin: 'idea'
 apply plugin: "spring-boot"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
-// Used for publishing to central repository, remove if not needed
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/grailsCentralPublishing.gradle'
-apply from:'https://raw.githubusercontent.com/grails/grails-profile-repository/master/profiles/plugin/templates/bintrayPublishing.gradle'
 
 ext {
     grailsVersion = project.grailsVersion
@@ -84,7 +81,11 @@ bintray {
     user = project.hasProperty('bintray_user') ? bintray_user : ''
     key = project.hasProperty('bintray_key') ? bintray_key : ''
 
+    publications = ['maven']
+    publish = true
     pkg {
+        repo = 'grooscript'
+        userOrg = ''
         name = "${project.group}:grooscript"
         desc = 'Grooscript Grails 3 Plugin'
         websiteUrl = 'http://grooscript.org/grails-plugin/index.html'
@@ -92,11 +93,38 @@ bintray {
         vcsUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin"
         licenses = ['Apache-2.0']
         labels = ['grails', 'javascript', 'grooscript', 'groovy', 'plugin']
-
         version {
+            attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
             desc = 'Initial version with tags'
+            gpg {
+                sign = false
+                passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''
+            }
         }
     }
+}
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.dependencyManagement.replaceNode {}
+
+                // simply remove dependencies without a version
+                // version-less dependencies are handled with dependencyManagement
+                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                pomNode.dependencies.dependency.findAll {
+                    it.version.text().isEmpty()
+                }.each {
+                    it.replaceNode {}
+                }
+            }
+            artifactId project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
 }
