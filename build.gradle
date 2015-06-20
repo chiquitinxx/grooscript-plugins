@@ -12,13 +12,14 @@ buildscript {
 }
 
 plugins {
-    id "io.spring.dependency-management" version "0.4.0.RELEASE"
+    id "io.spring.dependency-management" version "0.5.1.RELEASE"
     id "com.jfrog.bintray" version "1.1"
 }
 
-version "1.0.0.M1"
+version "1.0.0.RC1-SNAPSHOT"
 group "org.grails.plugins"
 
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -34,7 +35,6 @@ ext {
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -43,7 +43,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
+        mavenBom "org.grails:grails-bom:3.0.1"
     }
     applyMavenExclusions false
 }
@@ -61,7 +61,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     compile "org.grails.plugins:asset-pipeline"
     compile "org.grails.plugins:cache"
-    compile('org.grooscript:grooscript:1.0.1') {
+    compile('org.grooscript:grooscript:1.1.1') {
         exclude module: 'groovy'
         exclude module: 'groovy-json'
     }

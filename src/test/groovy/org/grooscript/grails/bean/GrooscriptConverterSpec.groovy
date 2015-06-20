@@ -1,7 +1,6 @@
 package org.grooscript.grails.bean
 
 import org.grooscript.GrooScript
-import org.grooscript.grails.domain.DomainClass
 import org.grooscript.grails.remote.RemoteDomainClass
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
@@ -26,23 +25,6 @@ class GrooscriptConverterSpec extends Specification {
         0 * GrooScript.setConversionProperty(_)
         1 * GrooScript.convert(CODE)
         result == 'var a = 5;\ngs.mc(b,"go",[]);\n'
-    }
-
-    def 'convert a model domain class'() {
-        given:
-        GroovySpy(Util, global: true)
-
-        when:
-        def result = grooscriptConverter.convertDomainClass(DOMAIN_CLASS)
-
-        then:
-        1 * GrooScript.clearAllOptions()
-        1 * Util.getDomainFileText(DOMAIN_CLASS) >> CODE
-        1 * Util.addCustomizationAstOption(DomainClass)
-        1 * GrooScript.setConversionProperty('customization', _)
-        0 * GrooScript.setConversionProperty(_)
-        1 * GrooScript.convert(CODE) >> JS
-        result == JS
     }
 
     def 'convert a remote model domain class'() {

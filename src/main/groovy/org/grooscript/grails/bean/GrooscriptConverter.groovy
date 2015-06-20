@@ -2,7 +2,6 @@ package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
 import org.grooscript.GrooScript
-import org.grooscript.grails.domain.DomainClass
 import org.grooscript.grails.remote.RemoteDomainClass
 
 import static org.grooscript.grails.util.Util.*
@@ -35,12 +34,25 @@ class GrooscriptConverter {
         jsCode
     }
 
-    String convertDomainClass(String domainClassName) {
-        convertDomainClassFile(domainClassName, false)
-    }
-
     String convertRemoteDomainClass(String domainClassName) {
-        convertDomainClassFile(domainClassName, true)
+        String result = null
+        try {
+            String domainFileText = getDomainFileText(domainClassName)
+            if (domainFileText) {
+                try {
+                    GrooScript.clearAllOptions()
+                    addCustomizationAstOption(RemoteDomainClass)
+                    result = GrooScript.convert(domainFileText)
+                } catch (e) {
+                    consoleError "Error converting domain class file ${domainClassName}: ${e.message}"
+                }
+            } else {
+                consoleWarning "Domain file not found ${domainClassName}"
+            }
+        } catch (e) {
+            consoleError "Exception converting domain class (${domainClassName}) file: ${e.message}"
+        }
+        result
     }
 
     private addDefaultOptions(options) {
@@ -70,26 +82,5 @@ class GrooscriptConverter {
             options.classPath << GROOVY_SRC_DIR
         }
         options
-    }
-
-    private String convertDomainClassFile(String domainClassName, boolean remote) {
-        String result = null
-        try {
-            String domainFileText = getDomainFileText(domainClassName)
-            if (domainFileText) {
-                try {
-                    GrooScript.clearAllOptions()
-                    addCustomizationAstOption(remote ? RemoteDomainClass : DomainClass)
-                    result = GrooScript.convert(domainFileText)
-                } catch (e) {
-                    consoleError "Error converting domain class file ${domainClassName}: ${e.message}"
-                }
-            } else {
-                consoleWarning "Domain file not found ${domainClassName}"
-            }
-        } catch (e) {
-            consoleError "Exception converting domain class (${domainClassName}) file: ${e.message}"
-        }
-        result
     }
 }

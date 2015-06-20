@@ -1,4 +1,4 @@
-Grooscript grails 3 plugin 1.0.0.M1
+Grooscript grails 3 plugin 1.0.0
 ===
 
 It requires Grails 3.0+. Asset-pipeline and cache plugin are used to build this plugin, you need them in your application.
@@ -11,7 +11,7 @@ Tags are available, see [documentation](http://grooscript.org/grails-plugin/inde
 
 After install, you can use with:
 
-    compile "org.grails.plugins:grooscript:1.0.0.M1"
+    compile "org.grails.plugins:grooscript:1.0.0"
 
 [Grooscript homepage](http://grooscript.org/)
 

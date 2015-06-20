@@ -31,8 +31,14 @@ class Util {
     }
 
     static String getDomainFileText(String domainClassCanonicalName) {
-        def file = new File("${DOMAIN_DIR}${SEP}${getFileNameFromDomainclassCanonicalName(domainClassCanonicalName)}")
-        file && file.exists() ? file.text : null
+        def filePath = "${DOMAIN_DIR}${SEP}${getFileNameFromDomainclassCanonicalName(domainClassCanonicalName)}"
+        def file = new File(filePath)
+        if (file && file.exists()) {
+            return file.text
+        } else {
+            consoleError("Fail find domain class file: ${filePath}")
+            return null
+        }
     }
 
     static addCustomizationAstOption(Class clazz) {

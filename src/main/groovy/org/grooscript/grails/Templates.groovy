@@ -7,21 +7,22 @@ package org.grooscript.grails
 class Templates {
 
     static final INIT_GROOSCRIPT_GRAILS = '''
-\\$(document).ready(function() {
   GrooscriptGrails.remoteUrl = '${remoteUrl}';
-});'''
+'''
 
     static final TEMPLATE_DRAW = '''
 function ${functionName}(templateParams) {
   ${jsCode}
   var code = gsTextHtml(templateParams);
   \\$('${selector}').html(code);
-};'''
+};
+'''
 
     static final TEMPLATE_ON_READY = '''
 \\$(document).ready(function() {
   ${functionName}();
-})'''
+})
+'''
 
     static final CLIENT_EVENT = '''
 gsEvents.onEvent('${nameEvent}', ${functionName});
@@ -36,7 +37,7 @@ gsEvents.onEvent('${nameEvent}', ${jsCode});
 
     var socket = new SockJS("${url}");
     websocketClient = Stomp.over(socket);
-
+    ${withDebug ? '' : 'websocketClient.debug = null;'}
     websocketClient.connect({}, function() {
         proccessWebsocketSubscribes();
         ${jsCode}

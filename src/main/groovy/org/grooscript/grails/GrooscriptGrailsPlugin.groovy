@@ -1,21 +1,19 @@
-package grooscript
+package org.grooscript.grails
 
 import grails.plugins.*
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
-//import org.grooscript.grails.websocket.SpringWebsocketPlugin
 
 class GrooscriptGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "3.0.0.RC1 > *"
+    def grailsVersion = "3.0.0 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/assets/javascripts/app/**",
         "grails-app/controllers/**",
         "grails-app/domain/**",
         "grails-app/views/**",
-        "src/main/groovy/MyScript.groovy",
         "src/main/web-app/**",
     ]
 
@@ -37,15 +35,10 @@ It converts the code to javascript and your groovy code will run in the browser.
 
     def scm = [ url: "https://github.com/chiquitinxx/grooscript-grails3-plugin" ]
 
-    Closure doWithSpring() { {->
+    Closure doWithSpring() {
+        { ->
             grooscriptConverter(GrooscriptConverter)
             grooscriptTemplate(GrooscriptTemplate)
-
-            /*if (application.config.grooscript?.websockets == 'springWebsocketPlugin') {
-                websocketSender(SpringWebsocketPlugin) {
-                    brokerMessagingTemplate = ref('brokerMessagingTemplate')
-                }
-            }*/
         } 
     }
 }

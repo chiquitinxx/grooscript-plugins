@@ -1,7 +1,6 @@
 package org.grooscript.grails.tag
 
 import asset.pipeline.grails.AssetsTagLib
-import grails.core.GrailsApplication
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
@@ -162,25 +161,6 @@ class GrooscriptTagLibSpec extends Specification {
     }
 
     @Unroll
-    void 'test model with domain class'() {
-        when:
-        stubGrailsApplication()
-        applyTemplate("<grooscript:model domainClass='${domainClassName}'/>")
-
-        then:
-        numberTimes * assetsTagLib.script(['type':'text/javascript'], {
-            it() == JS_CODE
-        })
-        numberTimes * grooscriptConverter.convertDomainClass(CANONICAL_NAME) >> JS_CODE
-
-        where:
-        domainClassName                | numberTimes
-        FAKE_NAME                      | 0
-        DOMAIN_CLASS_NAME              | 1
-        DOMAIN_CLASS_NAME_WITH_PACKAGE | 1
-    }
-
-    @Unroll
     void 'test remote model with domain class'() {
         when:
         stubGrailsApplication()
@@ -199,25 +179,36 @@ class GrooscriptTagLibSpec extends Specification {
         DOMAIN_CLASS_NAME_WITH_PACKAGE | 1
     }
 
-    void 'init websockets spring plugin'() {
+    void 'init spring websockets'() {
         when:
         applyTemplate('<grooscript:initSpringWebsocket />')
 
         then:
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: ''])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: false])
         })
         0 * _
     }
 
-    void 'init websockets spring plugin with connect function'() {
+    void 'init spring websockets with debug'() {
+        when:
+        applyTemplate('<grooscript:initSpringWebsocket withDebug="false"/>')
+
+        then:
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: true])
+        })
+        0 * _
+    }
+
+    void 'init spring websockets with connect function'() {
         when:
         applyTemplate('<grooscript:initSpringWebsocket>assert true</grooscript:initSpringWebsocket>')
 
         then:
         1 * grooscriptConverter.toJavascript('assert true') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: JS_CODE])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: JS_CODE, withDebug: false])
         })
         0 * _
     }

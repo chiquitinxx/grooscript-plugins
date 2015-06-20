@@ -72,19 +72,6 @@ class GrooscriptTagLib {
     }
 
     /**
-     * grooscript:model
-     * domainClass - REQUIRED name of the model class
-     */
-    def model = { attrs ->
-        if (validDomainClassName(attrs.domainClass)) {
-            initGrooscriptGrails()
-            out << asset.script(type: 'text/javascript') {
-                grooscriptConverter.convertDomainClass(getDomainClassCanonicalName(attrs.domainClass))
-            }
-        }
-    }
-
-    /**
      * grooscript:remoteModel
      * domainClass - REQUIRED name of the model class
      */
@@ -135,9 +122,11 @@ class GrooscriptTagLib {
         if (script) {
             jsCode = grooscriptConverter.toJavascript(script)
         }
+        boolean withDebug = attrs.withDebug == null ? false : attrs.withDebug
         def url = createLink(uri: '/stomp')
         asset.script(type: 'text/javascript') {
-            grooscriptTemplate.apply(Templates.SPRING_WEBSOCKET, [url: url, jsCode: jsCode])
+            grooscriptTemplate.apply(Templates.SPRING_WEBSOCKET,
+                    [url: url, jsCode: jsCode, withDebug: withDebug])
         }
     }
 
