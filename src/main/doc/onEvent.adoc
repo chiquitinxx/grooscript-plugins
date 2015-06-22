@@ -1,0 +1,40 @@
+
+[[_onEvent]]
+== <grooscript:onEvent>
+
+You can react to events launched in the client. In your gsp, there is a variable called *gsEvents* that implements this:
+
+[source,groovy]
+--
+interface EventHandler {
+    void sendMessage(String channel, Map data)
+    void onEvent(String channel, Closure action)
+    void close()
+}
+--
+
+Can react or launch events at any point, using *gsEvents* variable:
+
+[source,html]
+--
+<grooscript:code>
+    $(document).ready {
+        def eventData = 'Application started.'
+        gsEvents.sendMessage('newEvent', eventData)
+        gsEvents.onEvent('delete', { book ->
+            $('#deleteEvent').html 'Deleted ' + book.title
+        })
+    }
+</grooscript:code>
+--
+
+Also can use _grooscript:onEvent_ to react to any event launched. Param *name* of the event is mandatory.
+A variable called _event_ is available inside with the data of the event.
+
+[source,html]
+--
+<grooscript:onEvent name="myCustomEvent">
+    console.log event
+</grooscript:onEvent>
+--
+

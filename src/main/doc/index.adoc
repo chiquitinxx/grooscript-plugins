@@ -1,0 +1,27 @@
+= Grooscript Grails 3 Plugin
+:revnumber: {plugin-version}
+:revremark: Grails plugin to convert groovy code to javascript in your gsp's
+
+:leveloffset: 1
+
+image::grooscript.png[Grooscript, 150, 150, link="http://grooscript.org",float="right"]
+image::grails.png[Grails, 150, 150, link="http://grails.org",float="right"]
+include::introduction.adoc[]
+include::grooscript.adoc[]
+include::helpers.adoc[]
+
+[[_tags]]
+= Tags
+
+include::groovyCode.adoc[]
+include::templates.adoc[]
+include::onEvent.adoc[]
+include::remoteDomain.adoc[]
+
+= Websockets support demo
+
+include::websocket-support.adoc[]
+
+= Using remote domain classes demo
+
+include::rest-demo.adoc[]

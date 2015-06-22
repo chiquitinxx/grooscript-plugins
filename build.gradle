@@ -14,6 +14,7 @@ buildscript {
 plugins {
     id "io.spring.dependency-management" version "0.5.1.RELEASE"
     id "com.jfrog.bintray" version "1.1"
+    id "org.asciidoctor.convert" version "1.5.2"
 }
 
 version "1.0.0.RC1-SNAPSHOT"
@@ -30,6 +31,7 @@ apply plugin: "org.grails.grails-gsp"
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
+    grooscriptVersion = '1.1.1'
 }
 
 sourceCompatibility = 1.7
@@ -61,7 +63,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     compile "org.grails.plugins:asset-pipeline"
     compile "org.grails.plugins:cache"
-    compile('org.grooscript:grooscript:1.1.1') {
+    compile("org.grooscript:grooscript:${grooscriptVersion}") {
         exclude module: 'groovy'
         exclude module: 'groovy-json'
     }
@@ -127,4 +129,18 @@ publishing {
             artifact javadocJar
         }
     }
+}
+
+asciidoctor {
+    sourceDir = project.file 'src/main/doc'
+    sources { include 'index.adoc' }
+    attributes 'grooscript-version': grooscriptVersion,
+            'plugin-version': version,
+            author: 'Jorge Franco',
+            email: 'grooscript@gmail.com',
+            'source-highlighter': 'prettify',
+            toc: 'right',
+            imagesdir: './images',
+            toclevels: 2,
+            icons: 'font'
 }

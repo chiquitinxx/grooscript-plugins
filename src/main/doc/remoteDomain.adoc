@@ -1,0 +1,41 @@
+
+[[_remoteDomain]]
+== <grooscript:remoteModel>
+
+With this tag you can use your domain classes in the browser / client. The domain class is available in
+your groovy code and actions on that domain will be performed asynchronous in your server. You have to annotate
+your domain class as a REST resource with +@Resource(uri='/anyUrl')+. The access to
+the data is controlled by grails, you can use http://grails.org/plugin/spring-security-rest[spring secure rest plugin]
+to secure access to your data.
+
+*This tag is still experimental, don't use in production.*
+
+[source,groovy]
+--
+package rest
+
+import grails.rest.Resource
+
+@Resource(uri='/books')
+class Book {
+
+    String title
+    String author
+
+    static constraints = {
+        author nullable: true
+    }
+}
+--
+
+Activate use in your gsp's with:
+
+[source,html]
+--
+<grooscript:remoteModel domainClass="Book"/>
+--
+
+In the _domainClass_ you have to put the name of the domain class annotated with _@Resource_. The code of the domain
+class is converted to javascript, and you can use properties and methods in the client. If you want to
+see in action, please take a look at this link:rest-demo.html[guide].
+

@@ -1,0 +1,29 @@
+
+[[_introduction]]
+= Introduction
+
+This plugin convert your groovy code to javascript, allowing to use your groovy code in your gsp's.
+
+So, your *groovy code will run in your browser*, sound good!
+
+== Important
+
+I have a lot of ideas to improve this plugin, use grooscript phantomjs support, compile static your templates, improve domain classes options,...
+but I don't know if people use or is interested in this plugin. So, if you want or need something, just *open the issue or improvement* in
+https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github] or email me at grooscript@gmail.com
+
+I have created this documentation with http://asciidoctor.org/[asciidoctor]!
+
+== Requisites
+
+This plugin works for Grails 3, and you need assets pipeline and cache plugin.
+
+- Use _<asset:deferredScripts/>_ in your gsp's with grooscript tags.
+- You have to import +grosscript-grails.js+ when you use grooscript tags.
+- Plugin use __jquery__, so remember add that dependency.
+- Work with domain classes still experimental, *don't use in production*, it doesn't work in deployed jar / war.
+
+== What is new in {plugin-version}
+
+- Stable release 1.0.0 to work with grails 3.
+- Use grooscript version 1.1.1

@@ -1,0 +1,23 @@
+
+[[_helpers]]
+= Grails helpers
+
+Grooscript and this plugin offer some helpers to work with html, javascript or grails from your groovy code.
+
+You can use GrooscriptGrails class from your groovy code, in grooscript tags or groovy code, but will do
+things only running in your browser:
+
+[source,groovy]
+--
+package org.grooscript.grails.util
+
+class GrooscriptGrails {
+    static void sendClientMessage(String channel, message) //<1>
+    static void doRemoteCall(String controller, String action, Map params, Closure onSuccess, Closure onFailure) //<2>
+    static void sendWebsocketMessage(String channel, message) //<3>
+}
+--
+<1> Send a message to event listeners
+<2> Do a remote ajax call
+<3> Send a message to server via websockets
+
