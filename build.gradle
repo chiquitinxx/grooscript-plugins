@@ -17,7 +17,7 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.2"
 }
 
-version "1.0.0.RC1"
+version "1.0.0"
 group "org.grails.plugins"
 
 apply plugin: 'maven'
