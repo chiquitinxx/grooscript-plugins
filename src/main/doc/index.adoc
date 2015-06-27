@@ -18,6 +18,10 @@ include::templates.adoc[]
 include::onEvent.adoc[]
 include::remoteDomain.adoc[]
 
+= Demos
+
+include::setupDemos.adoc[]
+
 = Websockets support demo
 
 include::websocket-support.adoc[]
@@ -25,3 +29,7 @@ include::websocket-support.adoc[]
 = Using remote domain classes demo
 
 include::rest-demo.adoc[]
+
+= Feedback and help
+
+include::feedback.adoc[]

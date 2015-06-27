@@ -1,32 +1,7 @@
 
-With this plugin, you can use spring 4 websockets support. The plugin offer 2 tags for your gsp's, to activate
-websockets and for listen websocket messages from the server, also you can send messages to the server. You can use
-groovy code to listen and send messages in the client side. In the server side you have to include websocket
-support via plugin or spring boot support. Communication is done using SockJs and Stomp.
-
-== Setup
-
-You need grails 3.0+, this plugin and jquery. Add jquery.js to `grails-app/assets/javascripts`. The
-http://grails.org/plugin/spring-websocket[websocket plugin] do spring websocket stuff for us, is well
-documented and has good https://github.com/zyro23/grails-spring-websocket[support].
-
-First add plugins in your +build.config+:
-
-[source,groovy]
-[subs="verbatim,attributes"]
---
-dependencies {
-
-    ...
-    compile "org.grails.plugins:grails-spring-websocket:2.0.0"
-    compile "org.grails.plugins:grooscript:{plugin-version}"
-    ...
-}
---
-
 == Server side
 
-In the server side you have to use websockets plugin support, for example:
+In the server side you have to use websockets support, for example:
 
 [source,groovy]
 --
@@ -133,10 +108,3 @@ Then, in your gsp, if you convert that code to javascript and included in the gs
     }
 </grooscript:onServerEvent>
 --
-
-== Resume
-
-Is very easy add websocket support to your grails 2.4 application. And now with grooscript plugin, you can create and
-listen to websocket events in groovy. Never was so easy add websockets with groovy to your grails applications.
-
-You can combine websocket support with other grooscript tags to create dynamic applications in the client side.

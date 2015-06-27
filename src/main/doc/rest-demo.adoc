@@ -1,26 +1,7 @@
 
-Let's use grails support on http://grails.org/doc/latest/guide/webServices.html#REST[REST] to offer a domain class
-and consume from a gsp using this plugin. You can use
-groovy code in your gsp's with grooscript tags.
-
-You need grails 3.0+ installed in your system. Create a new project with
-+> grails create-app rest-demo+ and move to created folder.
-
-To install this add to your +build.gradle+:
-
-[source,groovy]
-[subs="verbatim,attributes"]
---
-dependencies {
-    ...
-    compile "org.grails.plugins:grooscript:{plugin-version}"
-    ...
-}
---
-
 == Starting
 
-Now let's create a rest domain class, for example in +grails-app/domain/rest/Book.groovy+
+Let's create a rest domain class, for example in +grails-app/domain/rest/Book.groovy+
 
 [source,groovy]
 --
@@ -203,18 +184,3 @@ that the book is added with the url of the list of books +http://localhost:8080/
 --
 You can use javascript objects in your groovy code as _$_ or _console_. *println* do a console.log().
 --
-
-== Resume
-
-You can use your domain classes in the client, and even better do it in groovy. You don't have to repeat code
-between the server and the client, you can use domain properties and methods in the browser and the client. You
-reduce the code to maintain, and reduce the work of the server.
-
-Also, you are working in groovy, and just reloading the page you see the results, you don't have to care on
-class loading problems, and you will see conversion errors on grails console.
-
-You can continue exploring grooscript grails plugin support of rest domain classes:
-
-- Update or delete books.
-- What happens on validation errors in the server.
-- Grails issues deleting or getting _list()_ with parameters.

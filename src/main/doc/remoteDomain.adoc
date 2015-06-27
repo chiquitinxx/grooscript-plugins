@@ -37,5 +37,5 @@ Activate use in your gsp's with:
 
 In the _domainClass_ you have to put the name of the domain class annotated with _@Resource_. The code of the domain
 class is converted to javascript, and you can use properties and methods in the client. If you want to
-see in action, please take a look at this link:rest-demo.html[guide].
+see in action, please see demo below.
 

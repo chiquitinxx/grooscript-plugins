@@ -7,7 +7,7 @@ You don't need to know Grooscript, the plugin do the work for you. But you can
 take a look to http://grooscript.org/doc.html to get more info. Grooscript compile the code,
 inspect the AST tree, and generate the javascript code.
 
-Just remember you need +grooscript-grails.js+ to run converted code. Add +<asset:javascript src="grooscript-grails.js"/>+ to your gsp.
+Just remember you need `grooscript-grails.js` to run converted code. Add `<asset:javascript src="grooscript-grails.js"/>` to your gsp.
 
 == Spring bean
 
@@ -26,4 +26,4 @@ class MyController {
 }
 --
 
-All conversion done with bean or tags, use classPath +''src/main/groovy''+ by default.
+All conversion done with bean or tags use classPath +''src/main/groovy''+ by default.
