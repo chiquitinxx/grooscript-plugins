@@ -90,7 +90,7 @@ bintray {
         userOrg = ''
         name = "${project.group}:grooscript"
         desc = 'Grooscript Grails 3 Plugin'
-        websiteUrl = 'http://grooscript.org/grails-plugin/index.html'
+        websiteUrl = 'http://grooscript.org/grails3-plugin'
         issueTrackerUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin/issues"
         vcsUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin"
         licenses = ['Apache-2.0']
@@ -98,7 +98,7 @@ bintray {
         version {
             attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
-            desc = 'Release candidate'
+            desc = 'Final release'
             gpg {
                 sign = false
                 passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''
