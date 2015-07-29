@@ -41,10 +41,10 @@ class Util {
         }
     }
 
-    static addCustomizationAstOption(Class clazz) {
-        GrooScript.setConversionProperty('customization', {
+    static Map customizationAstOption(Class clazz) {
+        [customization: {
             ast(clazz)
-        })
+        }]
     }
 
     private static getFileNameFromDomainclassCanonicalName(String domainClassCanonicalName) {

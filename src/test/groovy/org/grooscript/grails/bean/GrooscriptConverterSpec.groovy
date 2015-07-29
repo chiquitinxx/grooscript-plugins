@@ -19,28 +19,25 @@ class GrooscriptConverterSpec extends Specification {
         def result = grooscriptConverter.toJavascript(code, null)
 
         then:
-        1 * GrooScript.clearAllOptions()
-        1 * GrooScript.setConversionProperty('classPath', ['src/main/groovy'])
-        1 * GrooScript.setConversionProperty('mainContextScope', GrooscriptConverter.DEFAULT_CONVERSION_SCOPE_VARS)
-        0 * GrooScript.setConversionProperty(_)
-        1 * GrooScript.convert(CODE)
+        1 * GrooScript.convert(CODE, [
+                classPath: ['src/main/groovy'],
+                mainContextScope: GrooscriptConverter.DEFAULT_CONVERSION_SCOPE_VARS
+        ])
         result == 'var a = 5;\ngs.mc(b,"go",[]);\n'
     }
 
     def 'convert a remote model domain class'() {
         given:
         GroovySpy(Util, global: true)
+        def conversionOptions = [one: 1]
 
         when:
         def result = grooscriptConverter.convertRemoteDomainClass(DOMAIN_CLASS)
 
         then:
-        1 * GrooScript.clearAllOptions()
         1 * Util.getDomainFileText(DOMAIN_CLASS) >> CODE
-        1 * Util.addCustomizationAstOption(RemoteDomainClass)
-        1 * GrooScript.setConversionProperty('customization', _)
-        0 * GrooScript.setConversionProperty(_)
-        1 * GrooScript.convert(CODE) >> JS
+        1 * Util.customizationAstOption(RemoteDomainClass) >> conversionOptions
+        1 * GrooScript.convert(CODE, conversionOptions) >> JS
         result == JS
     }
 

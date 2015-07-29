@@ -15,18 +15,12 @@ class GrooscriptConverter {
     static final DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window', 'document']
 
     @Cacheable('conversions')
-    String toJavascript(String groovyCode, options = null) {
+    String toJavascript(String groovyCode, Map conversionOptions = null) {
         String jsCode = ''
         if (groovyCode) {
-            GrooScript.clearAllOptions()
             try {
-                options = addDefaultOptions(options)
-                options.each { key, value ->
-                    GrooScript.setConversionProperty(key, value)
-                }
-
-                jsCode = GrooScript.convert(groovyCode)
-
+                conversionOptions = addDefaultOptions(conversionOptions)
+                jsCode = GrooScript.convert(groovyCode, conversionOptions)
             } catch (e) {
                 consoleError "Error converting to javascript: ${e.message}"
             }
@@ -40,9 +34,7 @@ class GrooscriptConverter {
             String domainFileText = getDomainFileText(domainClassName)
             if (domainFileText) {
                 try {
-                    GrooScript.clearAllOptions()
-                    addCustomizationAstOption(RemoteDomainClass)
-                    result = GrooScript.convert(domainFileText)
+                    result = GrooScript.convert(domainFileText, customizationAstOption(RemoteDomainClass))
                 } catch (e) {
                     consoleError "Error converting domain class file ${domainClassName}: ${e.message}"
                 }
