@@ -1,4 +1,6 @@
 target
-grooscript.iml
+*.iml
+*.ipr
+*.iws
 grails-app/assets/javascripts/app/*.js
 grails-app/assets/javascripts/grooscript-grails.js

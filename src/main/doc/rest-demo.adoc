@@ -59,7 +59,7 @@ And finally let's see that books in the browser, changing +grails-app/views/inde
 Ok, now we have our application ready. Run the app +> grails run-app+ and check that all is correct in your
 browser at +http://localhost:8080/rest-demo+. You must see the two book added in the bootstrap.
 
-== Grooscript list
+== Grooscript remote domain classes
 
 Now let's add grooscript grails support for rest domain classes. Then, we can work with our domain classes
 from the client, and save data in our server just saving our classes in the client side. First let's change our
@@ -184,3 +184,23 @@ that the book is added with the url of the list of books +http://localhost:8080/
 --
 You can use javascript objects in your groovy code as _$_ or _console_. *println* do a console.log().
 --
+
+== Use in production
+
+The remote domain classes feature is still experimental, but if you want to use in production you have to generate
+remote domain classes files. When this feature is used in development, it search for your domain classes in
+your filesystem, convert them to javascript, and added js code to your gsp.
+
+In production you have to generate files that will be added to your ./build/resources dir. You have to execute
+a script to do that conversion:
+
+[source,shell]
+--
+> grails generate-remote-domain example.Book
+
+or
+
+> grails generate-remote-domain example.Book example.Library ...
+--
+
+And later generate the war / jar.

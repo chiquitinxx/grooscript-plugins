@@ -30,6 +30,6 @@ include::websocket-support.adoc[]
 
 include::rest-demo.adoc[]
 
-= Feedback and help
+= Feedback
 
 include::feedback.adoc[]

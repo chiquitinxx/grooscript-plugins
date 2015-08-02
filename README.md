@@ -1,4 +1,4 @@
-Grooscript grails 3 plugin 1.0.0
+Grooscript grails 3 plugin 1.1.0
 ===
 
 It requires Grails 3.0+. Asset-pipeline and cache plugin are used to build this plugin, you need 
@@ -10,7 +10,7 @@ Take a look at [documentation](http://grooscript.org/grails3-plugin/)
 
 You can use the plugin with:
 
-    compile "org.grails.plugins:grooscript:1.0.0"
+    compile "org.grails.plugins:grooscript:1.1.0"
 
 You can use [gradle plugin](https://github.com/chiquitinxx/grooscript-gradle-plugin) to convert groovy 
 files, templates,... and combine with this plugin to use in your gsp's.
@@ -20,6 +20,6 @@ More info about [grooscript](http://grooscript.org/)
 Build
 ---
 
-Generate grooscript javascript file with:
+To install locally:
 
-    groovy -cp src/main/groovy generateGrooscriptGrailsJs.groovy
+    ./gradlew install

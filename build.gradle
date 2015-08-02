@@ -7,16 +7,20 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath("org.grooscript:grooscript:1.2.0") {
+            exclude module: 'groovy'
+            exclude module: 'groovy-json'
+        }
     }
 }
 
 plugins {
-    id "io.spring.dependency-management" version "0.4.0.RELEASE"
-    id "com.jfrog.bintray" version "1.1"
+    id "io.spring.dependency-management" version "0.5.2.RELEASE"
+    id "com.jfrog.bintray" version "1.2"
     id "org.asciidoctor.convert" version "1.5.2"
 }
 
-version "1.1.0-SNAPSHOT"
+version "1.1.0"
 group "org.grails.plugins"
 
 apply plugin: 'maven'
@@ -142,3 +146,22 @@ asciidoctor {
             toclevels: 2,
             icons: 'font'
 }
+
+import org.grooscript.GrooScript
+import org.grooscript.convert.ConversionOptions
+
+task generateJavascriptFile() << {
+    String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
+    text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-tools.js').text
+
+    def conversionOptions = [classpath: ['src/main/groovy']]
+    text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/util/GrooscriptGrails.groovy').text, conversionOptions)
+    text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/promise/RemoteDomain.groovy').text, conversionOptions)
+    conversionOptions[ConversionOptions.FINAL_TEXT.text] = 'var gsEvents = ClientEventHandler();'
+    text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
+
+    new File('grails-app/assets/javascripts/grooscript-grails.js').text = text
+}
+
+classes.dependsOn 'generateJavascriptFile'
+

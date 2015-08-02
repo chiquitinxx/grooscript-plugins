@@ -27,7 +27,7 @@ It converts the code to javascript and your groovy code will run in the browser.
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/grooscript"
+    def documentation = "http://grooscript.org/grails3-plugin/"
 
     def license = "APACHE"
 

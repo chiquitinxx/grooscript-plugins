@@ -1,16 +1,19 @@
 package org.grooscript.grails.tag
 
 import grails.core.GrailsApplication
+import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
+import org.grooscript.grails.util.Util
 
 import static org.grooscript.grails.util.Util.*
 
 class GrooscriptTagLib {
 
     static final REMOTE_URL_SETTED = 'grooscriptRemoteUrl'
+    static final REMOTE_DOMAIN_EXTENSION = '.gs'
 
     static namespace = 'grooscript'
 
@@ -79,15 +82,11 @@ class GrooscriptTagLib {
         if (validDomainClassName(attrs.domainClass)) {
             initGrooscriptGrails()
             out << asset.script(type: 'text/javascript') {
-                grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(attrs.domainClass))
+                GrailsUtil.isDevelopmentEnv() ?
+                    grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(attrs.domainClass)) :
+                    Util.getResourceText(getShortName(attrs.domainClass) + REMOTE_DOMAIN_EXTENSION)
             }
         }
-    }
-
-    private String getDomainClassCanonicalName(domainClass) {
-        grailsApplication.getDomainClasses().find {
-            it.fullName == domainClass || it.name == domainClass
-        }?.clazz?.canonicalName
     }
 
     /**
@@ -160,6 +159,14 @@ class GrooscriptTagLib {
         }
     }
 
+    private String getDomainClassCanonicalName(String domainClass) {
+        domainClassFromName(domainClass)?.clazz?.canonicalName
+    }
+
+    private String getShortName(String domainClass) {
+        domainClass.split('\\.').last()
+    }
+
     private processTemplateEvents(String onEvent, functionName) {
         if (onEvent) {
             def listEvents
@@ -181,7 +188,7 @@ class GrooscriptTagLib {
         if (!name || !(name instanceof String)) {
             consoleError "GrooscriptTagLib have to define domainClass property as String"
         } else {
-            if (existDomainClass(name)) {
+            if (domainClassFromName(name)) {
                 return true
             } else {
                 consoleError "Not exist domain class ${name}"
@@ -190,7 +197,7 @@ class GrooscriptTagLib {
         return false
     }
 
-    private boolean existDomainClass(String nameClass) {
+    private domainClassFromName(String nameClass) {
         grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
     }
 

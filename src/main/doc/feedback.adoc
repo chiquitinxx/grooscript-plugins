@@ -2,7 +2,4 @@
 Please, if you have ideas to improve the plugin, or find bugs, please open issues in
 https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github].
 
-Also, to finish rest support available in production I need your help. I need to create files when
-jar / war is generated. So please contact me if you know how to do that in a grails 3 plugin.
-
 Thank you!

@@ -4,6 +4,7 @@ import asset.pipeline.grails.AssetsTagLib
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
+import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.GrooscriptConverter
@@ -161,12 +162,16 @@ class GrooscriptTagLibSpec extends Specification {
     }
 
     @Unroll
-    void 'test remote model with domain class'() {
+    void 'test remote model with domain class in development'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+
         when:
         stubGrailsApplication()
         applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
 
         then:
+        numberTimes * GrailsUtil.isDevelopmentEnv() >> true
         numberTimes * assetsTagLib.script(['type':'text/javascript'], {
             it() == JS_CODE
         })
@@ -177,6 +182,27 @@ class GrooscriptTagLibSpec extends Specification {
         FAKE_NAME                      | 0
         DOMAIN_CLASS_NAME              | 1
         DOMAIN_CLASS_NAME_WITH_PACKAGE | 1
+    }
+
+    @Unroll
+    void 'test remote model with domain class in production'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        stubGrailsApplication()
+        applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> false
+        1 * Util.getResourceText('Domain.gs') >> JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == JS_CODE
+        })
+
+        where:
+        domainClassName << [DOMAIN_CLASS_NAME, DOMAIN_CLASS_NAME_WITH_PACKAGE]
     }
 
     void 'init spring websockets'() {
