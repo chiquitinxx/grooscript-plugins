@@ -12,7 +12,8 @@ import static org.grooscript.grails.util.Util.*
  */
 class GrooscriptConverter {
 
-    static final DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window', 'document']
+    static final DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window', 'document', 'HtmlBuilder',
+              'GQueryImpl', 'Observable', 'ClientEventHandler', 'GrooscriptGrails']
 
     @Cacheable('conversions')
     String toJavascript(String groovyCode, Map conversionOptions = null) {

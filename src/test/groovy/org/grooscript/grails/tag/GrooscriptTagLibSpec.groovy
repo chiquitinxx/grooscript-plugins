@@ -73,12 +73,13 @@ class GrooscriptTagLibSpec extends Specification {
         0 * _
     }
 
+    @Unroll
     void 'test basic template'() {
         given:
         GroovySpy(Util, global: true)
 
         when:
-        def result = applyTemplate("<grooscript:template>assert true</grooscript:template>")
+        def result = applyTemplate("<grooscript:template${extraCode}>assert true</grooscript:template>")
 
         then:
         1 * Util.newTemplateName >> TEMPLATE_NAME
@@ -91,9 +92,12 @@ class GrooscriptTagLibSpec extends Specification {
                     functionName: TEMPLATE_NAME, jsCode: JS_CODE, selector: "#$TEMPLATE_NAME"]) +
                         template.apply(Templates.TEMPLATE_ON_READY, [functionName: TEMPLATE_NAME])
         })
-        1 * grooscriptConverter.toJavascript('def gsTextHtml = { data -> HtmlBuilder.build { -> assert true}}') >> JS_CODE
+        1 * grooscriptConverter.toJavascript('def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> assert true}}') >> JS_CODE
         0 * _
         result == "\n<div id='$TEMPLATE_NAME'></div>\n"
+
+        where:
+        extraCode << ['', ' onLoad="true"']
     }
 
     void 'very basic test template options'() {
@@ -106,7 +110,7 @@ class GrooscriptTagLibSpec extends Specification {
             it() == template.apply(Templates.TEMPLATE_DRAW, [
                     functionName: 'jarJar', jsCode: JS_CODE, selector: '#anyId'])
         })
-        1 * grooscriptConverter.toJavascript('def gsTextHtml = { data -> HtmlBuilder.build { -> assert true}}') >> JS_CODE
+        1 * grooscriptConverter.toJavascript('def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> assert true}}') >> JS_CODE
         !result
     }
 

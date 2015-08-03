@@ -50,7 +50,7 @@ class GrooscriptTagLib {
         script = body()
         if (script) {
             def functionName = attrs.functionName ?: newTemplateName
-            String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { -> ${script}}}").trim()
+            String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
 
             initGrooscriptGrails()
 
@@ -64,7 +64,7 @@ class GrooscriptTagLib {
                         jsCode: jsCode,
                         selector: attrs.itemSelector ? attrs.itemSelector : "#${functionName}"
                 ])
-                if (attrs['onLoad'] == null || attrs['onLoad'] == true) {
+                if (attrs['onLoad'] == null || attrs['onLoad'] == 'true' || attrs['onLoad'] == true) {
                     result += grooscriptTemplate.apply(Templates.TEMPLATE_ON_READY, [functionName: functionName])
                 }
                 result

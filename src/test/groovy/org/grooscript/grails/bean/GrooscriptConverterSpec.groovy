@@ -21,7 +21,8 @@ class GrooscriptConverterSpec extends Specification {
         then:
         1 * GrooScript.convert(CODE, [
                 classPath: ['src/main/groovy'],
-                mainContextScope: GrooscriptConverter.DEFAULT_CONVERSION_SCOPE_VARS
+                mainContextScope: ['$', 'gsEvents', 'window', 'document', 'HtmlBuilder', 'GQueryImpl',
+                                   'Observable', 'ClientEventHandler', 'GrooscriptGrails']
         ])
         result == 'var a = 5;\ngs.mc(b,"go",[]);\n'
     }
@@ -39,6 +40,22 @@ class GrooscriptConverterSpec extends Specification {
         1 * Util.customizationAstOption(RemoteDomainClass) >> conversionOptions
         1 * GrooScript.convert(CODE, conversionOptions) >> JS
         result == JS
+    }
+
+    def 'convert templates'() {
+        when:
+        def result = grooscriptConverter.toJavascript('''def gsTextHtml = { data -> HtmlBuilder.build { builderIt ->
+    [1, 2].each { println it }
+}}''', [mainContextScope: ['HtmlBuilder']])
+        then:
+        result == '''var gsTextHtml = function(data) {
+  return gs.mc(HtmlBuilder,"build",[function(builderIt) {
+    return gs.mc(gs.list([1 , 2]),"each",[function(it) {
+      return gs.println(it);
+    }]);
+  }]);
+};
+'''
     }
 
     private static final JS = 'var a = 5; b.go()'
