@@ -41,6 +41,10 @@ dependencies {
 
 == What is new in {plugin-version}
 
+- Little fixes
+
+== What is new in 1.1.0
+
 - Generation of remote domain classes code for production.
 - Use grooscript version 1.2.0
 

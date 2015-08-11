@@ -13,6 +13,19 @@ include::helpers.adoc[]
 [[_tags]]
 = Tags
 
+Remember, when using tags, you have to add grooscript lib, and maybe jquery. Asset pipeline plugin is used.
+
+[source,html]
+--
+<asset:javascript src="grooscript-grails.js"/>
+<asset:javascript src="jquery.js"/>
+
+    ... your grooscript tags here ...
+
+<asset:deferredScripts/>
+--
+
+
 include::groovyCode.adoc[]
 include::templates.adoc[]
 include::onEvent.adoc[]

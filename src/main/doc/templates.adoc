@@ -42,7 +42,7 @@ is available inside the template tag, that is the param used in the template fun
 
 <grooscript:code>
     $(document).ready {
-        refreshList [[id: 1, title:'Groovy in Action'], [id: 2, title:'Grails in Action']]
+        refreshList([[id: 1, title:'Groovy in Action'], [id: 2, title:'Grails in Action']])
     }
 </grooscript:code>
 --
