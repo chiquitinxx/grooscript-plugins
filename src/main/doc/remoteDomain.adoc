@@ -4,9 +4,9 @@
 
 With this tag you can use your domain classes in the browser / client. The domain class is available in
 your groovy code and actions on that domain will be performed asynchronous in your server. You have to annotate
-your domain class as a REST resource with +@Resource(uri='/anyUrl')+. The access to
+your domain class as a REST resource with +@Resource(uri='/anyUrl', formats=['json'])+. The access to
 the data is controlled by grails, you can use http://grails.org/plugin/spring-security-rest[spring secure rest plugin]
-to secure access to your data.
+to secure access to your data. Only supports json results.
 
 *This tag is still experimental, don't use in production.*
 

@@ -58,6 +58,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:code>${GROOVY_CODE}</grooscript:code>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * grooscriptConverter.toJavascript(GROOVY_CODE, null) >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], { it() == JS_CODE})
         0 * _
@@ -68,6 +71,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:code conversionOptions='[recursive: true]'>${GROOVY_CODE}</grooscript:code>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * grooscriptConverter.toJavascript(GROOVY_CODE, [recursive: true]) >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], { it() == JS_CODE})
         0 * _
@@ -82,11 +88,10 @@ class GrooscriptTagLibSpec extends Specification {
         def result = applyTemplate("<grooscript:template${extraCode}>assert true</grooscript:template>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * Util.newTemplateName >> TEMPLATE_NAME
-        1 * linkGenerator.getServerBaseURL() >> REMOTE_URL
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.INIT_GROOSCRIPT_GRAILS, [remoteUrl: REMOTE_URL])
-        })
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.TEMPLATE_DRAW, [
                     functionName: TEMPLATE_NAME, jsCode: JS_CODE, selector: "#$TEMPLATE_NAME"]) +
@@ -158,10 +163,14 @@ class GrooscriptTagLibSpec extends Specification {
         def result = applyTemplate("<grooscript:onEvent name='myEvent'>assert true</grooscript:onEvent>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * grooscriptConverter.toJavascript('{ event -> assert true}') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_EVENT_TAG, [nameEvent: 'myEvent', jsCode: JS_CODE])
         })
+        0 * _
         result == ''
     }
 
@@ -214,6 +223,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket />')
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: false])
         })
@@ -225,6 +237,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket withDebug="false"/>')
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: true])
         })
@@ -236,6 +251,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket>assert true</grooscript:initSpringWebsocket>')
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * grooscriptConverter.toJavascript('assert true') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: JS_CODE, withDebug: false])
@@ -271,5 +289,12 @@ class GrooscriptTagLibSpec extends Specification {
 
     private stubGrailsApplication() {
         tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
+    }
+
+    private void initGrooscriptGrails() {
+        1 * linkGenerator.getServerBaseURL() >> REMOTE_URL
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.INIT_GROOSCRIPT_GRAILS, [remoteUrl: REMOTE_URL])
+        })
     }
 }

@@ -30,6 +30,7 @@ class GrooscriptTagLib {
         def script
         script = body()
         if (script) {
+            initGrooscriptGrails()
             def jsCode = grooscriptConverter.toJavascript(script.toString(), attrs.conversionOptions)
             asset.script(type: 'text/javascript') {
                 jsCode
@@ -121,6 +122,7 @@ class GrooscriptTagLib {
         if (script) {
             jsCode = grooscriptConverter.toJavascript(script)
         }
+        initGrooscriptGrails()
         boolean withDebug = attrs.withDebug == null ? false : attrs.withDebug
         def url = createLink(uri: '/stomp')
         asset.script(type: 'text/javascript') {

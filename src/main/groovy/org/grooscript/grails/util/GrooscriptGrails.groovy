@@ -51,8 +51,8 @@ class GrooscriptGrails {
     static void doRemoteCall(String controller, String action, params, onSuccess, onFailure) {/*
         var url = GrooscriptGrails.remoteUrl;
         url = url + '/' + controller;
-        if (domainAction != null) {
-            url = url + '/' + domainAction;
+        if (action !== null) {
+            url = url + '/' + action;
         }
         $.ajax({
             type: "POST",

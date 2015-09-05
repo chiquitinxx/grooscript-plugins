@@ -39,9 +39,9 @@ dependencies {
 }
 --
 
-== What is new in {plugin-version}
+== What is new in {plugin-version} and 1.1.1
 
-- Little fixes
+- Fixes
 
 == What is new in 1.1.0
 
