@@ -227,7 +227,7 @@ class GrooscriptTagLibSpec extends Specification {
             initGrooscriptGrails()
         }
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
         })
         0 * _
     }
@@ -241,7 +241,21 @@ class GrooscriptTagLibSpec extends Specification {
             initGrooscriptGrails()
         }
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: '', withDebug: true])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: true])
+        })
+        0 * _
+    }
+
+    void 'init spring websockets with endPoint'() {
+        when:
+        applyTemplate('<grooscript:initSpringWebsocket endPoint="/hello"/>')
+
+        then:
+        interaction {
+            initGrooscriptGrails()
+        }
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/hello', jsCode: '', withDebug: false])
         })
         0 * _
     }
@@ -256,7 +270,7 @@ class GrooscriptTagLibSpec extends Specification {
         }
         1 * grooscriptConverter.toJavascript('assert true') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [url: '/stomp', jsCode: JS_CODE, withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: JS_CODE, withDebug: false])
         })
         0 * _
     }

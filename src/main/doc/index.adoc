@@ -35,7 +35,11 @@ include::remoteDomain.adoc[]
 
 include::setupDemos.adoc[]
 
-= Websockets support demo
+= Websockets step by step guide
+
+include::websocket-step.adoc[]
+
+= Websockets support example
 
 include::websocket-support.adoc[]
 

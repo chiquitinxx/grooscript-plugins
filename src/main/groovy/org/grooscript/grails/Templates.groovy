@@ -35,7 +35,7 @@ gsEvents.onEvent('${nameEvent}', ${jsCode});
     static final SPRING_WEBSOCKET = '''
 \\$(document).ready(function() {
 
-    var socket = new SockJS("${url}");
+    var socket = new SockJS("${endPoint}");
     websocketClient = Stomp.over(socket);
     ${withDebug ? '' : 'websocketClient.debug = null;'}
     websocketClient.connect({}, function() {

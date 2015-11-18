@@ -119,15 +119,15 @@ class GrooscriptTagLib {
 
         def script = body()
         def jsCode = ''
+        def endPoint = attrs.endPoint ?: '/stomp'
         if (script) {
             jsCode = grooscriptConverter.toJavascript(script)
         }
         initGrooscriptGrails()
         boolean withDebug = attrs.withDebug == null ? false : attrs.withDebug
-        def url = createLink(uri: '/stomp')
         asset.script(type: 'text/javascript') {
             grooscriptTemplate.apply(Templates.SPRING_WEBSOCKET,
-                    [url: url, jsCode: jsCode, withDebug: withDebug])
+                    [endPoint: endPoint, jsCode: jsCode, withDebug: withDebug])
         }
     }
 

@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath("org.grooscript:grooscript:1.2.0") {
+        classpath("org.grooscript:grooscript:1.2.2") {
             exclude module: 'groovy'
             exclude module: 'groovy-json'
         }
@@ -20,7 +20,7 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.2"
 }
 
-version "1.1.2"
+version "1.1.3-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin: 'maven'
@@ -34,7 +34,7 @@ apply plugin: "org.grails.grails-gsp"
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
-    grooscriptVersion = '1.2.0'
+    grooscriptVersion = '1.2.2'
 }
 
 sourceCompatibility = 1.7
@@ -100,7 +100,7 @@ bintray {
         version {
             attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
-            desc = 'Fixes'
+            desc = 'Upgrades'
             gpg {
                 sign = false
                 passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''

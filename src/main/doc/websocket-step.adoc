@@ -1,0 +1,127 @@
+This is a step by step guide to use grails 3 with websockets only with groovy.
+
+== Create your grails 3 application
+
+I suppose you have https://grails.org/[grails 3] installed in your computer, then run:
+
+[source]
+--
+> grails create-app websockets-sample
+--
+
+Move to created folder `websockets-sample`
+
+== Add websocket support
+
+There are a few ways to add websocket support to your grails application, for this guide we will use
+spring boot http://spring.io/guides/gs/messaging-stomp-websocket/[support] and we will not use plugins.
+First of all we have to add dependencies to our `build.gradle` file:
+
+[source,groovy]
+--
+dependencies {
+    ...
+    compile "org.springframework.boot:spring-boot-starter-websocket"
+    ...
+}
+--
+
+Later, let's enable websockets in the application, create file `WebSocketConfig` in folder `src/main/groovy/websockets/sample`
+
+[source,groovy]
+--
+package websockets.sample
+
+import org.springframework.context.annotation.Configuration
+import org.springframework.messaging.simp.config.MessageBrokerRegistry
+import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry
+
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic")
+        config.setApplicationDestinationPrefixes("/app")
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/hello").withSockJS()
+    }
+}
+--
+
+After, we have to add this bean to spring, and we will do in a old grails way, in `grails-app/conf/spring/resources.groovy`:
+
+[source,groovy]
+--
+import websockets.sample.WebSocketConfig
+
+// Place your Spring DSL code here
+beans = {
+    webSocketConfig(WebSocketConfig)
+}
+--
+
+Now you can use websockets in the server side. To use webseckets in the client side, we have to download
+https://github.com/sockjs/sockjs-client/blob/master/dist/sockjs-0.3.4.min.js[SockJs] and
+http://jmesnil.net/stomp-websocket/doc/[Stomp.js] javascript libraries, and put that javascript files in
+`grails-app/assets/javascripts` folder.
+
+== Add grooscript grails plugin
+
+Before test that websockets are up in our gsp's, we are going to add the plugin in `build.gradle`:
+
+[source,groovy]
+[subs="verbatim,attributes"]
+--
+dependencies {
+    ...
+    compile "org.grails.plugins:grooscript:{plugin-version}"
+    ...
+}
+--
+
+Now, we can use grooscript tags in our gsp's to improve websocket experience with groovy.
+
+== Check websockets are available in our gsp's
+
+First, create a controller with:
+
+[source]
+--
+> grails create-controller websockets.sample.Hello
+--
+
+Now, create a view for that controller  `grails-app/views/hello/index.gsp`:
+
+[source,html]
+--
+<!doctype html>
+<html>
+<head>
+    <title>Hello websockets</title>
+</head>
+<body>
+    <asset:javascript src="jquery-2.1.3.js" />
+    <asset:javascript src="grooscript-grails" />
+    <asset:javascript src="sockjs-0.3.4.min.js" />
+    <asset:javascript src="stomp" />
+
+    <grooscript:initSpringWebsocket endPoint="/hello">
+        $('body').html '<p>Hello from websockets!</p>'
+    </grooscript:initSpringWebsocket>
+
+    <asset:deferredScripts/>
+</body>
+</html>
+--
+
+Now, that controller and view are ready, we can start application with `> grails run-app` and navigate
+to http://localhost:8080/hello/index[http://localhost:8080/hello/index] to see that message
+*Hello from websockets!*. Your websocket connection is up and ready for action in your server and in your
+gsp's.
