@@ -31,15 +31,15 @@ include::templates.adoc[]
 include::onEvent.adoc[]
 include::remoteDomain.adoc[]
 
-= Demos
-
-include::setupDemos.adoc[]
-
 = Websockets step by step guide
 
 include::websocket-step.adoc[]
 
-= Websockets support example
+= Demos
+
+include::setupDemos.adoc[]
+
+= Websockets with grails plugin example
 
 include::websocket-support.adoc[]
 

@@ -1,5 +1,5 @@
 
 Please, if you have ideas to improve the plugin, or find bugs, please open issues in
-https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github].
+https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github] or email me at grooscript@gmail.com.
 
 Thank you!

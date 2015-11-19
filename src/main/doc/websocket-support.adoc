@@ -1,3 +1,6 @@
+For more about grails websocket plugin, please visit https://github.com/zyro23/grails-spring-websocket[https://github.com/zyro23/grails-spring-websocket]
+
+After install the plugin, then you can work with websockets in your grails application without configuration.
 
 == Server side
 

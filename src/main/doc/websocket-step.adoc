@@ -88,7 +88,7 @@ dependencies {
 
 Now, we can use grooscript tags in our gsp's to improve websocket experience with groovy.
 
-== Check websockets are available in our gsp's
+== Check websockets are available
 
 First, create a controller with:
 
@@ -125,3 +125,66 @@ Now, that controller and view are ready, we can start application with `> grails
 to http://localhost:8080/hello/index[http://localhost:8080/hello/index] to see that message
 *Hello from websockets!*. Your websocket connection is up and ready for action in your server and in your
 gsp's.
+
+== Send messages to the server
+
+To send a message just use function `sendWebsocketMessage` that grooscript helpers offer:
+
+[source,html]
+--
+<grooscript:initSpringWebsocket endPoint="/hello">
+	$('body').html '<p>Hello from websockets!</p>'
+	GrooscriptGrails.sendWebsocketMessage("/app/hello", "I'm the client!")
+</grooscript:initSpringWebsocket>
+--
+
+Then in the server, let's create a new controller for websocket connections in
+`src/main/groovy/websockets/sample/WebsocketsController.groovy`:
+
+[source,groovy]
+--
+package websockets.sample
+
+import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.stereotype.Controller
+
+@Controller
+class WebsocketsController {
+
+    @MessageMapping("/hello")
+    @SendTo("/topic/greetings")
+    Map greeting(String message) throws Exception {
+        [message: "Hello, my friend! You said: ${message}".toString()]
+    }
+}
+--
+
+Is a normal spring controller, not a grails controller, so we have to register this bean:
+
+[source,groovy]
+--
+import websockets.sample.WebSocketConfig
+import websockets.sample.WebsocketsController
+
+// Place your Spring DSL code here
+beans = {
+    webSocketConfig(WebSocketConfig)
+    websocketsController(WebsocketsController)
+}
+--
+
+== Receive messages from the server
+
+Before, in `WebsocketsController` we sent as response a map to the client. To catch that message just add
+to the gsp:
+
+[source,html]
+--
+<grooscript:onServerEvent path="/topic/greetings">
+	$("body").append '<p>'+data.message+'</p>'
+</grooscript:onServerEvent>
+--
+
+Now, you have to see in the html *Hello, my friend! You said: "I'm the client!"*. The client expects
+messages as maps or lists, and that map or list is *data* inside the tag.

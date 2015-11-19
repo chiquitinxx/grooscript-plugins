@@ -21,3 +21,14 @@ class GrooscriptGrails {
 <2> Do a remote ajax call
 <3> Send a message to server via websockets
 
+For example
+
+[source,groovy]
+--
+<grooscript:code>
+	GrooscriptGrails,doRemoteCall('books', 'addBook', [title: 'A title'], {
+		println 'All was Ok'
+	}, { println 'Error adding book' })
+</grooscript:code>
+--
+

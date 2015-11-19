@@ -39,8 +39,10 @@ dependencies {
 }
 --
 
-== What is new in {plugin-version} and 1.1.1
+== What is new in {plugin-version}, 1.1.2 and 1.1.1
 
+- Upgrade to grooscript 1.2.2
+- Now can set the websockets endpoint
 - Fixes
 
 == What is new in 1.1.0
