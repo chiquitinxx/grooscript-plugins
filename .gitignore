@@ -2,5 +2,8 @@ target
 *.iml
 *.ipr
 *.iws
+*.idea
+.gradle/
 grails-app/assets/javascripts/app/*.js
 grails-app/assets/javascripts/grooscript-grails.js
+build/
