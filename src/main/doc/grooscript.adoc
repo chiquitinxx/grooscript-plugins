@@ -3,15 +3,15 @@
 = Grooscript
 
 This little framework is the engine of the plugin. It converts Groovy code to javascript.
-You don't need to know Grooscript, the plugin do the work for you. But you can
-take a look to http://grooscript.org/doc.html to get more info. Grooscript compile the code,
-inspect the AST tree, and generate the javascript code.
+You don't need to know Grooscript, the plugin does the work for you. But you can
+take a look to http://grooscript.org/doc.html to get more info. Grooscript compiles the code,
+inspects the AST tree, and generates the javascript code.
 
-Just remember you need `grooscript-grails.js` to run converted code. Add `<asset:javascript src="grooscript-grails.js"/>` to your gsp.
+Just remember you need `grooscript-grails.js` to run some converted code. Add `<asset:javascript src="grooscript-grails.js"/>` to your gsp.
 
 == Spring bean
 
-There is *grooscriptConverter* bean, for convert groovy code to javascript. You can inject in your grails artifacts:
+There is *grooscriptConverter* bean to convert Groovy code to javascript. You can inject it in your grails artifacts:
 
 [source,groovy]
 --

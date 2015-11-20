@@ -2,32 +2,39 @@
 [[_introduction]]
 = Introduction
 
-This plugin convert your groovy code to javascript, allowing to use your groovy code in your gsp's.
+The plugin converts your Groovy code to javascript, allowing to use your Groovy code in your gsp files.
 
-If you want to convert groovy files to javascript, use groovy templates in the client side, generate
-require.js modules from your groovy code, ... please use https://github.com/chiquitinxx/grooscript-gradle-plugin[gradle plugin].
+If you want to convert groovy files to javascript, use groovy templates on the client side, generate
+require.js modules from your groovy code. Don't forget to use https://github.com/chiquitinxx/grooscript-gradle-plugin[gradle plugin].
 You can use both plugins in your grails 3 project.
 
 So, your *groovy code will run in your browser*!
 
 == Important
 
-I have a lot of ideas to improve this plugin, use grooscript phantomjs support, compile static your templates, improve domain classes options,...
-but I don't know if people use or is interested in this plugin. So, if you want or need something, just *open the issue or improvement* in
-https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github] or email me at grooscript@gmail.com
+If you have any ideas on how to
+
+- improve this plugin,
+- use grooscript phantomjs support,
+- statically compile your templates,
+- or improve domain classes options,
+- or anything else...
+
+don't hesitate to *open an issue or improvement* on https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github]
+or email me at grooscript@gmail.com.
 
 I have created this documentation with http://asciidoctor.org/[asciidoctor]!
 
 == Requisites
 
-This plugin works for Grails 3, and you need assets pipeline and cache plugin.
+This plugin works with Grails 3. You also need assets pipeline and the cache plugin.
 
-- Use _<asset:deferredScripts/>_ in your gsp's with grooscript tags.
+- Use _<asset:deferredScripts/>_ in your gsp files with grooscript tags.
 - You have to import *grosscript-grails.js* when you use grooscript tags.
-- Plugin use __jquery__, so remember add that dependency.
-- Work with domain classes still experimental, *don't use in production*, as explained <<_use_in_production,here>>
+- The plugin uses __jquery__, so remember to add that dependency.
+- Domain classes support is still experimental, *don't use it in production code*, as explained <<_use_in_production,here>>.
 
-To use it, just add the plugin to your grails 3 dependencies in your +build.gradle+:
+To use the plugin just add it to your grails 3 dependencies in your +build.gradle+:
 
 [source,groovy]
 [subs="verbatim,attributes"]
@@ -41,8 +48,8 @@ dependencies {
 
 == What is new in {plugin-version}, 1.1.2 and 1.1.1
 
-- Upgrade to grooscript 1.2.2
-- Now can set the websockets endpoint
+- Upgraded to grooscript 1.2.2
+- Now you can set the websockets endpoint
 - Fixes
 
 == What is new in 1.1.0
@@ -54,3 +61,4 @@ dependencies {
 
 - Stable release 1.0.0 to work with grails 3.
 - Use grooscript version 1.1.1
+

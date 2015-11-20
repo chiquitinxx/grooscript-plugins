@@ -4,8 +4,7 @@
 
 Grooscript and this plugin offer some helpers to work with html, javascript or grails from your groovy code.
 
-You can use GrooscriptGrails class from your groovy code, in grooscript tags or groovy code, but will do
-things only running in your browser:
+You can use the `GrooscriptGrails` class from your groovy code, in grooscript tags or groovy code. The code will run only in your browser (client side), no server calls will be made.
 
 [source,groovy]
 --
@@ -21,14 +20,14 @@ class GrooscriptGrails {
 <2> Do a remote ajax call
 <3> Send a message to server via websockets
 
-For example
+Example (calls `addBook` on controller `books`):
 
 [source,groovy]
 --
 <grooscript:code>
-	GrooscriptGrails,doRemoteCall('books', 'addBook', [title: 'A title'], {
-		println 'All was Ok'
-	}, { println 'Error adding book' })
+	GrooscriptGrails.doRemoteCall('books', 'addBook', [title: 'A title'],
+                                      { println 'All was Ok' }, 
+                                      { println 'Error adding book' })
 </grooscript:code>
 --
 
