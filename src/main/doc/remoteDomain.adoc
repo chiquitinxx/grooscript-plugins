@@ -8,7 +8,7 @@ your domain class as a REST resource with +@Resource(uri='/anyUrl', formats=['js
 the data is controlled by grails, you can use http://grails.org/plugin/spring-security-rest[spring secure rest plugin]
 to secure access to your data. Only supports json results.
 
-*This tag is still experimental, don't use in production.*
+*This tag is still experimental, don't use in production, as explained <<_use_in_production,here>>*
 
 [source,groovy]
 --
@@ -16,7 +16,7 @@ package rest
 
 import grails.rest.Resource
 
-@Resource(uri='/books')
+@Resource(uri='/books', formats=['json'])
 class Book {
 
     String title

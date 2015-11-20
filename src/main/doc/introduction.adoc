@@ -25,7 +25,7 @@ This plugin works for Grails 3, and you need assets pipeline and cache plugin.
 - Use _<asset:deferredScripts/>_ in your gsp's with grooscript tags.
 - You have to import *grosscript-grails.js* when you use grooscript tags.
 - Plugin use __jquery__, so remember add that dependency.
-- Work with domain classes still experimental, *don't use in production*, it doesn't work in deployed jar / war.
+- Work with domain classes still experimental, *don't use in production*, as explained <<_use_in_production,here>>
 
 To use it, just add the plugin to your grails 3 dependencies in your +build.gradle+:
 
@@ -54,4 +54,3 @@ dependencies {
 
 - Stable release 1.0.0 to work with grails 3.
 - Use grooscript version 1.1.1
-- Rest support is experimental, not available at production.

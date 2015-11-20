@@ -7,7 +7,7 @@ but nothing will be added, updated or deleted in the server. Just for create a l
 or use domain classes and methods in the client. This is good, for example, for don't repeat code between server and
 client. Also you can validate your domain classes in the client.
 
-*This tag is still experimental, don't use in production.*
+*This tag is still experimental, don't use in production, as explained <<_use_in_production,here>>*
 
 [source,groovy]
 --
@@ -15,7 +15,7 @@ package rest
 
 import grails.rest.Resource
 
-@Resource(uri='/books')
+@Resource(uri='/books', formats=['json'])
 class Book {
 
     String title

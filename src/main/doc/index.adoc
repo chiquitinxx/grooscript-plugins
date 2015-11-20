@@ -35,15 +35,11 @@ include::remoteDomain.adoc[]
 
 include::websocket-step.adoc[]
 
-= Demos
+= Demo
 
 include::setupDemos.adoc[]
 
-= Websockets with grails plugin example
-
-include::websocket-support.adoc[]
-
-= Using remote domain classes demo
+= Using remote domain classes
 
 include::rest-demo.adoc[]
 
