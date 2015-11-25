@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>Trying to use web components</title>
+    <style type="text/css">
+        body {
+            background-color: darkseagreen;
+        }
+    </style>
+    <script src="CustomElements.min.js"></script>
+    <script src="grooscript-grails.js"></script>
+    <script src="Counter.js"></script>
+    <script>
+        var MyCounter = Object.create(HTMLElement.prototype);
+        MyCounter.createdCallback = function() {
+            var shadow = this.createShadowRoot();
+            GrooscriptGrails.register(Counter({shadowRoot: shadow})).draw();
+        };
+        document.registerElement('my-counter', {prototype: MyCounter});
+    </script>
+</head>
+<body>
+
+<my-counter></my-counter>
+<my-counter></my-counter>
+
+</body>
+</html>

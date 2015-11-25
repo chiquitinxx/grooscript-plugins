@@ -8,6 +8,7 @@ class ComponentTest extends GroovyTestCase {
     void testComponentAstWorks() {
         assertScript basicComponent + '''
             assert component.metaClass.properties.find { it.name == 'shadowRoot' }
+            assert component.metaClass.properties.find { it.name == 'cId' }
 '''
     }
 

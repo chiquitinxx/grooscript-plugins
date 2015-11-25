@@ -11,11 +11,24 @@ class GrooscriptGrails {
     static remoteUrl
     static controllerRemoteDomain = 'remoteDomain'
     static actionRemoteDomain = 'doAction'
+    static count = 0
+    static components = [:]
 
     static final GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
         'transients', 'constraints', 'mapping', 'hasMany', 'belongsTo', 'validationSkipMap',
         'gormPersistentEntity', 'properties', 'gormDynamicFinders', 'all', 'domainClass', 'attached',
         'validationErrorsMap', 'dirtyPropertyNames', 'errors', 'dirty', 'count']
+
+    static register(component) {
+        def number = count++
+        component.cId = number
+        components["id${number}"] = component
+        component
+    }
+
+    static recover(cId) {
+        components["id${cId}"]
+    }
 
     @GsNative
     static Map getRemoteDomainClassProperties(remoteDomainClass) {/*

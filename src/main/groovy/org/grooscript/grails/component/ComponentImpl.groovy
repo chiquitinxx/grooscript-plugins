@@ -25,6 +25,7 @@ public class ComponentImpl implements ASTTransformation {
         ClassNode classNode = (ClassNode) nodes[1]
 
         classNode.addProperty('shadowRoot', Modifier.PUBLIC , ClassHelper.OBJECT_TYPE, null, null, null)
+        classNode.addProperty('cId', Modifier.PUBLIC , ClassHelper.Number_TYPE, null, null, null)
 
         manageDrawMethod(classNode)
     }
