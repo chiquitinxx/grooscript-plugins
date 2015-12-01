@@ -160,6 +160,7 @@ task generateJavascriptFile() << {
     conversionOptions[ConversionOptions.FINAL_TEXT.text] = 'var gsEvents = ClientEventHandler();'
     text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
 
+    new File('grails-app/assets/javascripts/').mkdirs()
     new File('grails-app/assets/javascripts/grooscript-grails.js').text = text
 }
 
