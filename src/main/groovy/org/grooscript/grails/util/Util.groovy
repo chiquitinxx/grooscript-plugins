@@ -2,6 +2,8 @@ package org.grooscript.grails.util
 
 import org.grooscript.grails.tag.GrooscriptTagLib
 
+import java.util.regex.Matcher
+
 /**
  * User: jorgefrancoleza
  * Date: 13/09/13
@@ -52,6 +54,6 @@ class Util {
     }
 
     private static getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
-        "${domainClassCanonicalName.replaceAll(/\./, SEP)}.groovy"
+        "${domainClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
 }
