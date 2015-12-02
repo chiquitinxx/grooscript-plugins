@@ -27,5 +27,7 @@ To install locally:
 Collaborators
 ---
 Dilvan Moreira
+
 Christian Meyer
+
 Tepsl
