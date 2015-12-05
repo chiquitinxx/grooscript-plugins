@@ -16,8 +16,8 @@ class Counter {
     def draw() {
         h1 value.toString()
         p {
-            button(onclick: "GrooscriptGrails.recover(${cId}).dec(this)", '-')
-            button(onclick: "GrooscriptGrails.recover(${cId}).inc(this)", '+')
+            button(onclick: 'dec', '-')
+            button(onclick: 'inc', '+')
         }
     }
 }

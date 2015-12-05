@@ -27,6 +27,9 @@ public class ComponentImpl implements ASTTransformation {
         classNode.addProperty('shadowRoot', Modifier.PUBLIC , ClassHelper.OBJECT_TYPE, null, null, null)
         classNode.addProperty('cId', Modifier.PUBLIC , ClassHelper.Number_TYPE, null, null, null)
 
+        HtmlMapVisitor htmlMapVisitor = new HtmlMapVisitor(classNode: classNode)
+        classNode.visitContents(htmlMapVisitor)
+
         manageDrawMethod(classNode)
     }
 

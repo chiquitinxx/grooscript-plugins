@@ -43,6 +43,11 @@ class ComponentTest extends GroovyTestCase {
 '''
     }
 
+    void testOnMethodSubstitution() {
+        assertScript onComponentWithOnClickMethod("'click'")
+        assertScript onComponentWithOnClickMethod('\"click\"')
+    }
+
     private final String basicComponent = '''
         import org.grooscript.grails.component.Component
 
@@ -69,4 +74,26 @@ class ComponentTest extends GroovyTestCase {
 
         def component = new MyComponent()
         '''
+
+    private String onComponentWithOnClickMethod(String method) {
+        """
+        import org.grooscript.grails.component.Component
+
+        @Component
+        class MyComponent {
+            def click() {
+                "GrooscriptGrails.recover(\${cId}).dec(this)"
+            }
+            def draw() {
+                p(onclick: ${method}, 'hello!')
+            }
+        }
+
+        def component = new MyComponent()
+        component.shadowRoot = new Expando()
+        component.cId = 5
+        component.draw()
+        assert component.shadowRoot.innerHTML == "<p onclick='GrooscriptGrails.recover(5).click(this)'>hello!</p>"
+        """
+    }
 }
