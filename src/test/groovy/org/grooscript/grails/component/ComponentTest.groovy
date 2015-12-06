@@ -48,6 +48,12 @@ class ComponentTest extends GroovyTestCase {
         assertScript onComponentWithOnClickMethod('\"click\"')
     }
 
+    void testDrawAfterMethod() {
+        assertScript drawAfterScriptWithValue("['click']")
+        assertScript drawAfterScriptWithValue("'click'")
+        assertScript drawAfterScriptWithValue("\"click\"")
+    }
+
     private final String basicComponent = '''
         import org.grooscript.grails.component.Component
 
@@ -75,6 +81,30 @@ class ComponentTest extends GroovyTestCase {
         def component = new MyComponent()
         '''
 
+    private final String drawAfterScriptWithValue(String value) {
+        """
+        import org.grooscript.grails.component.Component
+
+        @Component
+        class MyComponent {
+            static drawAfter = ${value}
+            def value = 0
+
+            def click() {
+                value = 1
+            }
+            def draw() {
+                p 'hello!' + value
+            }
+        }
+
+        def component = new MyComponent()
+        component.shadowRoot = new Expando()
+        component.click()
+        assert component.shadowRoot.innerHTML == "<p>hello!1</p>"
+        """
+    }
+
     private String onComponentWithOnClickMethod(String method) {
         """
         import org.grooscript.grails.component.Component
@@ -82,7 +112,7 @@ class ComponentTest extends GroovyTestCase {
         @Component
         class MyComponent {
             def click() {
-                "GrooscriptGrails.recover(\${cId}).dec(this)"
+                'clicked!'
             }
             def draw() {
                 p(onclick: ${method}, 'hello!')

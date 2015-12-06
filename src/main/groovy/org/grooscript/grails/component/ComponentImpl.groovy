@@ -24,6 +24,8 @@ public class ComponentImpl implements ASTTransformation {
 
         ClassNode classNode = (ClassNode) nodes[1]
 
+        checkMethodsToAddDrawCall(classNode)
+
         classNode.addProperty('shadowRoot', Modifier.PUBLIC , ClassHelper.OBJECT_TYPE, null, null, null)
         classNode.addProperty('cId', Modifier.PUBLIC , ClassHelper.Number_TYPE, null, null, null)
 
@@ -93,5 +95,42 @@ public class ComponentImpl implements ASTTransformation {
                         closure
                 ])
         )
+    }
+
+    private void checkMethodsToAddDrawCall(ClassNode classNode) {
+        PropertyNode drawAfter = classNode.properties.find { it.name == 'drawAfter' && it.static }
+        if (drawAfter && drawAfter.initialExpression) {
+            if (drawAfter.initialExpression instanceof ConstantExpression) {
+                addDrawCallToMethod(drawAfter.initialExpression, classNode)
+            }
+            if (drawAfter.initialExpression instanceof ListExpression) {
+                ListExpression list = drawAfter.initialExpression
+                list.expressions.each { expression ->
+                    if (expression instanceof ConstantExpression) {
+                        addDrawCallToMethod(expression, classNode)
+                    }
+                }
+            }
+        }
+    }
+
+    private void addDrawCallToMethod(ConstantExpression constantExpression, ClassNode classNode) {
+        if (constantExpression.value instanceof String) {
+            String method = constantExpression.value
+            if (method != 'draw' &&
+                method in classNode.methods.collect { it.name }) {
+                MethodNode methodNode = classNode.methods.find { it.name == method }
+                if (methodNode.code instanceof BlockStatement) {
+                    BlockStatement block = methodNode.code
+                    block.addStatement(new ExpressionStatement(
+                            new MethodCallExpression(
+                                    new VariableExpression('this'),
+                                    new ConstantExpression('draw'),
+                                    new ArgumentListExpression([])
+                            )
+                    ))
+                }
+            }
+        }
     }
 }
