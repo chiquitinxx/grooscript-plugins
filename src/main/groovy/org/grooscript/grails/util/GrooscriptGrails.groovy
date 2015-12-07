@@ -119,4 +119,23 @@ class GrooscriptGrails {
             }
         });
     */}
+
+    @GsNative
+    static void createComponent(componentClass, name) {/*
+        var component = Object.create(HTMLElement.prototype);
+        component.createdCallback = function() {
+            var shadow = this.createShadowRoot();
+            var content = this.textContent;
+            var attrs = this.attributes; //name and value
+            var map = {shadowRoot: shadow, content: content};
+            if (attrs && attrs.length > 0) {
+                for (var i = 0; i < attrs.length; i++) {
+                    var element = attrs[i];
+                    map[element.name] = element.value;
+                }
+            }
+            GrooscriptGrails.register(componentClass(map)).draw();
+        };
+        document.registerElement(name, {prototype: component});
+    */}
 }

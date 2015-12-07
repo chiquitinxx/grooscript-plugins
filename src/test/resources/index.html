@@ -10,21 +10,24 @@
     <script src="grooscript-grails.js"></script>
     <script src="Counter.js"></script>
     <script>
-	var MyCounter = Object.create(HTMLElement.prototype);
-        MyCounter.createdCallback = function() {
-            var shadow = this.createShadowRoot();
-            var content = this.textContent;
-            var attrs = this.attributes; //name and value
-            var map = {shadowRoot: shadow, content: content};
-            if (attrs && attrs.length > 0) {
-                for (var i = 0; i < attrs.length; i++) {
-                    var element = attrs[i];
-                    map[element.name] = element.value;
-		}
-            }
-	    GrooscriptGrails.register(Counter(map)).draw();
-        };
-        document.registerElement('my-counter', {prototype: MyCounter});
+        (function () {
+            var component = Object.create(HTMLElement.prototype);
+            component.createdCallback = function() {
+                var shadow = this.createShadowRoot();
+                var content = this.textContent;
+                var attrs = this.attributes; //name and value
+                var map = {shadowRoot: shadow, content: content};
+                if (attrs && attrs.length > 0) {
+                    for (var i = 0; i < attrs.length; i++) {
+                        var element = attrs[i];
+                        map[element.name] = element.value;
+                    }
+                }
+                GrooscriptGrails.register(Counter(map)).draw();
+            };
+            document.registerElement('my-counter', {prototype: component});
+        })();
+
     </script>
 </head>
 <body>

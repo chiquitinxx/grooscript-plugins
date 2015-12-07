@@ -2,6 +2,8 @@ package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
 import org.grooscript.GrooScript
+import org.grooscript.convert.ConversionOptions
+import org.grooscript.grails.component.Component
 import org.grooscript.grails.remote.RemoteDomainClass
 
 import static org.grooscript.grails.util.Util.*
@@ -48,14 +50,24 @@ class GrooscriptConverter {
         result
     }
 
-    private addDefaultOptions(options) {
+    String convertComponent(String groovyCode) {
+        Map conversionOptions = [:]
+        conversionOptions[ConversionOptions.CLASSPATH.text] = GROOVY_SRC_DIR
+        conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
+        conversionOptions[ConversionOptions.CUSTOMIZATION.text] = {
+            ast(Component)
+        }
+        toJavascript(groovyCode, addScopeVars(conversionOptions))
+    }
+
+    private Map addDefaultOptions(Map options) {
         options = options ?: [:]
         options = addGroovySourceClassPathIfNeeded(options)
         options = addScopeVars(options)
         options
     }
 
-    private addScopeVars(options) {
+    private Map addScopeVars(Map options) {
         if (!options.mainContextScope) {
             options.mainContextScope = []
         }
@@ -63,7 +75,7 @@ class GrooscriptConverter {
         options
     }
 
-    private addGroovySourceClassPathIfNeeded(options) {
+    private Map addGroovySourceClassPathIfNeeded(Map options) {
         if (!options.classPath) {
             options.classPath = []
         } else {

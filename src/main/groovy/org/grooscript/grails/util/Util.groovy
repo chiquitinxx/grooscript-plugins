@@ -2,6 +2,8 @@ package org.grooscript.grails.util
 
 import org.grooscript.grails.tag.GrooscriptTagLib
 
+import java.util.regex.Matcher
+
 /**
  * User: jorgefrancoleza
  * Date: 13/09/13
@@ -31,7 +33,7 @@ class Util {
     }
 
     static String getDomainFileText(String domainClassCanonicalName) {
-        def filePath = "${DOMAIN_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(domainClassCanonicalName)}"
+        def filePath = "${DOMAIN_DIR}${SEP}${getFileNameFromCanonicalName(domainClassCanonicalName)}"
         def file = new File(filePath)
         if (file && file.exists()) {
             return file.text
@@ -51,7 +53,18 @@ class Util {
         GrooscriptTagLib.classLoader.getResource(filePath).text
     }
 
-    private static getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
-        "${domainClassCanonicalName.replaceAll(/\./, SEP)}.groovy"
+    static String getClassSource(String fullClassName) {
+        def filePath = "${GROOVY_SRC_DIR}${SEP}${getFileNameFromCanonicalName(fullClassName)}"
+        def file = new File(filePath)
+        if (file && file.exists()) {
+            return file.text
+        } else {
+            consoleError("Fail find source class file: ${filePath}")
+            return null
+        }
+    }
+
+    private static getFileNameFromCanonicalName(String canonicalName) {
+        "${canonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
 }

@@ -1,6 +1,4 @@
 import org.grooscript.grails.bean.GrooscriptConverter
-import grails.util.GrailsUtil.*
-
 
 description('Generate grooscript remote domain classes') {
     usage 'grails generate-remote-domain [fullClassName]'
