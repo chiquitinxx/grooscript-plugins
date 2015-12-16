@@ -6,10 +6,94 @@ You can use your groovy classes as web components and use them in your gsp's.
 
 *This is an incubating feature*
 
-First you have to create a groovy class
+=== Requisites
+
+- You have to define your class from src/main/groovy, not in grails-app.
+- grooscript is used to convert the class, so take care with library limitations http://grooscript.org.
+- You have to add webcomponents lib if browser don't support it. That library is available in
+http://webcomponents.org/ or in the plugin (add with: <asset:javascript src="webcomponents.min.js"/>).
+- To use in production, you have to create conversions before create jar/war.
+
+=== Create component class
 
 [source,groovy]
 --
+package components
 
+class Counter {
+    static style = ''' //<1>
+        div {
+            width: 100px;
+        }
+    '''
+    static renderAfter = ['inc', 'dec'] //<2>
+    int value = 0
+    void inc() {
+        value++
+    }
+    void dec() {
+        value--
+    }
+    def render() { //<3>
+        div {
+            h1 value.toString()
+            p {
+                button(onclick: 'dec', '-') //<4>
+                button(onclick: 'inc', '+')
+            }
+        }
+    }
+}
 --
 
+<1> You can define *style* to apply to the component. It's shadow dom, so not affected by page css.
+<2> You can define methods that will execute render when executed with *renderAfter*.
+<3> Define the html of your component with a groovy dsl (Groovy template engine).
+<4> You can define component methods to execute in onXXX events with the name of the method as a string.
+
+=== Use your component in your gsp's
+
+To use this component in your gsp's you have to use component tag.
+
+[source,html]
+--
+<grooscript:component src="components.Counter" name="my-counter"/>
+--
+
+- *scr* is mandatory, full class name of the component.
+- *name* is optional to set the name of the tag to use the component. Some tag names are not allowed,
+as counter. If you don't set the name of the tag will use the name of the class without upper case and with
+-'s (MyComp -> my-comp)
+
+=== All together
+
+Then you can use your groovy component in your html, as a web component:
+
+[source,html]
+--
+<html>
+<head>
+    <asset:javascript src="grooscript-grails.js"/>
+    <asset:javascript src="webcomponents.min.js"/>
+    <grooscript:component src="components.Counter" name="my-counter"/>
+</head>
+
+<body>
+    <p>Hello World!</p>
+    <my-counter></my-counter>
+    <my-counter value="3"></my-counter> //<1>
+<asset:deferredScripts/>
+--
+
+<1> You can set properties of your component. Also you can use content of the tag with a property *content*
+available in the groovy class at runtime.
+
+=== Generate components for production
+
+In development, class source is used to convert to javascript. In production source is not available, so
+you have to generate that conversion before create jar / war.
+
+[source,shell]
+--
+> grails generate-component components.Counter
+--
