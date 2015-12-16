@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Trying to use web components</title>
+    <style type="text/css">
+        body {
+            background-color: darkseagreen;
+        }
+    </style>
+    <script src="webcomponents.min.js"></script>
+    <script src="grooscript-grails.js"></script>
+    <script src="Counter.js"></script>
+    <script>
+        GrooscriptGrails.createComponent(Counter, 'my-counter');
+    </script>
+</head>
+<body>
+
+<my-counter value="2">things</my-counter>
+<my-counter></my-counter>
+
+</body>
+</html>

@@ -52,6 +52,8 @@ class GrooscriptTagLibSpec extends Specification {
     static final JS_CODE = 'js converted code'
     static final REMOTE_URL = 'my url'
     static final TEMPLATE_NAME = 'template name'
+    static final COMPONENT_GROOVY_CODE = 'class Component { def draw() {} }'
+    static final COMPONENT_JS_CODE = 'component code in javascript'
 
     void 'test code taglib'() {
         when:
@@ -299,6 +301,55 @@ class GrooscriptTagLibSpec extends Specification {
                     [jsCode: JS_CODE, path: '/myPath', functionName: 'gSonServerEvent0', type: 'Type'])
         })
         0 * _
+    }
+
+    @Unroll
+    void 'add a component in development'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:component src='${className}'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> true
+        1 * Util.getClassSource(className) >> COMPONENT_GROOVY_CODE
+        1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(${componentClass}, '${componentName}');"
+        })
+        0 * _
+
+        where:
+        className                    | componentClass | componentName
+        'org.grooscript.MyComponent' | 'MyComponent'  | 'my-component'
+        'MyComponent'                | 'MyComponent'  | 'my-component'
+        'Name'                       | 'Name'         | 'name'
+    }
+
+    @Unroll
+    void 'add a component in production'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:component src='${className}'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> false
+        1 * Util.getResourceText("${componentClass}.cs") >> COMPONENT_JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(${componentClass}, '${componentName}');"
+        })
+        0 * _
+
+        where:
+        className                    | componentClass | componentName
+        'org.grooscript.MyComponent' | 'MyComponent'  | 'my-component'
+        'MyComponent'                | 'MyComponent'  | 'my-component'
+        'Name'                       | 'Name'         | 'name'
     }
 
     private stubGrailsApplication() {

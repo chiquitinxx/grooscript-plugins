@@ -1,7 +1,6 @@
 package org.grooscript.grails.util
 
 import org.grooscript.grails.tag.GrooscriptTagLib
-
 import java.util.regex.Matcher
 
 /**
@@ -51,6 +50,17 @@ class Util {
 
     static String getResourceText(String filePath) {
         GrooscriptTagLib.classLoader.getResource(filePath).text
+    }
+
+    static String getClassSource(String fullClassName) {
+        def filePath = "${GROOVY_SRC_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(fullClassName)}"
+        def file = new File(filePath)
+        if (file && file.exists()) {
+            return file.text
+        } else {
+            consoleError("Fail find source class file: ${filePath}")
+            return null
+        }
     }
 
     private static getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {

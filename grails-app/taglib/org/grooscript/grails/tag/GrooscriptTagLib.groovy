@@ -14,6 +14,7 @@ class GrooscriptTagLib {
 
     static final REMOTE_URL_SETTED = 'grooscriptRemoteUrl'
     static final REMOTE_DOMAIN_EXTENSION = '.gs'
+    static final COMPONENT_EXTENSION = '.cs'
 
     static namespace = 'grooscript'
 
@@ -150,7 +151,30 @@ class GrooscriptTagLib {
         }
     }
 
-    private initGrooscriptGrails() {
+    /**
+     * grooscript:component
+     */
+    def component = { attrs, body ->
+        def fullClassName = attrs.src
+        if (fullClassName) {
+            String shortClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1)
+            String nameComponent = componentName(shortClassName)
+            if (GrailsUtil.isDevelopmentEnv()) {
+                def source = getClassSource(fullClassName)
+                def componentJs = grooscriptConverter.convertComponent(source)
+                out << asset.script(type: 'text/javascript') {
+                    componentJs + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
+                }
+            } else {
+                out << asset.script(type: 'text/javascript') {
+                    Util.getResourceText(shortClassName + COMPONENT_EXTENSION) +
+                            ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
+                }
+            }
+        }
+    }
+
+    private void initGrooscriptGrails() {
         def urlSetted = request.getAttribute(REMOTE_URL_SETTED)
         if (!urlSetted) {
             asset.script(type: 'text/javascript') {
@@ -169,7 +193,7 @@ class GrooscriptTagLib {
         domainClass.split('\\.').last()
     }
 
-    private processTemplateEvents(String onEvent, functionName) {
+    private void processTemplateEvents(String onEvent, functionName) {
         if (onEvent) {
             def listEvents
             if (onEvent.contains(',')) {
@@ -186,7 +210,7 @@ class GrooscriptTagLib {
         }
     }
 
-    private validDomainClassName(String name) {
+    private boolean validDomainClassName(String name) {
         if (!name || !(name instanceof String)) {
             consoleError "GrooscriptTagLib have to define domainClass property as String"
         } else {
@@ -203,7 +227,7 @@ class GrooscriptTagLib {
         grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
     }
 
-    private removeLastSemicolon(String code) {
+    private String removeLastSemicolon(String code) {
         if (code.lastIndexOf(';') >= 0) {
             return code.substring(0, code.lastIndexOf(';'))
         } else {
@@ -214,12 +238,41 @@ class GrooscriptTagLib {
     private static final ON_SERVER_EVENT_FUNCTION_NAME = 'gSonServerEvent'
     private static final ON_SERVER_EVENT_COUNT = 'gSonEventCount'
 
-    private getOnServerEventFunctionName() {
+    private String getOnServerEventFunctionName() {
         def number = request.getAttribute(ON_SERVER_EVENT_COUNT)
         if (number == null) {
             number = 0
         }
         request.setAttribute(ON_SERVER_EVENT_COUNT, number + 1)
         ON_SERVER_EVENT_FUNCTION_NAME + number
+    }
+
+    private String componentName(String className) {
+        def name = className.substring(0, 1).toLowerCase() + className.substring(1)
+        while (hasUpperCase(name)) {
+            name = rplaceFirstUpperCase(name)
+        }
+        name
+    }
+
+    private boolean hasUpperCase(String name) {
+        boolean hasUpper = false
+        def i
+        for (i = 0; i < name.length() && !hasUpper; i++) {
+            if (name.charAt(i).upperCase) {
+                hasUpper = true
+            }
+        }
+        hasUpper
+    }
+
+    private String rplaceFirstUpperCase(String name) {
+        def upper = name.find {
+            it.charAt(0).upperCase
+        }
+        if (upper) {
+            name = name.replaceFirst(upper, '-' + upper.toLowerCase())
+        }
+        name
     }
 }

@@ -58,6 +58,14 @@ class GrooscriptConverterSpec extends Specification {
 '''
     }
 
+    def 'convert component'() {
+        when:
+        def result = grooscriptConverter.convertComponent('class MyComponent { def render() {} }')
+
+        then:
+        result.contains 'gSobject.cId = null'
+    }
+
     private static final JS = 'var a = 5; b.go()'
     private static final CODE = 'def a = 5; b.go()'
     private static final DOMAIN_CLASS = 'domainClass'

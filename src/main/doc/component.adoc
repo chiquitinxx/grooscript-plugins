@@ -1,0 +1,15 @@
+
+[[_component]]
+== <grooscript:component>
+
+You can use your groovy classes as web components and use them in your gsp's.
+
+*This is an incubating feature*
+
+First you have to create a groovy class
+
+[source,groovy]
+--
+
+--
+

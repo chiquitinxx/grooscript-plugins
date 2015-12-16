@@ -11,11 +11,24 @@ class GrooscriptGrails {
     static remoteUrl
     static controllerRemoteDomain = 'remoteDomain'
     static actionRemoteDomain = 'doAction'
+    static count = 0
+    static components = [:]
 
     static final GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
         'transients', 'constraints', 'mapping', 'hasMany', 'belongsTo', 'validationSkipMap',
         'gormPersistentEntity', 'properties', 'gormDynamicFinders', 'all', 'domainClass', 'attached',
         'validationErrorsMap', 'dirtyPropertyNames', 'errors', 'dirty', 'count']
+
+    static register(component) {
+        def number = count++
+        component.cId = number
+        components["id${number}"] = component
+        component
+    }
+
+    static recover(cId) {
+        components["id${cId}"]
+    }
 
     @GsNative
     static Map getRemoteDomainClassProperties(remoteDomainClass) {/*
@@ -105,5 +118,24 @@ class GrooscriptGrails {
                 onFailure(error);
             }
         });
+    */}
+
+    @GsNative
+    static void createComponent(componentClass, name) {/*
+        var component = Object.create(HTMLElement.prototype);
+        component.createdCallback = function() {
+            var shadow = this.createShadowRoot();
+            var content = this.textContent;
+            var attrs = this.attributes; //name and value
+            var map = {shadowRoot: shadow, content: content};
+            if (attrs && attrs.length > 0) {
+                for (var i = 0; i < attrs.length; i++) {
+                    var element = attrs[i];
+                    map[element.name] = element.value;
+                }
+            }
+            GrooscriptGrails.register(componentClass(map)).render();
+        };
+        document.registerElement(name, {prototype: component});
     */}
 }

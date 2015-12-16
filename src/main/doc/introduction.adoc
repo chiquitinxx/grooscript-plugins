@@ -48,18 +48,14 @@ dependencies {
 
 == What is new in {plugin-version}
 
-- Fix remote domain classes in windows
+- Use groovy classes as web components in your gsp's
 
-== What is new in 1.1.3, 1.1.2 and 1.1.1
+== What is new in 1.1.x
 
-- Upgraded to grooscript 1.2.2
-- Now you can set the websockets endpoint
+- Generation of remote domain classes code for production
+- Set the websockets endpoint name
+- Upgrade grooscript version
 - Fixes
-
-== What is new in 1.1.0
-
-- Generation of remote domain classes code for production.
-- Use grooscript version 1.2.0
 
 == Changes version 1.0.0
 

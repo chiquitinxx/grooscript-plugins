@@ -20,7 +20,7 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.2"
 }
 
-version "1.1.4"
+version "1.2.0-SNAPSHOT"
 group "org.grails.plugins"
 
 apply plugin: 'maven'
@@ -100,7 +100,7 @@ bintray {
         version {
             attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
-            desc = 'Upgrades'
+            desc = 'Web components'
             gpg {
                 sign = false
                 passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''

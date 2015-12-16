@@ -30,6 +30,7 @@ include::groovyCode.adoc[]
 include::templates.adoc[]
 include::onEvent.adoc[]
 include::remoteDomain.adoc[]
+include::component.adoc[]
 
 = Websockets step by step guide
 
