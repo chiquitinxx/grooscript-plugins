@@ -3388,6 +3388,7 @@ function GrooscriptGrails() {
   gSobject.sendWebsocketMessage = function(x0,x1) { return GrooscriptGrails.sendWebsocketMessage(x0,x1); }
   gSobject.doRemoteCall = function(x0,x1,x2,x3,x4) { return GrooscriptGrails.doRemoteCall(x0,x1,x2,x3,x4); }
   gSobject.remoteDomainAction = function(x0,x1,x2,x3) { return GrooscriptGrails.remoteDomainAction(x0,x1,x2,x3); }
+  gSobject.createComponent = function(x0,x1) { return GrooscriptGrails.createComponent(x0,x1); }
   if (arguments.length == 1) {gs.passMapToObject(arguments[0],gSobject);};
   
   return gSobject;
@@ -3480,6 +3481,23 @@ GrooscriptGrails.remoteDomainAction = function(params, onSuccess, onFailure, nam
                 onFailure(error);
             }
         });
+}
+GrooscriptGrails.createComponent = function(componentClass, name) {
+  var component = Object.create(HTMLElement.prototype);
+        component.createdCallback = function() {
+            var shadow = this.createShadowRoot();
+            var content = this.textContent;
+            var attrs = this.attributes; //name and value
+            var map = {shadowRoot: shadow, content: content};
+            if (attrs && attrs.length > 0) {
+                for (var i = 0; i < attrs.length; i++) {
+                    var element = attrs[i];
+                    map[element.name] = element.value;
+                }
+            }
+            GrooscriptGrails.register(componentClass(map)).render();
+        };
+        document.registerElement(name, {prototype: component});
 }
 GrooscriptGrails.remoteUrl = null;
 GrooscriptGrails.controllerRemoteDomain = "remoteDomain";

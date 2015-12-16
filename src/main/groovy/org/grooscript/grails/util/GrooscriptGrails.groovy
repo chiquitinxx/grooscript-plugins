@@ -134,7 +134,7 @@ class GrooscriptGrails {
                     map[element.name] = element.value;
                 }
             }
-            GrooscriptGrails.register(componentClass(map)).draw();
+            GrooscriptGrails.register(componentClass(map)).render();
         };
         document.registerElement(name, {prototype: component});
     */}

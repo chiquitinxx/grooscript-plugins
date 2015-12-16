@@ -4,16 +4,15 @@ class Counter {
             background-color: red;
         }
     '''
-    def value = 0
-    def inc() {
+    static renderAfter = ['inc', 'dec']
+    int value = 0
+    void inc() {
         value++
-        draw()
     }
-    def dec() {
+    void dec() {
         value--
-        draw()
     }
-    def draw() {
+    def render() {
         h1 value.toString()
         p {
             button(onclick: 'dec', '-')

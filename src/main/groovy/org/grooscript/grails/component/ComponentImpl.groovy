@@ -16,6 +16,8 @@ import java.lang.reflect.Modifier
 @GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
 public class ComponentImpl implements ASTTransformation {
 
+    private static final String RENDER_METHOD = 'render'
+
     public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
         //Start
         if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode) {
@@ -24,7 +26,7 @@ public class ComponentImpl implements ASTTransformation {
 
         ClassNode classNode = (ClassNode) nodes[1]
 
-        checkMethodsToAddDrawCall(classNode)
+        checkMethodsToAddRenderCall(classNode)
 
         classNode.addProperty('shadowRoot', Modifier.PUBLIC , ClassHelper.OBJECT_TYPE, null, null, null)
         classNode.addProperty('cId', Modifier.PUBLIC , ClassHelper.Number_TYPE, null, null, null)
@@ -32,15 +34,15 @@ public class ComponentImpl implements ASTTransformation {
         HtmlMapVisitor htmlMapVisitor = new HtmlMapVisitor(classNode: classNode)
         classNode.visitContents(htmlMapVisitor)
 
-        manageDrawMethod(classNode)
+        manageRenderMethod(classNode)
     }
 
-    private manageDrawMethod(ClassNode classNode) {
-        MethodNode drawMethod = classNode.methods.find { it.name == 'draw'}
-        if (!drawMethod) {
-            throw new RuntimeException("You have to define a draw method")
+    private manageRenderMethod(ClassNode classNode) {
+        MethodNode renderMethod = classNode.methods.find { it.name == RENDER_METHOD}
+        if (!renderMethod) {
+            throw new RuntimeException("You have to define a ${RENDER_METHOD} method")
         } else {
-            BlockStatement actualCode = (BlockStatement)drawMethod.code
+            BlockStatement actualCode = (BlockStatement)renderMethod.code
 
             VariableScope variableScope = actualCode.getVariableScope()
             VariableScope blockScope = variableScope.copy()
@@ -49,12 +51,12 @@ public class ComponentImpl implements ASTTransformation {
             VariableScope closureScope = variableScope.copy()
             closure.setVariableScope(closureScope)
 
-            drawMethod.setCode(new BlockStatement([
+            renderMethod.setCode(new BlockStatement([
                 new ExpressionStatement(
                     new BinaryExpression(
                         new PropertyExpression(
                             new PropertyExpression(
-                                new VariableExpression('this', ClassHelper.OBJECT_TYPE),'shadowRoot'),
+                                new VariableExpression('this', ClassHelper.OBJECT_TYPE), 'shadowRoot'),
                             'innerHTML'
                         ),
                         new Token(Types.ASSIGN, '=', 0, 0),
@@ -97,27 +99,27 @@ public class ComponentImpl implements ASTTransformation {
         )
     }
 
-    private void checkMethodsToAddDrawCall(ClassNode classNode) {
-        PropertyNode drawAfter = classNode.properties.find { it.name == 'drawAfter' && it.static }
-        if (drawAfter && drawAfter.initialExpression) {
-            if (drawAfter.initialExpression instanceof ConstantExpression) {
-                addDrawCallToMethod(drawAfter.initialExpression, classNode)
+    private void checkMethodsToAddRenderCall(ClassNode classNode) {
+        PropertyNode renderAfter = classNode.properties.find { it.name == 'renderAfter' && it.static }
+        if (renderAfter && renderAfter.initialExpression) {
+            if (renderAfter.initialExpression instanceof ConstantExpression) {
+                addRenderCallToMethod(renderAfter.initialExpression, classNode)
             }
-            if (drawAfter.initialExpression instanceof ListExpression) {
-                ListExpression list = drawAfter.initialExpression
+            if (renderAfter.initialExpression instanceof ListExpression) {
+                ListExpression list = renderAfter.initialExpression
                 list.expressions.each { expression ->
                     if (expression instanceof ConstantExpression) {
-                        addDrawCallToMethod(expression, classNode)
+                        addRenderCallToMethod(expression, classNode)
                     }
                 }
             }
         }
     }
 
-    private void addDrawCallToMethod(ConstantExpression constantExpression, ClassNode classNode) {
+    private void addRenderCallToMethod(ConstantExpression constantExpression, ClassNode classNode) {
         if (constantExpression.value instanceof String) {
             String method = constantExpression.value
-            if (method != 'draw' &&
+            if (method != RENDER_METHOD &&
                 method in classNode.methods.collect { it.name }) {
                 MethodNode methodNode = classNode.methods.find { it.name == method }
                 if (methodNode.code instanceof BlockStatement) {
@@ -125,7 +127,7 @@ public class ComponentImpl implements ASTTransformation {
                     block.addStatement(new ExpressionStatement(
                             new MethodCallExpression(
                                     new VariableExpression('this'),
-                                    new ConstantExpression('draw'),
+                                    new ConstantExpression(RENDER_METHOD),
                                     new ArgumentListExpression([])
                             )
                     ))

@@ -12,7 +12,7 @@ class ComponentTest extends GroovyTestCase {
 '''
     }
 
-    void testThrowErrorIfNoDrawMethod() {
+    void testThrowErrorIfNoRenderMethod() {
         try {
             assertScript '''
         import org.grooscript.grails.component.Component
@@ -23,22 +23,22 @@ class ComponentTest extends GroovyTestCase {
             assert false
         } catch (RuntimeException e) {
             assert e.message.startsWith('startup failed:\nGeneral error during semantic analysis:' +
-                    ' You have to define a draw method')
+                    ' You have to define a render method')
         }
     }
 
-    void testDrawFunction() {
+    void testRenderFunction() {
         assertScript basicComponent + '''
             component.shadowRoot = new Expando()
-            component.draw()
+            component.render()
             assert component.shadowRoot.innerHTML == '<p>hello!</p>'
 '''
     }
 
-    void testDrawFunctionWithStyle() {
+    void testRenderFunctionWithStyle() {
         assertScript styleComponent + '''
             component.shadowRoot = new Expando()
-            component.draw()
+            component.render()
             assert component.shadowRoot.innerHTML == '<style>anyStyle</style><p>hello!</p>'
 '''
     }
@@ -48,10 +48,10 @@ class ComponentTest extends GroovyTestCase {
         assertScript onComponentWithOnClickMethod('\"click\"')
     }
 
-    void testDrawAfterMethod() {
-        assertScript drawAfterScriptWithValue("['click']")
-        assertScript drawAfterScriptWithValue("'click'")
-        assertScript drawAfterScriptWithValue("\"click\"")
+    void testRenderAfterMethod() {
+        assertScript renderAfterScriptWithValue("['click']")
+        assertScript renderAfterScriptWithValue("'click'")
+        assertScript renderAfterScriptWithValue("\"click\"")
     }
 
     private final String basicComponent = '''
@@ -59,7 +59,7 @@ class ComponentTest extends GroovyTestCase {
 
         @Component
         class MyComponent {
-            def draw() {
+            def render() {
                 p 'hello!'
             }
         }
@@ -73,7 +73,7 @@ class ComponentTest extends GroovyTestCase {
         @Component
         class MyComponent {
             static style = 'anyStyle'
-            def draw() {
+            def render() {
                 p 'hello!'
             }
         }
@@ -81,19 +81,19 @@ class ComponentTest extends GroovyTestCase {
         def component = new MyComponent()
         '''
 
-    private final String drawAfterScriptWithValue(String value) {
+    private final String renderAfterScriptWithValue(String value) {
         """
         import org.grooscript.grails.component.Component
 
         @Component
         class MyComponent {
-            static drawAfter = ${value}
+            static renderAfter = ${value}
             def value = 0
 
             def click() {
                 value = 1
             }
-            def draw() {
+            def render() {
                 p 'hello!' + value
             }
         }
@@ -114,7 +114,7 @@ class ComponentTest extends GroovyTestCase {
             def click() {
                 'clicked!'
             }
-            def draw() {
+            def render() {
                 p(onclick: ${method}, 'hello!')
             }
         }
@@ -122,7 +122,7 @@ class ComponentTest extends GroovyTestCase {
         def component = new MyComponent()
         component.shadowRoot = new Expando()
         component.cId = 5
-        component.draw()
+        component.render()
         assert component.shadowRoot.innerHTML == "<p onclick='GrooscriptGrails.recover(5).click(this)'>hello!</p>"
         """
     }

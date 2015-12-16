@@ -60,7 +60,7 @@ class GrooscriptConverterSpec extends Specification {
 
     def 'convert component'() {
         when:
-        def result = grooscriptConverter.convertComponent('class MyComponent { def draw() {} }')
+        def result = grooscriptConverter.convertComponent('class MyComponent { def render() {} }')
 
         then:
         result.contains 'gSobject.cId = null'

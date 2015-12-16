@@ -6,28 +6,11 @@
             background-color: darkseagreen;
         }
     </style>
-    <script src="CustomElements.min.js"></script>
+    <script src="webcomponents.min.js"></script>
     <script src="grooscript-grails.js"></script>
     <script src="Counter.js"></script>
     <script>
-        (function () {
-            var component = Object.create(HTMLElement.prototype);
-            component.createdCallback = function() {
-                var shadow = this.createShadowRoot();
-                var content = this.textContent;
-                var attrs = this.attributes; //name and value
-                var map = {shadowRoot: shadow, content: content};
-                if (attrs && attrs.length > 0) {
-                    for (var i = 0; i < attrs.length; i++) {
-                        var element = attrs[i];
-                        map[element.name] = element.value;
-                    }
-                }
-                GrooscriptGrails.register(Counter(map)).draw();
-            };
-            document.registerElement('my-counter', {prototype: component});
-        })();
-
+        GrooscriptGrails.createComponent(Counter, 'my-counter');
     </script>
 </head>
 <body>
