@@ -158,7 +158,7 @@ class GrooscriptTagLib {
         def fullClassName = attrs.src
         if (fullClassName) {
             String shortClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1)
-            String nameComponent = componentName(shortClassName)
+            String nameComponent = attrs.name ?: componentName(shortClassName)
             if (GrailsUtil.isDevelopmentEnv()) {
                 def source = getClassSource(fullClassName)
                 def componentJs = grooscriptConverter.convertComponent(source)

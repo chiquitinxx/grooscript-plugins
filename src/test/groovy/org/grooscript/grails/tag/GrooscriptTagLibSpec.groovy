@@ -352,6 +352,24 @@ class GrooscriptTagLibSpec extends Specification {
         'Name'                       | 'Name'         | 'name'
     }
 
+    void 'can define name of the component'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:component src='Counter' name='my-counter'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> true
+        1 * Util.getClassSource('Counter') >> COMPONENT_GROOVY_CODE
+        1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(Counter, 'my-counter');"
+        })
+        0 * _
+    }
+
     private stubGrailsApplication() {
         tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
     }
