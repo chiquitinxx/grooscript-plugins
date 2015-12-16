@@ -2,6 +2,7 @@
 [[_component]]
 == <grooscript:component>
 
+image::comp.png[Component, float="right"]
 You can use your groovy classes as web components and use them in your gsp's.
 
 *This is an incubating feature*
