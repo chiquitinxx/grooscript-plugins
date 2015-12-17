@@ -6,8 +6,8 @@
             background-color: darkseagreen;
         }
     </style>
-    <script src="webcomponents.min.js"></script>
-    <script src="grooscript-grails.js"></script>
+    <script src="../../../grails-app/assets/javascripts/grooscript-grails.js"></script>
+    <script src="../../../grails-app/assets/javascripts/webcomponents.min.js"></script>
     <script src="Counter.js"></script>
     <script>
         GrooscriptGrails.createComponent(Counter, 'my-counter');
@@ -18,5 +18,8 @@
 <my-counter value="2">things</my-counter>
 <my-counter id="second"></my-counter>
 
+<script>
+    console.log("Second component value:" + GrooscriptGrails.findComponentById("second").value);
+</script>
 </body>
 </html>
