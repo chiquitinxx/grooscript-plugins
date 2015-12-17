@@ -138,4 +138,10 @@ class GrooscriptGrails {
         };
         document.registerElement(name, {prototype: component});
     */}
+
+    static findComponentById(String id) {
+        components.find { key, value ->
+            value.id == id
+        }?.value
+    }
 }

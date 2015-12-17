@@ -98,3 +98,15 @@ you have to generate that conversion before create jar / war.
 --
 > grails generate-component components.Counter
 --
+
+=== Helpers
+
+You can access a component by id:
+
+[source,html]
+--
+<my-counter id="first"></my-counter>
+<script>
+	GrooscriptGrails.findComponentById("first")
+</script>
+--

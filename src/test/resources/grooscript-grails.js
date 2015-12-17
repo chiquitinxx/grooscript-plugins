@@ -3389,6 +3389,7 @@ function GrooscriptGrails() {
   gSobject.doRemoteCall = function(x0,x1,x2,x3,x4) { return GrooscriptGrails.doRemoteCall(x0,x1,x2,x3,x4); }
   gSobject.remoteDomainAction = function(x0,x1,x2,x3) { return GrooscriptGrails.remoteDomainAction(x0,x1,x2,x3); }
   gSobject.createComponent = function(x0,x1) { return GrooscriptGrails.createComponent(x0,x1); }
+  gSobject.findComponentById = function(x0) { return GrooscriptGrails.findComponentById(x0); }
   if (arguments.length == 1) {gs.passMapToObject(arguments[0],gSobject);};
   
   return gSobject;
@@ -3498,6 +3499,11 @@ GrooscriptGrails.createComponent = function(componentClass, name) {
             GrooscriptGrails.register(componentClass(map)).render();
         };
         document.registerElement(name, {prototype: component});
+}
+GrooscriptGrails.findComponentById = function(id) {
+  return gs.gp(gs.mc(GrooscriptGrails.components,"find",[function(key, value) {
+    return gs.equals(gs.gp(value,"id"), id);
+  }]),"value",true);
 }
 GrooscriptGrails.remoteUrl = null;
 GrooscriptGrails.controllerRemoteDomain = "remoteDomain";
