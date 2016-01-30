@@ -26,4 +26,4 @@ class MyController {
 }
 --
 
-All conversion done with bean or tags use classPath +''src/main/groovy''+ by default.
+All conversion done with bean or tags use classpath +''src/main/groovy''+ by default.

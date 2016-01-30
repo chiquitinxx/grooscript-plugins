@@ -76,15 +76,15 @@ class GrooscriptConverter {
     }
 
     private Map addGroovySourceClassPathIfNeeded(Map options) {
-        if (!options.classPath) {
-            options.classPath = []
+        if (!options.classpath) {
+            options.classpath = []
         } else {
-            if (options.classPath instanceof String) {
-                options.classPath = [options.classPath]
+            if (options.classpath instanceof String) {
+                options.classpath = [options.classpath]
             }
         }
-        if (!options.classPath.contains(GROOVY_SRC_DIR)) {
-            options.classPath << GROOVY_SRC_DIR
+        if (!options.classpath.contains(GROOVY_SRC_DIR)) {
+            options.classpath << GROOVY_SRC_DIR
         }
         options
     }

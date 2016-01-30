@@ -20,7 +20,7 @@ class GrooscriptConverterSpec extends Specification {
 
         then:
         1 * GrooScript.convert(CODE, [
-                classPath: ['src/main/groovy'],
+                classpath: ['src/main/groovy'],
                 mainContextScope: ['$', 'gsEvents', 'window', 'document', 'HtmlBuilder', 'GQueryImpl',
                                    'Observable', 'ClientEventHandler', 'GrooscriptGrails']
         ])
