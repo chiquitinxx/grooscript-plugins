@@ -12,6 +12,7 @@ import org.grooscript.grails.util.GrooscriptTemplate
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
 import spock.lang.Unroll
+import spock.util.mop.ConfineMetaClassChanges
 
 /**
  * @author Jorge Franco
@@ -226,15 +227,26 @@ class GrooscriptTagLibSpec extends Specification {
 
         then:
         interaction {
-            initGrooscriptGrails()
+            initWebsockets()
         }
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
-        })
         0 * _
     }
 
     void 'init spring websockets with debug'() {
+        when:
+        applyTemplate('<grooscript:initSpringWebsocket withDebug="true"/>')
+
+        then:
+        interaction {
+            initGrooscriptGrails()
+        }
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: true])
+        })
+        0 * _
+    }
+
+    void 'init spring websockets without debug'() {
         when:
         applyTemplate('<grooscript:initSpringWebsocket withDebug="false"/>')
 
@@ -243,7 +255,7 @@ class GrooscriptTagLibSpec extends Specification {
             initGrooscriptGrails()
         }
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: true])
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
         })
         0 * _
     }
@@ -282,6 +294,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:onServerEvent path="/myPath">assert true</grooscript:onServerEvent>')
 
         then:
+        interaction {
+            initWebsockets()
+        }
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
@@ -295,6 +310,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:onServerEvent path="/myPath" type="Type">assert true</grooscript:onServerEvent>')
 
         then:
+        interaction {
+            initWebsockets()
+        }
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
@@ -370,6 +388,70 @@ class GrooscriptTagLibSpec extends Specification {
         0 * _
     }
 
+    void 'reload page when a message comes in a websocket path'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:reloadOn path='/myPath'/>")
+
+        then:
+        interaction {
+            initWebsockets()
+        }
+        1 * GrailsUtil.isDevelopmentEnv() >> true
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.RELOAD_ON,
+                    [path: '/myPath', functionName: 'gSonServerEvent0'])
+        })
+        0 * _
+    }
+
+    void 'reloadOn only works in development'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:reloadOn path='/myPath'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> false
+        0 * _
+    }
+
+    void 'reload page not init websockets if already started'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+        applyTemplate('<grooscript:initSpringWebsocket />')
+
+        when:
+        applyTemplate("<grooscript:reloadOn path='/myPath'/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> true
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.RELOAD_ON,
+                    [path: '/myPath', functionName: 'gSonServerEvent0'])
+        })
+        0 * _
+    }
+
+    void 'path is mandatory in reloadOn'() {
+        given:
+        GroovySpy(GrailsUtil, global: true)
+        GroovySpy(Util, global: true)
+
+        when:
+        applyTemplate("<grooscript:reloadOn/>")
+
+        then:
+        1 * GrailsUtil.isDevelopmentEnv() >> true
+        1 * Util.consoleError('GrooscriptTagLib reloadOn need define path property')
+    }
+
     private stubGrailsApplication() {
         tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
     }
@@ -378,6 +460,13 @@ class GrooscriptTagLibSpec extends Specification {
         1 * linkGenerator.getServerBaseURL() >> REMOTE_URL
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.INIT_GROOSCRIPT_GRAILS, [remoteUrl: REMOTE_URL])
+        })
+    }
+
+    private void initWebsockets() {
+        initGrooscriptGrails()
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
         })
     }
 }

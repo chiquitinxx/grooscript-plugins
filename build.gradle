@@ -3,11 +3,12 @@ buildscript {
         grailsVersion = project.grailsVersion
     }
     repositories {
+        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath("org.grooscript:grooscript:1.2.2") {
+        classpath("org.grooscript:grooscript:1.2.3-SNAPSHOT") {
             exclude module: 'groovy'
             exclude module: 'groovy-json'
         }
@@ -34,13 +35,14 @@ apply plugin: "org.grails.grails-gsp"
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
-    grooscriptVersion = '1.2.2'
+    grooscriptVersion = '1.2.3-SNAPSHOT'
 }
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
@@ -100,7 +102,7 @@ bintray {
         version {
             attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
-            desc = 'Web components'
+            desc = 'Fixes'
             gpg {
                 sign = false
                 passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''

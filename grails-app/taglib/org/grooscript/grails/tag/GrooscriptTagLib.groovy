@@ -13,6 +13,7 @@ import static org.grooscript.grails.util.Util.*
 class GrooscriptTagLib {
 
     static final REMOTE_URL_SETTED = 'grooscriptRemoteUrl'
+    static final WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
     static final REMOTE_DOMAIN_EXTENSION = '.gs'
     static final COMPONENT_EXTENSION = '.cs'
 
@@ -125,11 +126,13 @@ class GrooscriptTagLib {
             jsCode = grooscriptConverter.toJavascript(script)
         }
         initGrooscriptGrails()
-        boolean withDebug = attrs.withDebug == null ? false : attrs.withDebug
+        String withDebugString = attrs.withDebug
+        boolean withDebug = withDebugString == null ? false : new Boolean(withDebugString)
         asset.script(type: 'text/javascript') {
             grooscriptTemplate.apply(Templates.SPRING_WEBSOCKET,
                     [endPoint: endPoint, jsCode: jsCode, withDebug: withDebug])
         }
+        request.setAttribute(WEBSOCKET_STARTED, true)
     }
 
     /**
@@ -139,15 +142,38 @@ class GrooscriptTagLib {
 
         def script = body()
         def jsCode = ''
+        initWebsocket()
         if (script) {
             jsCode = grooscriptConverter.toJavascript(
                     grooscriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script]))
         }
+        def functionName = onServerEventFunctionName
         asset.script(type: 'text/javascript') {
             grooscriptTemplate.apply(Templates.ON_SERVER_EVENT,
                     [jsCode: jsCode, path: attrs.path,
-                     functionName: onServerEventFunctionName,
+                     functionName: functionName,
                      type: attrs.type ?: 'null'])
+        }
+    }
+
+    /**
+     * grooscript:reloadOn
+     */
+    def reloadOn = { attrs, body ->
+
+        if (GrailsUtil.isDevelopmentEnv()) {
+            String path = attrs.path
+            if (path) {
+                initWebsocket()
+                def functionName = onServerEventFunctionName
+                asset.script(type: 'text/javascript') {
+                    grooscriptTemplate.apply(Templates.RELOAD_ON,
+                            [path        : path,
+                             functionName: functionName])
+                }
+            } else {
+                consoleError 'GrooscriptTagLib reloadOn need define path property'
+            }
         }
     }
 
@@ -182,6 +208,13 @@ class GrooscriptTagLib {
                         [remoteUrl: grailsLinkGenerator.serverBaseURL])
             }
             request.setAttribute(REMOTE_URL_SETTED, true)
+        }
+    }
+
+    private void initWebsocket() {
+        def websocketStarted = request.getAttribute(WEBSOCKET_STARTED)
+        if (!websocketStarted) {
+            initSpringWebsocket([:], { -> ''})
         }
     }
 

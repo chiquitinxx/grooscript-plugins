@@ -1,0 +1,58 @@
+[[_websocket-tags]]
+== <grooscript:initSpringWebsocket>
+
+Websocket support explained below. With this tag you start websocket connections on the client.
+
+[source,html]
+--
+<grooscript:initSpringWebsocket/>
+
+<!-- or -->
+
+<grooscript:initSpringWebsocket>
+    println 'Connected! Websocket is up!'
+</grooscript:initSpringWebsocket>
+--
+
+You can put groovy code inside the tag, and that code will run in your browser after websocket connection done.
+You can define the websocket entrypoint (default is _/stomp_) or activate debug:
+
+[source,html]
+--
+<grooscript:initSpringWebsocket withDebug="true" endPoint="/hello"/>
+--
+
+== <grooscript:onServerEvent>
+
+You can react to websocket events from the server:
+
+[source,html]
+--
+<grooscript:onServerEvent path="/topic/hello">
+    $("#helloDiv").append '<p>'+data+'</p>'
+</grooscript:onServerEvent>
+
+<grooscript:onServerEvent path="/topic/books" type="Book">
+    data.each { book ->
+        $("#helloDiv").append '<p>'+book.coolFormat()+'</p>'
+    }
+</grooscript:onServerEvent>
+--
+
+_type_ is optional parameter with the type name of the _data_ that come from the server.
+
+== <grooscript:reloadOn>
+
+You can activate page reload if a websocket message come from the server:
+
+[source,html]
+--
+<grooscript:reloadOn path="/topic/reload"/>
+--
+
+If any message comes for that path, then the page reloads.
+
+[TIP]
+--
+If you use _reloadOn_ or _onServerEvent_, no need to start websocket connection with _initSpringWebsocket_ tag
+--

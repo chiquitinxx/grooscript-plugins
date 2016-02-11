@@ -71,4 +71,12 @@ var ${functionName} = function() {
     });
 };
 '''
+
+    static final RELOAD_ON = '''
+var ${functionName} = function() {
+    websocketClient.subscribe("${path}", function(message) {
+        window.location.reload();
+    });
+};
+'''
 }

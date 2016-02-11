@@ -48,6 +48,10 @@ dependencies {
 
 == What is new in {plugin-version}
 
+- New tag for reload pages in development
+
+== What is new in 1.2
+
 - Use groovy classes as web components in your gsp's
 
 == What is new in 1.1.x

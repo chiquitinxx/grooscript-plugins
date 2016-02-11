@@ -28,6 +28,7 @@ Remember, when using tags, you have to add grooscript lib, and maybe jquery. Ass
 
 include::groovyCode.adoc[]
 include::templates.adoc[]
+include::websocket-tags.adoc[]
 include::onEvent.adoc[]
 include::remoteDomain.adoc[]
 include::component.adoc[]
