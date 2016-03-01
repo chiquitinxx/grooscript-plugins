@@ -3,12 +3,11 @@ buildscript {
         grailsVersion = project.grailsVersion
     }
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath("org.grooscript:grooscript:1.2.3-SNAPSHOT") {
+        classpath("org.grooscript:grooscript:1.2.3") {
             exclude module: 'groovy'
             exclude module: 'groovy-json'
         }
@@ -35,14 +34,13 @@ apply plugin: "org.grails.grails-gsp"
 ext {
     grailsVersion = project.grailsVersion
     gradleWrapperVersion = project.gradleWrapperVersion
-    grooscriptVersion = '1.2.3-SNAPSHOT'
+    grooscriptVersion = '1.2.3'
 }
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
