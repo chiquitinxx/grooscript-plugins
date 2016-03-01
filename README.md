@@ -1,6 +1,8 @@
 Grooscript grails 3 plugin 1.2.0
 ===
 
+[![Build Status](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master)
+
 It requires Grails 3.0+. Asset-pipeline and cache plugin are used to build this plugin, you need 
 them in your application.
 
