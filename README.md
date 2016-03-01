@@ -1,4 +1,4 @@
-Grooscript grails 3 plugin 1.2.1
+Grooscript grails 3 plugin 1.2.2
 ===
 
 [![Build Status](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master)
@@ -12,7 +12,7 @@ Take a look at [documentation](http://grooscript.org/grails3-plugin/)
 
 You can use the plugin with:
 
-    compile "org.grails.plugins:grooscript:1.2.1"
+    compile "org.grails.plugins:grooscript:1.2.2"
 
 You can use [gradle plugin](https://github.com/chiquitinxx/grooscript-gradle-plugin) to convert groovy 
 files, templates,... and combine with this plugin to use in your gsp's.
