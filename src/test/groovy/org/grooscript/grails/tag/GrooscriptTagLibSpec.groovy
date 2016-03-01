@@ -331,6 +331,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:component src='${className}'/>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * GrailsUtil.isDevelopmentEnv() >> true
         1 * Util.getClassSource(className) >> COMPONENT_GROOVY_CODE
         1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE
@@ -356,6 +359,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:component src='${className}'/>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * GrailsUtil.isDevelopmentEnv() >> false
         1 * Util.getResourceText("${componentClass}.cs") >> COMPONENT_JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
@@ -379,6 +385,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:component src='Counter' name='my-counter'/>")
 
         then:
+        interaction {
+            initGrooscriptGrails()
+        }
         1 * GrailsUtil.isDevelopmentEnv() >> true
         1 * Util.getClassSource('Counter') >> COMPONENT_GROOVY_CODE
         1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE

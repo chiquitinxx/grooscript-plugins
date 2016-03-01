@@ -183,6 +183,7 @@ class GrooscriptTagLib {
     def component = { attrs, body ->
         def fullClassName = attrs.src
         if (fullClassName) {
+            initGrooscriptGrails()
             String shortClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1)
             String nameComponent = attrs.name ?: componentName(shortClassName)
             if (GrailsUtil.isDevelopmentEnv()) {
@@ -192,9 +193,9 @@ class GrooscriptTagLib {
                     componentJs + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
                 }
             } else {
+                String resourceText = getResourceText(shortClassName + COMPONENT_EXTENSION)
                 out << asset.script(type: 'text/javascript') {
-                    Util.getResourceText(shortClassName + COMPONENT_EXTENSION) +
-                            ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
+                    resourceText + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
                 }
             }
         }
