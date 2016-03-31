@@ -1,16 +1,19 @@
 package org.grooscript.grails
 
+import groovy.transform.TypeChecked
+
 /**
  * User: jorgefrancoleza
  * Date: 11/06/14
  */
+@TypeChecked
 class Templates {
 
-    static final INIT_GROOSCRIPT_GRAILS = '''
+    static final String INIT_GROOSCRIPT_GRAILS = '''
   GrooscriptGrails.remoteUrl = '${remoteUrl}';
 '''
 
-    static final TEMPLATE_DRAW = '''
+    static final String TEMPLATE_DRAW = '''
 function ${functionName}(templateParams) {
   ${jsCode}
   var code = gsTextHtml(templateParams);
@@ -18,21 +21,21 @@ function ${functionName}(templateParams) {
 };
 '''
 
-    static final TEMPLATE_ON_READY = '''
+    static final String TEMPLATE_ON_READY = '''
 \\$(document).ready(function() {
   ${functionName}();
 })
 '''
 
-    static final CLIENT_EVENT = '''
+    static final String CLIENT_EVENT = '''
 gsEvents.onEvent('${nameEvent}', ${functionName});
 '''
 
-    static final ON_EVENT_TAG = '''
+    static final String ON_EVENT_TAG = '''
 gsEvents.onEvent('${nameEvent}', ${jsCode});
 '''
 
-    static final SPRING_WEBSOCKET = '''
+    static final String SPRING_WEBSOCKET = '''
 \\$(document).ready(function() {
 
     var socket = new SockJS("${endPoint}");
@@ -61,9 +64,9 @@ gsEvents.onEvent('${nameEvent}', ${jsCode});
 });
 '''
 
-    static final ON_SERVER_EVENT_RUN = '''def run = { data -> ${code} }'''
+    static final String ON_SERVER_EVENT_RUN = '''def run = { data -> ${code} }'''
 
-    static final ON_SERVER_EVENT = '''
+    static final String ON_SERVER_EVENT = '''
 var ${functionName} = function() {
     websocketClient.subscribe("${path}", function(message) {
         ${jsCode}
@@ -72,7 +75,7 @@ var ${functionName} = function() {
 };
 '''
 
-    static final RELOAD_ON = '''
+    static final String RELOAD_ON = '''
 var ${functionName} = function() {
     websocketClient.subscribe("${path}", function(message) {
         window.location.reload();

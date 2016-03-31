@@ -1,5 +1,6 @@
 package org.grooscript.grails.component
 
+import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.BlockStatement
@@ -11,20 +12,24 @@ import org.codehaus.groovy.syntax.Types
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
 import org.grooscript.builder.HtmlBuilder
+
 import java.lang.reflect.Modifier
 
+@TypeChecked
 @GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
 public class ComponentImpl implements ASTTransformation {
 
     private static final String RENDER_METHOD = 'render'
+    private static final String STYLE = 'style'
 
+    @Override
     public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
         //Start
         if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode) {
             return
         }
 
-        ClassNode classNode = (ClassNode) nodes[1]
+        ClassNode classNode = nodes[1] as ClassNode
 
         checkMethodsToAddRenderCall(classNode)
 
@@ -37,12 +42,12 @@ public class ComponentImpl implements ASTTransformation {
         manageRenderMethod(classNode)
     }
 
-    private manageRenderMethod(ClassNode classNode) {
+    private static manageRenderMethod(ClassNode classNode) {
         MethodNode renderMethod = classNode.methods.find { it.name == RENDER_METHOD}
         if (!renderMethod) {
             throw new RuntimeException("You have to define a ${RENDER_METHOD} method")
         } else {
-            BlockStatement actualCode = (BlockStatement)renderMethod.code
+            BlockStatement actualCode = renderMethod.code as BlockStatement
 
             VariableScope variableScope = actualCode.getVariableScope()
             VariableScope blockScope = variableScope.copy()
@@ -52,29 +57,31 @@ public class ComponentImpl implements ASTTransformation {
             closure.setVariableScope(closureScope)
 
             renderMethod.setCode(new BlockStatement([
-                new ExpressionStatement(
-                    new BinaryExpression(
-                        new PropertyExpression(
-                            new PropertyExpression(
-                                new VariableExpression('this', ClassHelper.OBJECT_TYPE), 'shadowRoot'),
-                            'innerHTML'
-                        ),
-                        new Token(Types.ASSIGN, '=', 0, 0),
-                        htmlExpression(closure, classNode)
+                    new ExpressionStatement(
+                            new BinaryExpression(
+                                    new PropertyExpression(
+                                            new PropertyExpression(
+                                                    new VariableExpression('this', ClassHelper.OBJECT_TYPE),
+                                                    'shadowRoot'
+                                            ),
+                                            'innerHTML'
+                                    ),
+                                    new Token(Types.ASSIGN, '=', 0, 0),
+                                    htmlExpression(closure, classNode)
+                            )
                     )
-                )
             ], blockScope))
         }
     }
 
-    private Expression htmlExpression(ClosureExpression closure, ClassNode classNode) {
+    private static Expression htmlExpression(ClosureExpression closure, ClassNode classNode) {
         if (classHasStyle(classNode)) {
-            def staticStyle = new VariableExpression('style')
+            def staticStyle = new VariableExpression(STYLE)
             new BinaryExpression(
-                    new GStringExpression(null, [
-                        new ConstantExpression('<style>'),
-                        new ConstantExpression('</style>')
-                    ], [new VariableExpression(staticStyle)]),
+                    new GStringExpression(null,
+                            [new ConstantExpression('<style>'), new ConstantExpression('</style>')],
+                            [new VariableExpression(staticStyle)]
+                    ),
                     new Token(Types.PLUS, '+', 0, 0),
                     buildHtmlExpression(closure)
             )
@@ -83,30 +90,28 @@ public class ComponentImpl implements ASTTransformation {
         }
     }
 
-    private boolean classHasStyle(ClassNode classNode) {
+    private static boolean classHasStyle(ClassNode classNode) {
         classNode.properties.find {
-            it.name == 'style' && it.static
+            it.name == STYLE && it.static
         }
     }
 
-    private Expression buildHtmlExpression(ClosureExpression closure) {
+    private static Expression buildHtmlExpression(ClosureExpression closure) {
         new MethodCallExpression(
                 new ClassExpression(new ClassNode(HtmlBuilder)),
                 'build',
-                new ArgumentListExpression([
-                        closure
-                ])
+                new ArgumentListExpression([closure])
         )
     }
 
-    private void checkMethodsToAddRenderCall(ClassNode classNode) {
+    private static void checkMethodsToAddRenderCall(ClassNode classNode) {
         PropertyNode renderAfter = classNode.properties.find { it.name == 'renderAfter' && it.static }
         if (renderAfter && renderAfter.initialExpression) {
             if (renderAfter.initialExpression instanceof ConstantExpression) {
-                addRenderCallToMethod(renderAfter.initialExpression, classNode)
+                addRenderCallToMethod(renderAfter.initialExpression as ConstantExpression, classNode)
             }
             if (renderAfter.initialExpression instanceof ListExpression) {
-                ListExpression list = renderAfter.initialExpression
+                ListExpression list = renderAfter.initialExpression as ListExpression
                 list.expressions.each { expression ->
                     if (expression instanceof ConstantExpression) {
                         addRenderCallToMethod(expression, classNode)
@@ -116,14 +121,13 @@ public class ComponentImpl implements ASTTransformation {
         }
     }
 
-    private void addRenderCallToMethod(ConstantExpression constantExpression, ClassNode classNode) {
+    private static void addRenderCallToMethod(ConstantExpression constantExpression, ClassNode classNode) {
         if (constantExpression.value instanceof String) {
             String method = constantExpression.value
-            if (method != RENDER_METHOD &&
-                method in classNode.methods.collect { it.name }) {
+            if (method != RENDER_METHOD && classNode.methods.any { it.name == method }) {
                 MethodNode methodNode = classNode.methods.find { it.name == method }
                 if (methodNode.code instanceof BlockStatement) {
-                    BlockStatement block = methodNode.code
+                    BlockStatement block = methodNode.code as BlockStatement
                     block.addStatement(new ExpressionStatement(
                             new MethodCallExpression(
                                     new VariableExpression('this'),

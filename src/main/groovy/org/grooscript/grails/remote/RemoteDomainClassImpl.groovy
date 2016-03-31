@@ -1,5 +1,6 @@
 package org.grooscript.grails.remote
 
+import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.builder.AstBuilder
 import org.codehaus.groovy.ast.expr.ConstantExpression
@@ -19,15 +20,15 @@ import static org.grooscript.grails.util.Util.consoleError
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 class RemoteDomainClassImpl  implements ASTTransformation {
 
-    private static final RESOURCE_CLASS_NODE = 'grails.rest.Resource'
-    public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
+    private static final String RESOURCE_CLASS_NODE = 'grails.rest.Resource'
 
-        if (!nodes[0] instanceof AnnotationNode ||
-                !nodes[1] instanceof ClassNode) {
+    @Override
+    public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
+        if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode) {
             throw new RuntimeException('RemoteDomainClassImpl only applies to classes.')
         }
 
-        ClassNode classNode = (ClassNode) nodes[1]
+        ClassNode classNode = nodes[1] as ClassNode
         if (classNode.hasProperty('id')) {
             return
         }
@@ -40,7 +41,8 @@ class RemoteDomainClassImpl  implements ASTTransformation {
         addStaticListMethod(classNode)
     }
 
-    private addInstanceProperties(ClassNode classNode) {
+    @TypeChecked
+    private static void addInstanceProperties(ClassNode classNode) {
         classNode.addProperty('id', Modifier.PUBLIC, ClassHelper.Long_TYPE,null,null,null)
         classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.Long_TYPE,new ConstantExpression(0),null,null)
         classNode.addProperty('url', Modifier.STATIC, ClassHelper.STRING_TYPE,
@@ -49,7 +51,7 @@ class RemoteDomainClassImpl  implements ASTTransformation {
                 new ConstantExpression(classNode.nameWithoutPackage),null,null)
     }
 
-    private addStaticGetMethod(ClassNode classNode) {
+    private void addStaticGetMethod(ClassNode classNode) {
         def params = new Parameter[1]
         params[0] = new Parameter(ClassHelper.long_TYPE, 'value')
         classNode.addMethod('get', Modifier.STATIC, new ClassNode(RemoteDomain), params,
@@ -59,7 +61,7 @@ class RemoteDomainClassImpl  implements ASTTransformation {
         }[0])
     }
 
-    private addStaticListMethod(ClassNode classNode) {
+    private void addStaticListMethod(ClassNode classNode) {
         def params = new Parameter[1]
         params[0] = new Parameter(new ClassNode(HashMap), 'params')
         classNode.addMethod('list', Modifier.STATIC, new ClassNode(RemoteDomain), params,
@@ -69,7 +71,7 @@ class RemoteDomainClassImpl  implements ASTTransformation {
         }[0])
     }
 
-    private addSaveMethod(ClassNode classNode) {
+    private void addSaveMethod(ClassNode classNode) {
         classNode.addMethod('save', Modifier.PUBLIC, new ClassNode(RemoteDomain), Parameter.EMPTY_ARRAY,
                 ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
             def action = (this.id ? 'update' : 'create')
@@ -79,7 +81,7 @@ class RemoteDomainClassImpl  implements ASTTransformation {
         }[0])
     }
 
-    private addDeleteMethod(ClassNode classNode) {
+    private void addDeleteMethod(ClassNode classNode) {
         classNode.addMethod('delete', Modifier.PUBLIC, new ClassNode(RemoteDomain), Parameter.EMPTY_ARRAY,
                 ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'delete',
@@ -88,14 +90,15 @@ class RemoteDomainClassImpl  implements ASTTransformation {
         }[0])
     }
 
-    private getResourceUrl(ClassNode classNode) {
+    @TypeChecked
+    private static String getResourceUrl(ClassNode classNode) {
         if (classNode.annotations && classNode.annotations.any {
             it.getClassNode().name == RESOURCE_CLASS_NODE }
         ) {
             AnnotationNode annotationNode = classNode.annotations.find { it.classNode.name == RESOURCE_CLASS_NODE }
             def uriParameter = annotationNode.getMember('uri')
             if (!uriParameter) {
-                org.grooscript.grails.util.Util.consoleError "Need to define uri parameter in ${classNode.name}"
+                consoleError "Need to define uri parameter in ${classNode.name}"
             }
             uriParameter.text
         } else {

@@ -1,12 +1,15 @@
 package org.grooscript.grails.event
 
+import groovy.transform.TypeChecked
+
 /**
  * User: jorgefrancoleza
  * Date: 14/09/13
  */
+@TypeChecked
 class ClientEventHandler implements EventHandler {
 
-    def mapHandlers = [:]
+    private Map mapHandlers = [:]
 
     void sendMessage(String channel, Map data) {
         if (mapHandlers[channel]) {
