@@ -8,13 +8,13 @@ import org.grooscript.asts.GsNative
  */
 class GrooscriptGrails {
 
-    static remoteUrl
-    static controllerRemoteDomain = 'remoteDomain'
-    static actionRemoteDomain = 'doAction'
-    static count = 0
-    static components = [:]
+    static String remoteUrl
+    static String controllerRemoteDomain = 'remoteDomain'
+    static String actionRemoteDomain = 'doAction'
+    static long count = 0
+    static Map components = [:]
 
-    static final GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
+    static final List GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
         'transients', 'constraints', 'mapping', 'hasMany', 'belongsTo', 'validationSkipMap',
         'gormPersistentEntity', 'properties', 'gormDynamicFinders', 'all', 'domainClass', 'attached',
         'validationErrorsMap', 'dirtyPropertyNames', 'errors', 'dirty', 'count']

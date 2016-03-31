@@ -28,7 +28,7 @@ class Util {
     }
 
     static String getNewTemplateName() {
-        'fTemplate' + new Date().time.toString()
+        'fTemplate' + String.valueOf(new Date().time)
     }
 
     static String getDomainFileText(String domainClassCanonicalName) {
@@ -53,8 +53,8 @@ class Util {
     }
 
     static String getClassSource(String fullClassName) {
-        def filePath = "${GROOVY_SRC_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(fullClassName)}"
-        def file = new File(filePath)
+        String filePath = "${GROOVY_SRC_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(fullClassName)}"
+        File file = new File(filePath)
         if (file && file.exists()) {
             return file.text
         } else {

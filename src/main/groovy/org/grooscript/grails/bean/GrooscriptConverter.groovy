@@ -14,8 +14,11 @@ import static org.grooscript.grails.util.Util.*
  */
 class GrooscriptConverter {
 
-    static final DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window', 'document', 'HtmlBuilder',
-              'GQueryImpl', 'Observable', 'ClientEventHandler', 'GrooscriptGrails']
+    private static final List DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window',
+                                                               'document', 'HtmlBuilder',
+                                                               'GQueryImpl', 'Observable',
+                                                               'ClientEventHandler',
+                                                               'GrooscriptGrails']
 
     @Cacheable('conversions')
     String toJavascript(String groovyCode, Map conversionOptions = null) {
@@ -60,14 +63,14 @@ class GrooscriptConverter {
         toJavascript(groovyCode, addScopeVars(conversionOptions))
     }
 
-    private Map addDefaultOptions(Map options) {
+    private static Map addDefaultOptions(Map options) {
         options = options ?: [:]
         options = addGroovySourceClassPathIfNeeded(options)
         options = addScopeVars(options)
         options
     }
 
-    private Map addScopeVars(Map options) {
+    private static Map addScopeVars(Map options) {
         if (!options.mainContextScope) {
             options.mainContextScope = []
         }
@@ -75,7 +78,7 @@ class GrooscriptConverter {
         options
     }
 
-    private Map addGroovySourceClassPathIfNeeded(Map options) {
+    private static Map addGroovySourceClassPathIfNeeded(Map options) {
         if (!options.classpath) {
             options.classpath = []
         } else {
