@@ -17,36 +17,41 @@ import org.codehaus.groovy.control.SourceUnit
  */
 class HtmlMapVisitor extends ClassCodeVisitorSupport {
 
-    ClassNode classNode
+    private ClassNode classNode
 
     @Override
     public void visitExpressionStatement(ExpressionStatement statement) {
         if (statement.expression instanceof MethodCallExpression) {
-            def arguments = statement.expression.arguments
-            if (arguments && arguments[0] instanceof MapExpression) {
-                MapExpression mapExpression = (MapExpression)arguments[0]
+            MethodCallExpression mCallExpr = statement.expression as MethodCallExpression
+
+            if (mCallExpr.arguments && mCallExpr.arguments[0] instanceof MapExpression) {
+                MapExpression mapExpression = mCallExpr.arguments[0] as MapExpression
+
                 mapExpression.mapEntryExpressions.each { mapEntryExpression ->
                     Expression key = mapEntryExpression.keyExpression
                     Expression value = mapEntryExpression.valueExpression
-                    if (key instanceof ConstantExpression &&
-                            value instanceof ConstantExpression &&
-                            key.value instanceof String &&
-                            value.value instanceof String &&
-                            key.value.toUpperCase().startsWith('ON') &&
-                            isNameOfClassMethods(value.value)
+
+                    if (key instanceof ConstantExpression
+                            && value instanceof ConstantExpression
+                            && key.value instanceof String
+                            && value.value instanceof String
+                            && key.value.toUpperCase().startsWith('ON')
+                            && isNameOfClassMethods(value.value as String)
                     ) {
                         String nameMethod = value.value
-                        GStringExpression newExpression =
-                                new GStringExpression(
-                                        "GrooscriptGrails.recover(\$cId).${nameMethod}(this)",[
-                                                new ConstantExpression('GrooscriptGrails.recover('),
-                                                new ConstantExpression(").${nameMethod}(this)".toString())
-                                        ], [
-                                                new VariableExpression('cId')
-                                        ])
-                        mapEntryExpression.valueExpression = newExpression
+                        mapEntryExpression.valueExpression = new GStringExpression(
+                                "GrooscriptGrails.recover(\$cId).${nameMethod}(this)",
+                                [
+                                        new ConstantExpression('GrooscriptGrails.recover('),
+                                        new ConstantExpression(").${nameMethod}(this)".toString())
+                                ],
+                                [
+                                        new VariableExpression('cId')
+                                ]
+                        )
                     }
                 }
+
             }
 
         }
@@ -59,6 +64,6 @@ class HtmlMapVisitor extends ClassCodeVisitorSupport {
     }
 
     private boolean isNameOfClassMethods(String name) {
-        name in classNode.methods.collect { it.name }
+        classNode.methods.any { it.name == name }
     }
 }
