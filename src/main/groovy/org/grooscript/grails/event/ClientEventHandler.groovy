@@ -9,11 +9,11 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class ClientEventHandler implements EventHandler {
 
-    private Map mapHandlers = [:]
+    private Map<String, List<Closure>> mapHandlers = [:]
 
     void sendMessage(String channel, Map data) {
         if (mapHandlers[channel]) {
-            mapHandlers[channel].each { action ->
+            mapHandlers[channel].each { Closure action ->
                 action(data)
             }
         }
