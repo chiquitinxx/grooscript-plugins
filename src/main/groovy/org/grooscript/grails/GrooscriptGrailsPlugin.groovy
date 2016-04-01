@@ -4,6 +4,9 @@ import grails.plugins.*
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
 
+/**
+ * @author Jorge Franco <jorge.franco@osoco.es>
+ */
 class GrooscriptGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for

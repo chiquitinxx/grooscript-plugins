@@ -14,6 +14,9 @@ import org.grooscript.builder.HtmlBuilder
 
 import java.lang.reflect.Modifier
 
+/**
+ * @author Jorge Franco <jorge.franco@osoco.es>
+ */
 @GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
 public class ComponentImpl implements ASTTransformation {
 

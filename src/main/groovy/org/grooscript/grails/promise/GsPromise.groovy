@@ -1,11 +1,8 @@
 package org.grooscript.grails.promise
 
-import javax.annotation.ParametersAreNonnullByDefault
-
 /**
- * @author jorge
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
-@ParametersAreNonnullByDefault
 interface GsPromise {
     def then(Closure success, Closure fail)
 }

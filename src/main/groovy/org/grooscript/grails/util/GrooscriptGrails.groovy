@@ -3,7 +3,7 @@ package org.grooscript.grails.util
 import org.grooscript.asts.GsNative
 
 /**
- * @author jorgefrancoleza
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 class GrooscriptGrails {
 

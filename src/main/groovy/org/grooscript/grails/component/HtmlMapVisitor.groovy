@@ -14,7 +14,6 @@ import org.codehaus.groovy.control.SourceUnit
 import javax.annotation.ParametersAreNonnullByDefault
 
 /**
- *
  * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @ParametersAreNonnullByDefault

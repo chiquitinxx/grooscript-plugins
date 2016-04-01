@@ -12,7 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault
 import static org.grooscript.grails.util.Util.*
 
 /**
- * @author jorgefrancoleza
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @ParametersAreNonnullByDefault
 class GrooscriptConverter {

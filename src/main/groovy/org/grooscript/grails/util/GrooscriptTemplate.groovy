@@ -3,7 +3,7 @@ package org.grooscript.grails.util
 import groovy.text.SimpleTemplateEngine
 
 /**
- * @author jorgefrancoleza
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 class GrooscriptTemplate {
 

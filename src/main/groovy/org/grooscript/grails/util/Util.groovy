@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault
 import java.util.regex.Matcher
 
 /**
- * @author jorgefrancoleza
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @ParametersAreNonnullByDefault
 class Util {

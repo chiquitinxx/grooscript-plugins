@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * @author jorge
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target([ElementType.TYPE])

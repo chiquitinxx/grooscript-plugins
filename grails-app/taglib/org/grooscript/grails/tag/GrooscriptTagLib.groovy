@@ -12,6 +12,9 @@ import org.grooscript.grails.util.Util
 import javax.annotation.Nullable
 import javax.annotation.ParametersAreNonnullByDefault
 
+/**
+ * @author Jorge Franco <jorge.franco@osoco.es>
+ */
 @ParametersAreNonnullByDefault
 class GrooscriptTagLib {
 

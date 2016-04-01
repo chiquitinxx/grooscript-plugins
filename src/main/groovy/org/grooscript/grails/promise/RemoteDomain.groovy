@@ -2,12 +2,9 @@ package org.grooscript.grails.promise
 
 import org.grooscript.grails.util.GrooscriptGrails
 
-import javax.annotation.ParametersAreNonnullByDefault
-
 /**
- * @author jorge
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
-@ParametersAreNonnullByDefault
 class RemoteDomain implements GsPromise {
 
     def action

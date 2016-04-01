@@ -15,7 +15,7 @@ import java.lang.reflect.Modifier
 import static org.grooscript.grails.util.Util.consoleError
 
 /**
- * @author jorge
+ * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 class RemoteDomainClassImpl  implements ASTTransformation {
