@@ -16,7 +16,7 @@ class GrooscriptTagLib {
     static final String REMOTE_DOMAIN_EXTENSION = '.gs'
     static final String COMPONENT_EXTENSION = '.cs'
 
-    static final String namespace = 'grooscript'
+    static String namespace = 'grooscript'
 
     GrailsApplication grailsApplication
     GrooscriptConverter grooscriptConverter
@@ -143,15 +143,17 @@ class GrooscriptTagLib {
     def onServerEvent = { Map attrs, Closure<String> body ->
         String script = body()
         initWebsocket()
-        String jsCode = script ? grooscriptConverter.toJavascript(
-                grooscriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])) : ''
+
+        String template = grooscriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])
+        String jsCode = script ? grooscriptConverter.toJavascript(template) : ''
+        String functionName = onServerEventFunctionName
 
         asset.script(type: 'text/javascript') {
             grooscriptTemplate.apply(
                     Templates.ON_SERVER_EVENT,
                     [jsCode: jsCode,
                      path: attrs.path,
-                     functionName: onServerEventFunctionName,
+                     functionName: functionName,
                      type: attrs.type ?: 'null'])
         }
     }
@@ -164,10 +166,12 @@ class GrooscriptTagLib {
             String path = attrs.path
             if (path) {
                 initWebsocket()
+
+                String functionName = onServerEventFunctionName
                 asset.script(type: 'text/javascript') {
                     grooscriptTemplate.apply(
                             Templates.RELOAD_ON,
-                            [path: path, functionName: onServerEventFunctionName])
+                            [path: path, functionName: functionName])
                 }
             } else {
                 consoleError 'GrooscriptTagLib reloadOn need define path property'
@@ -182,6 +186,7 @@ class GrooscriptTagLib {
         String fullClassName = attrs.src
         if (fullClassName) {
             initGrooscriptGrails()
+
             String shortClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1)
             String nameComponent = attrs.name ?: componentName(shortClassName)
             if (GrailsUtil.isDevelopmentEnv()) {
@@ -254,7 +259,7 @@ class GrooscriptTagLib {
         return false
     }
 
-    private String domainClassFromName(String nameClass) {
+    private def domainClassFromName(String nameClass) {
         grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
     }
 
@@ -277,7 +282,7 @@ class GrooscriptTagLib {
     private static String componentName(String className) {
         String name = className.substring(0, 1).toLowerCase() + className.substring(1)
         while (hasUpperCase(name)) {
-            name = replaceFirstUpperCase(name)
+            name = rplaceFirstUpperCase(name)
         }
         name
     }
@@ -285,18 +290,20 @@ class GrooscriptTagLib {
     private static boolean hasUpperCase(String name) {
         boolean hasUpper = false
         for (int i = 0; i < name.length() && !hasUpper; i++) {
-            if (name.substring(0, 1).toUpperCase()) {
+            if (name.charAt(i).upperCase) {
                 hasUpper = true
             }
         }
         hasUpper
     }
 
-    private static String replaceFirstUpperCase(String name) {
+    private static String rplaceFirstUpperCase(String name) {
         String upper = name.find { String it ->
-            it.substring(0, 1).toUpperCase()
+            it.charAt(0).upperCase
         }
-
-        upper ? name.replaceFirst(upper, '-' + upper.toLowerCase()) : name
+        if (upper) {
+            name = name.replaceFirst(upper, '-' + upper.toLowerCase())
+        }
+        name
     }
 }
