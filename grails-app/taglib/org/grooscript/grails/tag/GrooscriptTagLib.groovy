@@ -1,14 +1,18 @@
 package org.grooscript.grails.tag
 
 import grails.core.GrailsApplication
+import grails.util.GrailsNameUtils
 import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
+import org.grooscript.grails.util.Util
 
-import static org.grooscript.grails.util.Util.*
+import javax.annotation.Nullable
+import javax.annotation.ParametersAreNonnullByDefault
 
+@ParametersAreNonnullByDefault
 class GrooscriptTagLib {
 
     static final String REMOTE_URL_SETTED = 'grooscriptRemoteUrl'
@@ -48,33 +52,36 @@ class GrooscriptTagLib {
      */
     def template = { Map attrs, Closure<String> body ->
         String script = body()
-        if (script) {
-            String functionName = attrs.functionName ?: newTemplateName
-            String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
-
-            initGrooscriptGrails()
-
-            if (!attrs.itemSelector) {
-                out << "\n<div id='${functionName}'></div>\n"
-            }
-
-            asset.script(type: 'text/javascript') {
-                String result = grooscriptTemplate.apply(
-                        Templates.TEMPLATE_DRAW,
-                        [functionName: functionName,
-                        jsCode: jsCode,
-                        selector: attrs.itemSelector ? attrs.itemSelector : "#${functionName}"
-                ])
-
-                if (attrs['onLoad'] == null || attrs['onLoad'] == 'true' || attrs['onLoad'] == true) {
-                    result += grooscriptTemplate.apply(
-                            Templates.TEMPLATE_ON_READY, [functionName: functionName])
-                }
-                result
-            }
-
-            processTemplateEvents(attrs.onEvent as String, functionName)
+        if (!script) {
+            return
         }
+
+        String functionName = attrs.functionName ?: Util.newTemplateName
+        String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
+
+        initGrooscriptGrails()
+
+        if (!attrs.itemSelector) {
+            out << "\n<div id='${functionName}'></div>\n"
+        }
+
+        asset.script(type: 'text/javascript') {
+            String result = grooscriptTemplate.apply(
+                    Templates.TEMPLATE_DRAW,
+                    [functionName: functionName,
+                    jsCode: jsCode,
+                    selector: attrs.itemSelector ? attrs.itemSelector : "#${functionName}"
+            ])
+
+            if (attrs['onLoad'] == null || attrs['onLoad'] == 'true' || attrs['onLoad'] == true) {
+                result += grooscriptTemplate.apply(
+                        Templates.TEMPLATE_ON_READY,
+                        [functionName: functionName])
+            }
+            result
+        }
+
+        processTemplateEvents(attrs.onEvent as String, functionName)
     }
 
     /**
@@ -88,7 +95,7 @@ class GrooscriptTagLib {
 
             out << asset.script(type: 'text/javascript') {
                 GrailsUtil.isDevelopmentEnv() ? grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(domainClass))
-                        : getResourceText(getShortName(domainClass) + REMOTE_DOMAIN_EXTENSION)
+                        : Util.getResourceText(GrailsNameUtils.getShortName(domainClass) + REMOTE_DOMAIN_EXTENSION)
             }
         }
     }
@@ -104,15 +111,16 @@ class GrooscriptTagLib {
 
             String script = body()
             String jsCode = grooscriptConverter.toJavascript("{ event -> ${script}}").trim()
+            String jsCodeWithoutLastSemicolon = Util.removeLastSemicolon(jsCode)
 
             asset.script(type: 'text/javascript') {
                 grooscriptTemplate.apply(
                         Templates.ON_EVENT_TAG,
-                        [jsCode: removeLastSemicolon(jsCode), nameEvent: name])
+                        [jsCode: jsCodeWithoutLastSemicolon, nameEvent: name])
             }
 
         } else {
-            consoleError 'GrooscriptTagLib onEvent need define name property'
+            Util.consoleError 'GrooscriptTagLib onEvent need define name property'
         }
     }
 
@@ -174,7 +182,7 @@ class GrooscriptTagLib {
                             [path: path, functionName: functionName])
                 }
             } else {
-                consoleError 'GrooscriptTagLib reloadOn need define path property'
+                Util.consoleError 'GrooscriptTagLib reloadOn need define path property'
             }
         }
     }
@@ -187,19 +195,18 @@ class GrooscriptTagLib {
         if (fullClassName) {
             initGrooscriptGrails()
 
-            String shortClassName = fullClassName.substring(fullClassName.lastIndexOf('.') + 1)
-            String nameComponent = attrs.name ?: componentName(shortClassName)
+            String shortClassName = GrailsNameUtils.getShortName(fullClassName)
+            String resource
             if (GrailsUtil.isDevelopmentEnv()) {
-                String source = getClassSource(fullClassName)
-                String componentJs = grooscriptConverter.convertComponent(source)
-                out << asset.script(type: 'text/javascript') {
-                    componentJs + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
-                }
+                String source = Util.getClassSource(fullClassName)
+                resource = grooscriptConverter.convertComponent(source)
             } else {
-                String resourceText = getResourceText(shortClassName + COMPONENT_EXTENSION)
-                out << asset.script(type: 'text/javascript') {
-                    resourceText + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
-                }
+                resource = Util.getResourceText(shortClassName + COMPONENT_EXTENSION)
+            }
+
+            String nameComponent = attrs.name ?: GrailsNameUtils.getScriptName(shortClassName)
+            out << asset.script(type: 'text/javascript') {
+                resource + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
             }
         }
     }
@@ -223,12 +230,9 @@ class GrooscriptTagLib {
         }
     }
 
+    // todo nullable?
     private String getDomainClassCanonicalName(String domainClass) {
         domainClassFromName(domainClass)?.clazz?.canonicalName
-    }
-
-    private static String getShortName(String domainClass) {
-        domainClass.split('\\.').last()
     }
 
     private void processTemplateEvents(String onEvent, String functionName) {
@@ -248,23 +252,20 @@ class GrooscriptTagLib {
 
     private boolean validDomainClassName(String name) {
         if (!name || !(name instanceof String)) {
-            consoleError "GrooscriptTagLib have to define domainClass property as String"
+            Util.consoleError "GrooscriptTagLib have to define domainClass property as String"
         } else {
             if (domainClassFromName(name)) {
                 return true
             } else {
-                consoleError "Not exist domain class ${name}"
+                Util.consoleError "Not exist domain class ${name}"
             }
         }
         return false
     }
 
+    @Nullable
     private def domainClassFromName(String nameClass) {
         grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
-    }
-
-    private static String removeLastSemicolon(String code) {
-        return code.lastIndexOf(';') >= 0 ? code.substring(0, code.lastIndexOf(';')) : code
     }
 
     private static final String ON_SERVER_EVENT_FUNCTION_NAME = 'gSonServerEvent'
@@ -279,31 +280,4 @@ class GrooscriptTagLib {
         ON_SERVER_EVENT_FUNCTION_NAME + number
     }
 
-    private static String componentName(String className) {
-        String name = className.substring(0, 1).toLowerCase() + className.substring(1)
-        while (hasUpperCase(name)) {
-            name = rplaceFirstUpperCase(name)
-        }
-        name
-    }
-
-    private static boolean hasUpperCase(String name) {
-        boolean hasUpper = false
-        for (int i = 0; i < name.length() && !hasUpper; i++) {
-            if (name.charAt(i).upperCase) {
-                hasUpper = true
-            }
-        }
-        hasUpper
-    }
-
-    private static String rplaceFirstUpperCase(String name) {
-        String upper = name.find { String it ->
-            it.charAt(0).upperCase
-        }
-        if (upper) {
-            name = name.replaceFirst(upper, '-' + upper.toLowerCase())
-        }
-        name
-    }
 }

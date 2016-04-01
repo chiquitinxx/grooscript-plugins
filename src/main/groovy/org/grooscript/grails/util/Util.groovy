@@ -1,12 +1,14 @@
 package org.grooscript.grails.util
 
 import org.grooscript.grails.tag.GrooscriptTagLib
+
+import javax.annotation.ParametersAreNonnullByDefault
 import java.util.regex.Matcher
 
 /**
- * User: jorgefrancoleza
- * Date: 13/09/13
+ * @author jorgefrancoleza
  */
+@ParametersAreNonnullByDefault
 class Util {
 
     static final SEP = System.getProperty('file.separator')
@@ -32,14 +34,7 @@ class Util {
     }
 
     static String getDomainFileText(String domainClassCanonicalName) {
-        def filePath = "${DOMAIN_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(domainClassCanonicalName)}"
-        def file = new File(filePath)
-        if (file && file.exists()) {
-            return file.text
-        } else {
-            consoleError("Fail find domain class file: ${filePath}")
-            return null
-        }
+        getFileContentsIfExists("${DOMAIN_DIR}", domainClassCanonicalName)
     }
 
     static Map customizationAstOption(Class clazz) {
@@ -48,22 +43,30 @@ class Util {
         }]
     }
 
-    static String getResourceText(String filePath) {
-        GrooscriptTagLib.classLoader.getResource(filePath).text
+    static String getResourceText(String shortClassName) {
+        GrooscriptTagLib.classLoader.getResource(shortClassName).text
     }
 
     static String getClassSource(String fullClassName) {
-        String filePath = "${GROOVY_SRC_DIR}${SEP}${getFileNameFromDomainClassCanonicalName(fullClassName)}"
-        File file = new File(filePath)
-        if (file && file.exists()) {
-            return file.text
-        } else {
-            consoleError("Fail find source class file: ${filePath}")
-            return null
+        getFileContentsIfExists("${GROOVY_SRC_DIR}", fullClassName)
+    }
+
+    static String removeLastSemicolon(String code) {
+        return code.lastIndexOf(';') >= 0 ? code.substring(0, code.lastIndexOf(';')) : code
+    }
+
+    private static String getFileContentsIfExists(String baseDir, String fileClassName) {
+        def filePath = "${baseDir}${SEP}${getFileNameFromDomainClassCanonicalName(fileClassName)}"
+        try {
+            new File(filePath).text
+        } catch (IOException ioe) {
+            consoleError("Couldn't get class file: ${filePath}: ${ioe.message}")
+            ''
         }
     }
 
-    private static getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
+    private static String getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
         "${domainClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
+
 }
