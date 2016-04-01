@@ -6,12 +6,15 @@ import org.grooscript.convert.ConversionOptions
 import org.grooscript.grails.component.Component
 import org.grooscript.grails.remote.RemoteDomainClass
 
+import javax.annotation.Nullable
+import javax.annotation.ParametersAreNonnullByDefault
+
 import static org.grooscript.grails.util.Util.*
 
 /**
- * User: jorgefrancoleza
- * Date: 22/09/13
+ * @author jorgefrancoleza
  */
+@ParametersAreNonnullByDefault
 class GrooscriptConverter {
 
     private static final List DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window',
@@ -22,35 +25,31 @@ class GrooscriptConverter {
 
     @Cacheable('conversions')
     String toJavascript(String groovyCode, Map conversionOptions = null) {
-        String jsCode = ''
-        if (groovyCode) {
-            try {
-                conversionOptions = addDefaultOptions(conversionOptions)
-                jsCode = GrooScript.convert(groovyCode, conversionOptions)
-            } catch (e) {
-                consoleError "Error converting to javascript: ${e.message}"
-            }
+        if (!groovyCode) {
+            return ''
         }
-        jsCode
+
+        try {
+            GrooScript.convert(groovyCode, addDefaultOptions(conversionOptions))
+        } catch (e) {
+            consoleError "Error converting to javascript: ${e.message}"
+            ''
+        }
     }
 
     String convertRemoteDomainClass(String domainClassName) {
-        String result = null
-        try {
-            String domainFileText = getDomainFileText(domainClassName)
-            if (domainFileText) {
-                try {
-                    result = GrooScript.convert(domainFileText, customizationAstOption(RemoteDomainClass))
-                } catch (e) {
-                    consoleError "Error converting domain class file ${domainClassName}: ${e.message}"
-                }
-            } else {
-                consoleWarning "Domain file not found ${domainClassName}"
-            }
-        } catch (e) {
-            consoleError "Exception converting domain class (${domainClassName}) file: ${e.message}"
+        String domainFileText = getDomainFileText(domainClassName)
+        if (!domainFileText) {
+            consoleWarning "Domain class file ${domainClassName} not found!"
+            ''
         }
-        result
+
+        try {
+            GrooScript.convert(domainFileText, customizationAstOption(RemoteDomainClass))
+        } catch (e) {
+            consoleError "Error converting domain class file ${domainClassName}: ${e.message}"
+            ''
+        }
     }
 
     String convertComponent(String groovyCode) {
@@ -63,7 +62,7 @@ class GrooscriptConverter {
         toJavascript(groovyCode, addScopeVars(conversionOptions))
     }
 
-    private static Map addDefaultOptions(Map options) {
+    private static Map addDefaultOptions(@Nullable Map options) {
         options = options ?: [:]
         options = addGroovySourceClassPathIfNeeded(options)
         options = addScopeVars(options)
@@ -91,4 +90,5 @@ class GrooscriptConverter {
         }
         options
     }
+
 }
