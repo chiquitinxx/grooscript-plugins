@@ -12,7 +12,6 @@ import org.grooscript.grails.util.GrooscriptTemplate
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
 import spock.lang.Unroll
-import spock.util.mop.ConfineMetaClassChanges
 
 /**
  * @author Jorge Franco
@@ -102,7 +101,7 @@ class GrooscriptTagLibSpec extends Specification {
         })
         1 * grooscriptConverter.toJavascript('def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> assert true}}') >> JS_CODE
         0 * _
-        result == "\n<div id='$TEMPLATE_NAME'></div>\n"
+        result == '\n<div id=\'' + TEMPLATE_NAME + '\'></div>\n'
 
         where:
         extraCode << ['', ' onLoad="true"']
@@ -169,6 +168,7 @@ class GrooscriptTagLibSpec extends Specification {
         interaction {
             initGrooscriptGrails()
         }
+        1 * Util.removeLastSemicolon(JS_CODE)
         1 * grooscriptConverter.toJavascript('{ event -> assert true}') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_EVENT_TAG, [nameEvent: 'myEvent', jsCode: JS_CODE])
