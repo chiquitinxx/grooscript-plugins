@@ -1,6 +1,5 @@
 package org.grooscript.grails.component
 
-import groovy.transform.TypeChecked
 import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.BlockStatement
@@ -15,7 +14,6 @@ import org.grooscript.builder.HtmlBuilder
 
 import java.lang.reflect.Modifier
 
-@TypeChecked
 @GroovyASTTransformation(phase=CompilePhase.SEMANTIC_ANALYSIS)
 public class ComponentImpl implements ASTTransformation {
 

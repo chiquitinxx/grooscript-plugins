@@ -1,12 +1,9 @@
 package org.grooscript.grails
 
-import groovy.transform.TypeChecked
-
 /**
  * User: jorgefrancoleza
  * Date: 11/06/14
  */
-@TypeChecked
 class Templates {
 
     static final String INIT_GROOSCRIPT_GRAILS = '''

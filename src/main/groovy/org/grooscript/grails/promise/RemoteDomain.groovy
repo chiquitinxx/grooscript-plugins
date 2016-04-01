@@ -1,12 +1,10 @@
 package org.grooscript.grails.promise
 
-import groovy.transform.TypeChecked
 import org.grooscript.grails.util.GrooscriptGrails
 
 /**
  * Created by jorge on 24/12/13.
  */
-@TypeChecked
 class RemoteDomain implements GsPromise {
 
     def action
@@ -16,7 +14,7 @@ class RemoteDomain implements GsPromise {
     def onFail
     def name
 
-    Closure closure = { ->
+    def closure = { ->
         def remoteData = [action: action, url: url, data: data]
         GrooscriptGrails.remoteDomainAction(remoteData, onSuccess, onFail, name)
     }
