@@ -1,8 +1,7 @@
 package org.grooscript.grails
 
 /**
- * User: jorgefrancoleza
- * Date: 11/06/14
+ * @author jorgefrancoleza
  */
 class Templates {
 

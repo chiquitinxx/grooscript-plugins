@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * Created by jorge on 22/12/13.
+ * @author jorge
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target([ElementType.TYPE])

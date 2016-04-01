@@ -11,10 +11,13 @@ import org.codehaus.groovy.ast.expr.VariableExpression
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.control.SourceUnit
 
+import javax.annotation.ParametersAreNonnullByDefault
+
 /**
  *
  * @author Jorge Franco <jorge.franco@osoco.es>
  */
+@ParametersAreNonnullByDefault
 class HtmlMapVisitor extends ClassCodeVisitorSupport {
 
     private ClassNode classNode

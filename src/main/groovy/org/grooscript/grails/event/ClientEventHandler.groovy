@@ -2,11 +2,14 @@ package org.grooscript.grails.event
 
 import groovy.transform.TypeChecked
 
+import javax.annotation.ParametersAreNonnullByDefault
+
 /**
  * User: jorgefrancoleza
  * Date: 14/09/13
  */
 @TypeChecked
+@ParametersAreNonnullByDefault
 class ClientEventHandler implements EventHandler {
 
     private Map<String, List<Closure>> mapHandlers = [:]
