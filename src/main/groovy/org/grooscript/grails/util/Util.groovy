@@ -2,6 +2,8 @@ package org.grooscript.grails.util
 
 import org.grooscript.grails.tag.GrooscriptTagLib
 
+import static org.grooscript.util.Util.SEP
+
 import javax.annotation.ParametersAreNonnullByDefault
 import java.util.regex.Matcher
 
@@ -9,13 +11,16 @@ import java.util.regex.Matcher
  * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @ParametersAreNonnullByDefault
-class Util {
+final class Util {
 
-    static final SEP = System.getProperty('file.separator')
+    private Util() {
+        // don't init me
+    }
+
+    private static final String DOMAIN_DIR = "grails-app${SEP}domain"
+    private static final String PLUGIN_MESSAGE = '[Grooscript Plugin]'
+
     static final String GROOVY_SRC_DIR = "src${SEP}main${SEP}groovy"
-    static final String DOMAIN_DIR = "grails-app${SEP}domain"
-
-    static final PLUGIN_MESSAGE = '[Grooscript Plugin]'
 
     static void consoleMessage(message) {
         println "${PLUGIN_MESSAGE} [INFO] $message"
