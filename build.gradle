@@ -157,6 +157,7 @@ task generateJavascriptFile() << {
     def conversionOptions = [classpath: ['src/main/groovy']]
     text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/util/GrooscriptGrails.groovy').text, conversionOptions)
     text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/promise/RemoteDomain.groovy').text, conversionOptions)
+
     conversionOptions[ConversionOptions.FINAL_TEXT.text] = 'var gsEvents = ClientEventHandler();'
     text += GrooScript.convert(new File('src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
 
@@ -165,4 +166,3 @@ task generateJavascriptFile() << {
 }
 
 classes.dependsOn 'generateJavascriptFile'
-
