@@ -1,9 +1,14 @@
 package org.grooscript.grails.remote
 
 import groovy.transform.TypeChecked
-import org.codehaus.groovy.ast.*
+import org.codehaus.groovy.ast.ASTNode
+import org.codehaus.groovy.ast.AnnotationNode
+import org.codehaus.groovy.ast.ClassHelper
+import org.codehaus.groovy.ast.ClassNode
+import org.codehaus.groovy.ast.Parameter
 import org.codehaus.groovy.ast.builder.AstBuilder
 import org.codehaus.groovy.ast.expr.ConstantExpression
+import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.ASTTransformation
@@ -18,11 +23,13 @@ import static org.grooscript.grails.util.Util.consoleError
  * @author Jorge Franco <jorge.franco@osoco.es>
  */
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
-class RemoteDomainClassImpl  implements ASTTransformation {
+class RemoteDomainClassImpl implements ASTTransformation {
 
     private static final String RESOURCE_CLASS_NODE = 'grails.rest.Resource'
+    private static final ClassNode REMOTE_DOMAIN_CLASS_NODE = new ClassNode(RemoteDomain)
 
     @Override
+    @TypeChecked
     public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
         if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode) {
             throw new RuntimeException('RemoteDomainClassImpl only applies to classes.')
@@ -43,51 +50,84 @@ class RemoteDomainClassImpl  implements ASTTransformation {
 
     @TypeChecked
     private static void addInstanceProperties(ClassNode classNode) {
-        classNode.addProperty('id', Modifier.PUBLIC, ClassHelper.Long_TYPE,null,null,null)
-        classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.Long_TYPE,new ConstantExpression(0),null,null)
+        classNode.addProperty('id', Modifier.PUBLIC, ClassHelper.Long_TYPE,
+                null, null, null)
+        classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.Long_TYPE,
+                new ConstantExpression(0), null, null)
         classNode.addProperty('url', Modifier.STATIC, ClassHelper.STRING_TYPE,
-                new ConstantExpression(getResourceUrl(classNode)),null,null)
+                new ConstantExpression(getResourceUrl(classNode)), null, null)
         classNode.addProperty('gsName', Modifier.STATIC, ClassHelper.STRING_TYPE,
-                new ConstantExpression(classNode.nameWithoutPackage),null,null)
+                new ConstantExpression(classNode.nameWithoutPackage), null, null)
     }
 
-    private void addStaticGetMethod(ClassNode classNode) {
+    private static void addStaticGetMethod(ClassNode classNode) {
         def params = new Parameter[1]
         params[0] = new Parameter(ClassHelper.long_TYPE, 'value')
-        classNode.addMethod('get', Modifier.STATIC, new ClassNode(RemoteDomain), params,
-                ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
+        def astNode = new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'read',
-                    url: url, data: [id: value], name: gsName)
-        }[0])
+                url: url,
+                data: [id: value],
+                name: gsName)
+        }[0]
+
+        classNode.addMethod('get',
+                Modifier.STATIC,
+                REMOTE_DOMAIN_CLASS_NODE,
+                params,
+                ClassNode.EMPTY_ARRAY,
+                astNode as Statement)
     }
 
-    private void addStaticListMethod(ClassNode classNode) {
+    private static void addStaticListMethod(ClassNode classNode) {
         def params = new Parameter[1]
         params[0] = new Parameter(new ClassNode(HashMap), 'params')
-        classNode.addMethod('list', Modifier.STATIC, new ClassNode(RemoteDomain), params,
-                ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
+        def astNode = new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'list',
-                    url: url, data: (params ?: [:]), name: gsName)
-        }[0])
+                url: url,
+                data: (params ?: [:]),
+                name: gsName)
+        }[0]
+
+        classNode.addMethod('list',
+                Modifier.STATIC,
+                REMOTE_DOMAIN_CLASS_NODE,
+                params,
+                ClassNode.EMPTY_ARRAY,
+                astNode as Statement)
     }
 
-    private void addSaveMethod(ClassNode classNode) {
-        classNode.addMethod('save', Modifier.PUBLIC, new ClassNode(RemoteDomain), Parameter.EMPTY_ARRAY,
-                ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
-            def action = (this.id ? 'update' : 'create')
+    private static void addSaveMethod(ClassNode classNode) {
+        def astNode = new AstBuilder().buildFromCode {
+            def action = this.id ? 'update' : 'create'
             def props = org.grooscript.grails.util.GrooscriptGrails.getRemoteDomainClassProperties(this)
             return new org.grooscript.grails.promise.RemoteDomain(action: action,
-                    url: this.url, data: props, name: this.gsName)
-        }[0])
+                url: this.url,
+                data: props,
+                name: this.gsName)
+        }[0]
+
+        classNode.addMethod('save',
+            Modifier.PUBLIC,
+            REMOTE_DOMAIN_CLASS_NODE,
+            Parameter.EMPTY_ARRAY,
+            ClassNode.EMPTY_ARRAY,
+            astNode as Statement)
     }
 
-    private void addDeleteMethod(ClassNode classNode) {
-        classNode.addMethod('delete', Modifier.PUBLIC, new ClassNode(RemoteDomain), Parameter.EMPTY_ARRAY,
-                ClassNode.EMPTY_ARRAY, new AstBuilder().buildFromCode {
+    private static void addDeleteMethod(ClassNode classNode) {
+        def astNode = new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'delete',
-                    url: this.url,
-                    data: [id: this.id], name: this.gsName)
-        }[0])
+                url: this.url,
+                data: [id: this.id],
+                name: this.gsName)
+        }[0]
+
+        classNode.addMethod('delete',
+            Modifier.PUBLIC,
+            REMOTE_DOMAIN_CLASS_NODE,
+            Parameter.EMPTY_ARRAY,
+            ClassNode.EMPTY_ARRAY,
+            astNode as Statement)
     }
 
     @TypeChecked
@@ -105,4 +145,5 @@ class RemoteDomainClassImpl  implements ASTTransformation {
             "/" + classNode.nameWithoutPackage[0].toLowerCase() + classNode.nameWithoutPackage.substring(1)
         }
     }
+
 }
