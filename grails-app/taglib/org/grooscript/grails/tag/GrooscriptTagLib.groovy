@@ -18,12 +18,12 @@ import javax.annotation.ParametersAreNonnullByDefault
 @ParametersAreNonnullByDefault
 class GrooscriptTagLib {
 
-    static final String REMOTE_URL_SETTED = 'grooscriptRemoteUrl'
-    static final String WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
-    static final String REMOTE_DOMAIN_EXTENSION = '.gs'
-    static final String COMPONENT_EXTENSION = '.cs'
+    static namespace = 'grooscript'
 
-    static String namespace = 'grooscript'
+    private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
+    private static final String WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
+    private static final String REMOTE_DOMAIN_EXTENSION = '.gs'
+    private static final String COMPONENT_EXTENSION = '.cs'
 
     GrailsApplication grailsApplication
     GrooscriptConverter grooscriptConverter
@@ -215,14 +215,14 @@ class GrooscriptTagLib {
     }
 
     private void initGrooscriptGrails() {
-        def urlSet = request.getAttribute(REMOTE_URL_SETTED)
+        def urlSet = request.getAttribute(REMOTE_URL_SET)
         if (!urlSet) {
             asset.script(type: 'text/javascript') {
                 grooscriptTemplate.apply(
                         Templates.INIT_GROOSCRIPT_GRAILS,
                         [remoteUrl: grailsLinkGenerator.serverBaseURL])
             }
-            request.setAttribute(REMOTE_URL_SETTED, true)
+            request.setAttribute(REMOTE_URL_SET, true)
         }
     }
 
