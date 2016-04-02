@@ -1,5 +1,6 @@
 import org.grooscript.grails.bean.GrooscriptConverter
-import static org.grooscript.grails.util.Util.*
+
+import static org.grooscript.grails.util.Util.getClassSource
 
 description('Generate grooscript component classes') {
     usage 'grails generate-component [fullClassName]'
@@ -18,7 +19,7 @@ try {
         if (!resourcesDir.exists()) {
             resourcesDir.mkdirs()
         }
-        String path = resourcesDir.path + System.getProperty('file.separator') + simpleName + '.cs'
+        String path = resourcesDir.path + org.grooscript.util.Util.SEP + simpleName + '.cs'
         new File(path).text = conversionResult
         console.addStatus("Component class generated ${path}")
     }

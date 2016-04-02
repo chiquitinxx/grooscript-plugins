@@ -16,7 +16,7 @@ try {
         if (!resourcesDir.exists()) {
             resourcesDir.mkdirs()
         }
-        String path = resourcesDir.path + System.getProperty('file.separator') + simpleName + '.gs'
+        String path = resourcesDir.path + org.grooscript.util.Util.SEP + simpleName + '.gs'
         new File(path).text = conversionResult
         console.addStatus("Remote domain class generated ${path}")
     }
