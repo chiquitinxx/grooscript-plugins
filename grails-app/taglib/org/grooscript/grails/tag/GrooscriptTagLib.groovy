@@ -34,7 +34,7 @@ class GrooscriptTagLib {
      * grooscript:code
      * conversionOptions - optional - map of conversion options
      */
-    def code = { Map attrs, Closure<String> body ->
+    def code = { attrs, body ->
         String script = body()
         if (script) {
             initGrooscriptGrails()
@@ -53,7 +53,7 @@ class GrooscriptTagLib {
      * onLoad - optional defaults true - if template will be render onReady page event
      * onEvent - optional - string list of events that render the page
      */
-    def template = { Map attrs, Closure<String> body ->
+    def template = { attrs, body ->
         String script = body()
         if (!script) {
             return
@@ -91,7 +91,7 @@ class GrooscriptTagLib {
      * grooscript:remoteModel
      * domainClass - REQUIRED name of the model class
      */
-    def remoteModel = { Map attrs ->
+    def remoteModel = { attrs ->
         String domainClass = attrs.domainClass as String
         if (validDomainClassName(domainClass)) {
             initGrooscriptGrails()
@@ -107,7 +107,7 @@ class GrooscriptTagLib {
      * grooscript:onEvent
      * name - name of the event
      */
-    def onEvent = { Map attrs, Closure<String> body ->
+    def onEvent = { attrs, body ->
         String name = attrs.name
         if (name) {
             initGrooscriptGrails()
@@ -130,7 +130,7 @@ class GrooscriptTagLib {
     /**
      * grooscript:initSpringWebsocket
      */
-    def initSpringWebsocket = { Map attrs, Closure<String> body ->
+    def initSpringWebsocket = { attrs, body ->
         String script = body()
         String jsCode = script ? grooscriptConverter.toJavascript(script) : ''
 
@@ -151,7 +151,7 @@ class GrooscriptTagLib {
     /**
      * grooscript:onServerEvent
      */
-    def onServerEvent = { Map attrs, Closure<String> body ->
+    def onServerEvent = { attrs, body ->
         String script = body()
         initWebsocket()
 
@@ -172,7 +172,7 @@ class GrooscriptTagLib {
     /**
      * grooscript:reloadOn
      */
-    def reloadOn = { Map attrs, Closure<String> body ->
+    def reloadOn = { attrs, body ->
         if (GrailsUtil.isDevelopmentEnv()) {
             String path = attrs.path
             if (path) {
@@ -193,7 +193,7 @@ class GrooscriptTagLib {
     /**
      * grooscript:component
      */
-    def component = { Map attrs, Closure<String> body ->
+    def component = { attrs, body ->
         String fullClassName = attrs.src
         if (fullClassName) {
             initGrooscriptGrails()
