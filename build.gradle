@@ -47,7 +47,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "org.grails:grails-bom:$grailsVersion"
+        mavenBom "org.grails:grails-bom:${grailsVersion}"
     }
     applyMavenExclusions false
 }
