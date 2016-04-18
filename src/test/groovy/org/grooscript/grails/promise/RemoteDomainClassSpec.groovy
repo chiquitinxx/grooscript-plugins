@@ -117,7 +117,7 @@ class RemoteDomainClassSpec extends Specification {
         0 * _
     }
 
-    private getRemoteDomainClassInstance() {
+    private static getRemoteDomainClassInstance() {
         GroovyClassLoader invoker = new GroovyClassLoader()
         def clazz = invoker.parseClass('@org.grooscript.grails.remote.RemoteDomainClass \n' +
                 "@grails.rest.Resource(uri='${URL}')\n" +
@@ -125,7 +125,7 @@ class RemoteDomainClassSpec extends Specification {
         clazz.newInstance()
     }
 
-    private getProperties() {
+    private static Map getProperties() {
         [id: null, name: NAME, version: 0]
     }
 }

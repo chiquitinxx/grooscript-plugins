@@ -81,7 +81,7 @@ class ComponentTest extends GroovyTestCase {
         def component = new MyComponent()
         '''
 
-    private final String renderAfterScriptWithValue(String value) {
+    private static final String renderAfterScriptWithValue(String value) {
         """
         import org.grooscript.grails.component.Component
 
@@ -105,7 +105,7 @@ class ComponentTest extends GroovyTestCase {
         """
     }
 
-    private String onComponentWithOnClickMethod(String method) {
+    private static String onComponentWithOnClickMethod(String method) {
         """
         import org.grooscript.grails.component.Component
 
