@@ -1,6 +1,7 @@
 package org.grooscript.grails
 
-import grails.plugins.*
+import grails.plugins.Plugin
+
 import org.grooscript.grails.bean.GrooscriptConverter
 import org.grooscript.grails.util.GrooscriptTemplate
 
@@ -38,6 +39,7 @@ It converts the code to javascript and your groovy code will run in the browser.
 
     def scm = [ url: "https://github.com/chiquitinxx/grooscript-grails3-plugin" ]
 
+    @Override
     Closure doWithSpring() {
         { ->
             grooscriptConverter(GrooscriptConverter)
