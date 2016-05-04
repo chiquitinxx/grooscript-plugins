@@ -6,7 +6,6 @@ import org.grooscript.convert.ConversionOptions
 import org.grooscript.grails.component.Component
 import org.grooscript.grails.remote.RemoteDomainClass
 
-import javax.annotation.Nullable
 import javax.annotation.ParametersAreNonnullByDefault
 
 import static org.grooscript.grails.util.Util.*
@@ -62,7 +61,7 @@ class GrooscriptConverter {
         toJavascript(groovyCode, addScopeVars(conversionOptions))
     }
 
-    private static Map addDefaultOptions(@Nullable Map options) {
+    private static Map addDefaultOptions(Map options) {
         options = options ?: [:]
         options = addGroovySourceClassPathIfNeeded(options)
         options = addScopeVars(options)

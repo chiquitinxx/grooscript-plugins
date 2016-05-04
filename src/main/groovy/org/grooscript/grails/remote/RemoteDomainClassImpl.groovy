@@ -7,7 +7,6 @@ import org.codehaus.groovy.ast.ClassHelper
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.Parameter
 import org.codehaus.groovy.ast.builder.AstBuilder
-import org.codehaus.groovy.ast.expr.ConstantExpression
 import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
@@ -17,6 +16,9 @@ import org.grooscript.grails.promise.RemoteDomain
 
 import java.lang.reflect.Modifier
 
+import static org.codehaus.groovy.ast.tools.GeneralUtils.constX
+import static org.codehaus.groovy.ast.tools.GeneralUtils.param
+import static org.codehaus.groovy.ast.tools.GeneralUtils.params
 import static org.grooscript.grails.util.Util.consoleError
 
 /**
@@ -26,7 +28,7 @@ import static org.grooscript.grails.util.Util.consoleError
 class RemoteDomainClassImpl implements ASTTransformation {
 
     private static final String RESOURCE_CLASS_NODE = 'grails.rest.Resource'
-    private static final ClassNode REMOTE_DOMAIN_CLASS_NODE = new ClassNode(RemoteDomain)
+    private static final ClassNode REMOTE_DOMAIN_CLASS_NODE = ClassHelper.makeCached(RemoteDomain)
 
     @Override
     @TypeChecked
@@ -51,18 +53,20 @@ class RemoteDomainClassImpl implements ASTTransformation {
     @TypeChecked
     private static void addInstanceProperties(ClassNode classNode) {
         classNode.addProperty('id', Modifier.PUBLIC, ClassHelper.Long_TYPE,
-                null, null, null)
-        classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.Long_TYPE,
-                new ConstantExpression(0), null, null)
+            null, null, null)
+        classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.long_TYPE,
+            constX(0, true), null, null)
         classNode.addProperty('url', Modifier.STATIC, ClassHelper.STRING_TYPE,
-                new ConstantExpression(getResourceUrl(classNode)), null, null)
+            constX(getResourceUrl(classNode)), null, null)
         classNode.addProperty('gsName', Modifier.STATIC, ClassHelper.STRING_TYPE,
-                new ConstantExpression(classNode.nameWithoutPackage), null, null)
+            constX(classNode.nameWithoutPackage), null, null)
     }
 
     private static void addStaticGetMethod(ClassNode classNode) {
-        def params = new Parameter[1]
-        params[0] = new Parameter(ClassHelper.long_TYPE, 'value')
+        def params = params(param(ClassHelper.long_TYPE, 'value'))
+        def url = param(new ClassNode(String), 'url')
+        def value = param(new ClassNode(String), 'value')
+        def gsName = param(new ClassNode(String), 'gsName')
         def astNode = new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'read',
                 url: url,
@@ -79,8 +83,9 @@ class RemoteDomainClassImpl implements ASTTransformation {
     }
 
     private static void addStaticListMethod(ClassNode classNode) {
-        def params = new Parameter[1]
-        params[0] = new Parameter(new ClassNode(HashMap), 'params')
+        def params = params(param(new ClassNode(HashMap), 'params'))
+        def url = param(new ClassNode(String), 'url')
+        def gsName = param(new ClassNode(String), 'gsName')
         def astNode = new AstBuilder().buildFromCode {
             return new org.grooscript.grails.promise.RemoteDomain(action: 'list',
                 url: url,
@@ -138,7 +143,7 @@ class RemoteDomainClassImpl implements ASTTransformation {
             AnnotationNode annotationNode = classNode.annotations.find { it.classNode.name == RESOURCE_CLASS_NODE }
             def uriParameter = annotationNode.getMember('uri')
             if (!uriParameter) {
-                consoleError "Need to define uri parameter in ${classNode.name}"
+                consoleError "Expected uri parameter in ${classNode.name}."
             }
             uriParameter.text
         } else {
