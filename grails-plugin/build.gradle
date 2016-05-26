@@ -1,0 +1,146 @@
+buildscript {
+    ext {
+        grailsVersion = project.grailsVersion
+    }
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
+        classpath("org.grooscript:grooscript:${grooscriptVersion}") {
+            exclude module: 'groovy'
+            exclude module: 'groovy-json'
+        }
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.6"
+    id "org.asciidoctor.convert" version "1.5.3"
+}
+
+version "2.0.0-SNAPSHOT"
+group "org.grails.plugins"
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: "eclipse"
+apply plugin: "idea"
+apply plugin: "org.grails.grails-plugin"
+apply plugin: "org.grails.grails-gsp"
+apply plugin: "asset-pipeline"
+
+ext {
+    grailsVersion = project.grailsVersion
+    gradleWrapperVersion = project.gradleWrapperVersion
+    grooscriptVersion = project.grooscriptVersion
+}
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
+
+dependencies {
+    provided 'org.springframework.boot:spring-boot-starter-logging'
+    provided "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-autoconfigure"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
+    provided "org.grails:grails-web-boot"
+    provided "org.grails:grails-dependencies"
+    provided 'javax.servlet:javax.servlet-api:3.1.0'
+
+    testCompile "org.grails:grails-plugin-testing"
+    compile "org.grails.plugins:asset-pipeline"
+    compile "org.grails.plugins:cache"
+    compile("org.grooscript:grooscript:${grooscriptVersion}") {
+        exclude module: 'groovy'
+        exclude module: 'groovy-json'
+    }
+
+    console "org.grails:grails-console:${grailsVersion}"
+}
+
+assets {
+    packagePlugin = true
+}
+
+jar {
+    exclude "test/**/**"
+}
+
+bintray {
+    user = project.hasProperty('bintray_user') ? bintray_user : ''
+    key = project.hasProperty('bintray_key') ? bintray_key : ''
+
+    publications = ['maven']
+    publish = true
+    pkg {
+        repo = 'grooscript'
+        userOrg = ''
+        name = "${project.group}:grooscript"
+        desc = 'Grooscript Grails 3 Plugin'
+        websiteUrl = 'http://grooscript.org/grails3-plugin'
+        issueTrackerUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin/issues"
+        vcsUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin"
+        licenses = ['Apache-2.0']
+        labels = ['grails', 'javascript', 'grooscript', 'groovy', 'plugin']
+        version {
+            attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
+            name = project.version
+            desc = 'Events refactored'
+            gpg {
+                sign = false
+                passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.dependencyManagement.replaceNode {}
+
+                // simply remove dependencies without a version
+                // version-less dependencies are handled with dependencyManagement
+                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                pomNode.dependencies.dependency.findAll {
+                    it.version.text().isEmpty()
+                }.each {
+                    it.replaceNode {}
+                }
+            }
+            artifactId project.name
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+asciidoctor {
+    sourceDir = project.file 'src/main/doc'
+    sources { include 'index.adoc' }
+    attributes 'grooscript-version': grooscriptVersion,
+            'plugin-version': version,
+            author: 'Jorge Franco',
+            email: 'grooscript@gmail.com',
+            'source-highlighter': 'prettify',
+            toc: 'right',
+            imagesdir: './images',
+            toclevels: 2,
+            icons: 'font'
+}
