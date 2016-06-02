@@ -26,8 +26,6 @@ group "org.grails.plugins"
 
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: "eclipse"
-apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-gsp"
 apply plugin: "asset-pipeline"
@@ -63,6 +61,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     compile "org.grails.plugins:asset-pipeline"
     compile "org.grails.plugins:cache"
+    compile project(':grails-core')
     compile("org.grooscript:grooscript:${grooscriptVersion}") {
         exclude module: 'groovy'
         exclude module: 'groovy-json'

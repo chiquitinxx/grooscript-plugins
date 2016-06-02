@@ -1,0 +1,18 @@
+apply plugin: 'groovy'
+
+version = '0.0.1-SNAPSHOT'
+group = 'org.grooscript'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy:${groovyVersion}"
+    compile "org.grooscript:grooscript:${grooscriptVersion}"
+    testCompile "org.codehaus.groovy:groovy-test:${groovyVersion}"
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: 'groovy-all'
+        exclude module: 'junit-dep'
+    }
+}

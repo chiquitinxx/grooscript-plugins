@@ -1,8 +1,5 @@
-package org.grooscript.grails.component
+package org.grooscript.grails.core.component
 
-/**
- * Created by jorgefrancoleza on 25/11/15.
- */
 class ComponentTest extends GroovyTestCase {
 
     void testComponentAstWorks() {
@@ -15,7 +12,7 @@ class ComponentTest extends GroovyTestCase {
     void testThrowErrorIfNoRenderMethod() {
         try {
             assertScript '''
-        import org.grooscript.grails.component.Component
+        import org.grooscript.grails.core.component.Component
 
         @Component
         class MyComponent {}
@@ -55,7 +52,7 @@ class ComponentTest extends GroovyTestCase {
     }
 
     private final String basicComponent = '''
-        import org.grooscript.grails.component.Component
+        import org.grooscript.grails.core.component.Component
 
         @Component
         class MyComponent {
@@ -68,7 +65,7 @@ class ComponentTest extends GroovyTestCase {
         '''
 
     private final String styleComponent = '''
-        import org.grooscript.grails.component.Component
+        import org.grooscript.grails.core.component.Component
 
         @Component
         class MyComponent {
@@ -83,7 +80,7 @@ class ComponentTest extends GroovyTestCase {
 
     private static final String renderAfterScriptWithValue(String value) {
         """
-        import org.grooscript.grails.component.Component
+        import org.grooscript.grails.core.component.Component
 
         @Component
         class MyComponent {
@@ -107,7 +104,7 @@ class ComponentTest extends GroovyTestCase {
 
     private static String onComponentWithOnClickMethod(String method) {
         """
-        import org.grooscript.grails.component.Component
+        import org.grooscript.grails.core.component.Component
 
         @Component
         class MyComponent {

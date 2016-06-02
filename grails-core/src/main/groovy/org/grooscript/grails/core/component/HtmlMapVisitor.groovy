@@ -1,24 +1,14 @@
-package org.grooscript.grails.component
+package org.grooscript.grails.core.component
 
 import org.codehaus.groovy.ast.ClassCodeVisitorSupport
 import org.codehaus.groovy.ast.ClassNode
-import org.codehaus.groovy.ast.expr.ConstantExpression
-import org.codehaus.groovy.ast.expr.Expression
-import org.codehaus.groovy.ast.expr.GStringExpression
-import org.codehaus.groovy.ast.expr.MapExpression
-import org.codehaus.groovy.ast.expr.MethodCallExpression
+import org.codehaus.groovy.ast.expr.*
 import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.control.SourceUnit
-
-import javax.annotation.ParametersAreNonnullByDefault
 
 import static org.codehaus.groovy.ast.tools.GeneralUtils.constX
 import static org.codehaus.groovy.ast.tools.GeneralUtils.varX
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
-@ParametersAreNonnullByDefault
 class HtmlMapVisitor extends ClassCodeVisitorSupport {
 
     private ClassNode classNode

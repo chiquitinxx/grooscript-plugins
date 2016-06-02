@@ -2,10 +2,8 @@ package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
 import org.codehaus.groovy.control.CompilerConfiguration
-import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
 import org.grooscript.GrooScript
 import org.grooscript.convert.ConversionOptions
-import org.grooscript.grails.component.Component
 import org.grooscript.grails.remote.RemoteDomainClass
 
 import javax.annotation.ParametersAreNonnullByDefault

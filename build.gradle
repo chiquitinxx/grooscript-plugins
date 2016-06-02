@@ -1,3 +1,12 @@
+apply plugin: 'idea'
+
+ext.compatibilityVersion = 1.7
+
 task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
+}
+
+idea.project {
+    jdkName = '1.8'
+    languageLevel = compatibilityVersion
 }
