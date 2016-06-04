@@ -7,16 +7,18 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
         classpath "org.grails.plugins:hibernate4:5.0.6"
+        classpath "org.grooscript:grooscript-gradle-plugin:${grooscriptGradlePluginVersion}"
     }
 }
 
 version "0.1"
 group "test.app"
 
-apply plugin:"war"
-apply plugin:"org.grails.grails-web"
-apply plugin:"org.grails.grails-gsp"
-apply plugin:"asset-pipeline"
+apply plugin: 'war'
+apply plugin: 'org.grails.grails-web'
+apply plugin: 'org.grails.grails-gsp'
+apply plugin: 'asset-pipeline'
+apply plugin: 'org.grooscript.conversion'
 
 repositories {
     mavenLocal()
