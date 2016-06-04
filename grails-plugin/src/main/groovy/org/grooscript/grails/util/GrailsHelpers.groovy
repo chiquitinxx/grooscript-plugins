@@ -1,6 +1,7 @@
 package org.grooscript.grails.util;
 
 import asset.pipeline.grails.AssetsTagLib
+import grails.core.GrailsApplication
 import grails.web.mapping.LinkGenerator
 import org.grails.buffer.GrailsPrintWriter
 import org.grooscript.grails.Templates
@@ -14,11 +15,14 @@ public class GrailsHelpers {
     private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
 
     private LinkGenerator grailsLinkGenerator
-    private GrooscriptTemplate grooscriptTemplate
+    private JavascriptTemplate grooscriptTemplate
+    private GrailsApplication grailsApplication
 
-    public GrailsHelpers(LinkGenerator grailsLinkGenerator, GrooscriptTemplate grooscriptTemplate) {
+    public GrailsHelpers(LinkGenerator grailsLinkGenerator, JavascriptTemplate grooscriptTemplate,
+                         GrailsApplication grailsApplication) {
         this.grailsLinkGenerator = grailsLinkGenerator
         this.grooscriptTemplate = grooscriptTemplate
+        this.grailsApplication = grailsApplication
     }
 
     public void addAssetScript(AssetsTagLib asset, GrailsPrintWriter out, String content) {
@@ -34,5 +38,22 @@ public class GrailsHelpers {
             addAssetScript(asset, out, content)
             request.setAttribute(REMOTE_URL_SET, true)
         }
+    }
+
+    public boolean validDomainClassName(String name) {
+        if (!name || !(name instanceof String)) {
+            Util.consoleError "GrooscriptTagLib have to define domainClass property as String"
+        } else {
+            if (domainClassFromName(name)) {
+                return true
+            } else {
+                Util.consoleError "Not exist domain class ${name}"
+            }
+        }
+        return false
+    }
+
+    private boolean domainClassFromName(String nameClass) {
+        grailsApplication.getDomainClasses().find { it.fullName == nameClass }
     }
 }

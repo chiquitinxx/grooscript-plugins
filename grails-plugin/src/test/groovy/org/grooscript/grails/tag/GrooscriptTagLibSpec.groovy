@@ -7,39 +7,25 @@ import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
-import org.grooscript.grails.bean.GrooscriptConverter
+import org.grooscript.grails.bean.JavascriptConverter
 import org.grooscript.grails.util.GrailsHelpers
-import org.grooscript.grails.util.GrooscriptTemplate
+import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * @author Jorge Franco
- * Date: 08/06/14
- */
 @TestMixin(GrailsUnitTestMixin)
 @TestFor(GrooscriptTagLib)
 class GrooscriptTagLibSpec extends Specification {
 
-    private GrooscriptConverter grooscriptConverter
+    private JavascriptConverter grooscriptConverter
     private AssetsTagLib assetsTagLib
-    private GrooscriptTemplate template = new GrooscriptTemplate()
+    private JavascriptTemplate template = new JavascriptTemplate()
     private LinkGenerator linkGenerator = Mock(LinkGenerator)
     private GrailsHelpers grailsHelpers = Mock(GrailsHelpers)
-    private static final String CANONICAL_NAME = 'canonicalName'
-    private stubDomainClass = [
-            name: DOMAIN_CLASS_NAME,
-            fullName: DOMAIN_CLASS_NAME_WITH_PACKAGE,
-            clazz: [canonicalName: CANONICAL_NAME]
-    ]
-
-    static final FAKE_NAME = 'FAKE'
-    static final DOMAIN_CLASS_NAME = 'Domain'
-    static final DOMAIN_CLASS_NAME_WITH_PACKAGE = 'package.Domain'
 
     void setup() {
-        grooscriptConverter = Mock(GrooscriptConverter)
+        grooscriptConverter = Mock(JavascriptConverter)
         assetsTagLib = Mock(AssetsTagLib)
         tagLib.grooscriptConverter = grooscriptConverter
         tagLib.metaClass.asset = assetsTagLib
@@ -169,48 +155,32 @@ class GrooscriptTagLibSpec extends Specification {
         result == ''
     }
 
-    @Unroll
-    void 'test remote model with domain class in development'() {
+    void 'test remote model with domain class that exists'() {
         given:
-        GroovySpy(GrailsUtil, global: true)
+        String domainClassName = 'package.AnyClass'
 
         when:
-        stubGrailsApplication()
         applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
 
         then:
-        numberTimes * GrailsUtil.isDevelopmentEnv() >> true
-        numberTimes * assetsTagLib.script(['type':'text/javascript'], {
-            it() == JS_CODE
-        })
-        numberTimes * grooscriptConverter.convertRemoteDomainClass(CANONICAL_NAME) >> JS_CODE
-
-        where:
-        domainClassName                | numberTimes
-        FAKE_NAME                      | 0
-        DOMAIN_CLASS_NAME              | 1
-        DOMAIN_CLASS_NAME_WITH_PACKAGE | 1
+        1 * grailsHelpers.validDomainClassName(domainClassName) >> true
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
+        1 * grooscriptConverter.convertRemoteDomainClass(domainClassName) >> JS_CODE
+        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
+        0 * _
     }
 
-    @Unroll
-    void 'test remote model with domain class in production'() {
+    void 'test remote model with invalid domain class name'() {
         given:
-        GroovySpy(GrailsUtil, global: true)
         GroovySpy(Util, global: true)
+        String domainClassName = 'package.AnyClass'
 
         when:
-        stubGrailsApplication()
         applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
 
         then:
-        1 * GrailsUtil.isDevelopmentEnv() >> false
-        1 * Util.getResourceText('Domain.gs') >> JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == JS_CODE
-        })
-
-        where:
-        domainClassName << [DOMAIN_CLASS_NAME, DOMAIN_CLASS_NAME_WITH_PACKAGE]
+        1 * grailsHelpers.validDomainClassName(domainClassName) >> false
+        1 * Util.consoleError(_)
     }
 
     void 'init spring websockets'() {
@@ -400,10 +370,6 @@ class GrooscriptTagLibSpec extends Specification {
         then:
         1 * GrailsUtil.isDevelopmentEnv() >> true
         1 * Util.consoleError('GrooscriptTagLib reloadOn need define path property')
-    }
-
-    private stubGrailsApplication() {
-        tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
     }
 
     private void initWebsockets() {

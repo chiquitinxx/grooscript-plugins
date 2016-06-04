@@ -4,7 +4,7 @@ import groovy.text.SimpleTemplateEngine
 import org.springframework.stereotype.Component
 
 @Component
-class GrooscriptTemplate {
+class JavascriptTemplate {
 
     private engine = new SimpleTemplateEngine()
 

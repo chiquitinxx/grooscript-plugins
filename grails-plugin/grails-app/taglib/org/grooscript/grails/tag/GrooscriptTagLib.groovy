@@ -5,12 +5,11 @@ import grails.util.GrailsNameUtils
 import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
-import org.grooscript.grails.bean.GrooscriptConverter
+import org.grooscript.grails.bean.JavascriptConverter
 import org.grooscript.grails.util.GrailsHelpers
-import org.grooscript.grails.util.GrooscriptTemplate
+import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
 
-import javax.annotation.Nullable
 import javax.annotation.ParametersAreNonnullByDefault
 
 import static grails.util.Environment.isDevelopmentEnvironmentAvailable
@@ -24,14 +23,13 @@ class GrooscriptTagLib {
     static namespace = 'grooscript'
 
     private static final String WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
-    private static final String REMOTE_DOMAIN_EXTENSION = '.gs'
 
     private boolean sourceCodeAvailable = developmentEnvironmentAvailable
 
     GrailsApplication grailsApplication
-    GrooscriptConverter grooscriptConverter
+    JavascriptConverter grooscriptConverter
     LinkGenerator grailsLinkGenerator
-    GrooscriptTemplate grooscriptTemplate
+    JavascriptTemplate grooscriptTemplate
     GrailsHelpers grailsHelpers
 
     /**
@@ -91,18 +89,16 @@ class GrooscriptTagLib {
 
     /**
      * grooscript:remoteModel
-     * domainClass - REQUIRED name of the model class
+     * domainClass - REQUIRED full name of the model class
      */
     def remoteModel = { attrs ->
         String domainClass = attrs.domainClass as String
-        if (validDomainClassName(domainClass)) {
+        if (grailsHelpers.validDomainClassName(domainClass)) {
             grailsHelpers.initGrooscriptGrails(request, asset, out)
-
-            out << asset.script(type: 'text/javascript') {
-                sourceCodeAvailable ?
-                        grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(domainClass))
-                        : Util.getResourceText(GrailsNameUtils.getShortName(domainClass) + REMOTE_DOMAIN_EXTENSION)
-            }
+            String convertedDomainClass = grooscriptConverter.convertRemoteDomainClass(domainClass)
+            grailsHelpers.addAssetScript(asset, out, convertedDomainClass)
+        } else {
+            Util.consoleError 'GrooscriptTagLib remoteModel need define valid domainClass property'
         }
     }
 
@@ -217,11 +213,6 @@ class GrooscriptTagLib {
         }
     }
 
-    // todo nullable?
-    private String getDomainClassCanonicalName(String domainClass) {
-        domainClassFromName(domainClass)?.clazz?.canonicalName
-    }
-
     private void processTemplateEvents(String onEvent, String functionName) {
         if (onEvent) {
             List listEvents = onEvent.contains(',') ? onEvent.split(',') as List : [onEvent]
@@ -235,24 +226,6 @@ class GrooscriptTagLib {
                 }
             }
         }
-    }
-
-    private boolean validDomainClassName(String name) {
-        if (!name || !(name instanceof String)) {
-            Util.consoleError "GrooscriptTagLib have to define domainClass property as String"
-        } else {
-            if (domainClassFromName(name)) {
-                return true
-            } else {
-                Util.consoleError "Not exist domain class ${name}"
-            }
-        }
-        return false
-    }
-
-    @Nullable
-    private def domainClassFromName(String nameClass) {
-        grailsApplication.getDomainClasses().find { it.fullName == nameClass || it.name == nameClass }
     }
 
     private static final String ON_SERVER_EVENT_FUNCTION_NAME = 'gSonServerEvent'

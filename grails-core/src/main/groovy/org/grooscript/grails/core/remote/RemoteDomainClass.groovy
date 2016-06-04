@@ -1,4 +1,4 @@
-package org.grooscript.grails.remote
+package org.grooscript.grails.core.remote
 
 import org.codehaus.groovy.transform.GroovyASTTransformationClass
 
@@ -7,11 +7,8 @@ import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 @Retention(RetentionPolicy.SOURCE)
 @Target([ElementType.TYPE])
-@GroovyASTTransformationClass(['org.grooscript.grails.remote.RemoteDomainClassImpl'])
+@GroovyASTTransformationClass(['org.grooscript.grails.core.remote.RemoteDomainClassImpl'])
 public @interface RemoteDomainClass {
 }

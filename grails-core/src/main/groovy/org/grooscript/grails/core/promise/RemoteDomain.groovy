@@ -1,10 +1,7 @@
-package org.grooscript.grails.promise
+package org.grooscript.grails.core.promise
 
-import org.grooscript.grails.util.GrooscriptGrails
+import org.grooscript.grails.core.util.GrooscriptGrails
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 class RemoteDomain implements GsPromise {
 
     def action

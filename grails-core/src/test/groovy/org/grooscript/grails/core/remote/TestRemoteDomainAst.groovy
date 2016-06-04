@@ -1,14 +1,10 @@
-package org.grooscript.grails.remote
+package org.grooscript.grails.core.remote
 
-/**
- * User: jorgefrancoleza
- * Date: 23/06/14
- */
 class TestRemoteDomainAst extends GroovyTestCase {
 
     void testAstRemoteDomain() {
         assertScript '''
-            @org.grooscript.grails.remote.RemoteDomainClass
+            @org.grooscript.grails.core.remote.RemoteDomainClass
             class Book {
                 String name
                 String title
@@ -16,6 +12,7 @@ class TestRemoteDomainAst extends GroovyTestCase {
             assert Book.metaClass.methods.find { it.name == 'save'}
             assert Book.class.simpleName == 'Book'
             assert Book.gsName == 'Book'
+            assert Book.declaredMethods.findAll { !it.synthetic }.find { it.name == 'list'}
         '''
     }
 }

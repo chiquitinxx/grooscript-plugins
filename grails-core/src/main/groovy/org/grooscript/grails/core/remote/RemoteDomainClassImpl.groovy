@@ -1,29 +1,20 @@
-package org.grooscript.grails.remote
+package org.grooscript.grails.core.remote
 
 import groovy.transform.TypeChecked
-import org.codehaus.groovy.ast.ASTNode
-import org.codehaus.groovy.ast.AnnotationNode
-import org.codehaus.groovy.ast.ClassHelper
-import org.codehaus.groovy.ast.ClassNode
-import org.codehaus.groovy.ast.Parameter
+import org.codehaus.groovy.ast.*
 import org.codehaus.groovy.ast.builder.AstBuilder
 import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.control.CompilePhase
 import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
-import org.grooscript.grails.promise.RemoteDomain
+import org.grooscript.grails.core.promise.RemoteDomain
+import org.grooscript.grails.core.util.GrooscriptGrails
 
 import java.lang.reflect.Modifier
 
-import static org.codehaus.groovy.ast.tools.GeneralUtils.constX
-import static org.codehaus.groovy.ast.tools.GeneralUtils.param
-import static org.codehaus.groovy.ast.tools.GeneralUtils.params
-import static org.grooscript.grails.util.Util.consoleError
+import static org.codehaus.groovy.ast.tools.GeneralUtils.*
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 @GroovyASTTransformation(phase = CompilePhase.SEMANTIC_ANALYSIS)
 class RemoteDomainClassImpl implements ASTTransformation {
 
@@ -68,7 +59,7 @@ class RemoteDomainClassImpl implements ASTTransformation {
         def value = param(new ClassNode(String), 'value')
         def gsName = param(new ClassNode(String), 'gsName')
         def astNode = new AstBuilder().buildFromCode {
-            return new org.grooscript.grails.promise.RemoteDomain(action: 'read',
+            return new org.grooscript.grails.core.promise.RemoteDomain(action: 'read',
                 url: url,
                 data: [id: value],
                 name: gsName)
@@ -87,7 +78,7 @@ class RemoteDomainClassImpl implements ASTTransformation {
         def url = param(new ClassNode(String), 'url')
         def gsName = param(new ClassNode(String), 'gsName')
         def astNode = new AstBuilder().buildFromCode {
-            return new org.grooscript.grails.promise.RemoteDomain(action: 'list',
+            return new org.grooscript.grails.core.promise.RemoteDomain(action: 'list',
                 url: url,
                 data: (params ?: [:]),
                 name: gsName)
@@ -104,8 +95,8 @@ class RemoteDomainClassImpl implements ASTTransformation {
     private static void addSaveMethod(ClassNode classNode) {
         def astNode = new AstBuilder().buildFromCode {
             def action = this.id ? 'update' : 'create'
-            def props = org.grooscript.grails.util.GrooscriptGrails.getRemoteDomainClassProperties(this)
-            return new org.grooscript.grails.promise.RemoteDomain(action: action,
+            def props = org.grooscript.grails.core.util.GrooscriptGrails.getRemoteDomainClassProperties(this)
+            return new org.grooscript.grails.core.promise.RemoteDomain(action: action,
                 url: this.url,
                 data: props,
                 name: this.gsName)
@@ -121,7 +112,7 @@ class RemoteDomainClassImpl implements ASTTransformation {
 
     private static void addDeleteMethod(ClassNode classNode) {
         def astNode = new AstBuilder().buildFromCode {
-            return new org.grooscript.grails.promise.RemoteDomain(action: 'delete',
+            return new org.grooscript.grails.core.promise.RemoteDomain(action: 'delete',
                 url: this.url,
                 data: [id: this.id],
                 name: this.gsName)
@@ -143,7 +134,7 @@ class RemoteDomainClassImpl implements ASTTransformation {
             AnnotationNode annotationNode = classNode.annotations.find { it.classNode.name == RESOURCE_CLASS_NODE }
             def uriParameter = annotationNode.getMember('uri')
             if (!uriParameter) {
-                consoleError "Expected uri parameter in ${classNode.name}."
+                new RuntimeException("Expected uri parameter in ${classNode.name}.")
             }
             uriParameter.text
         } else {

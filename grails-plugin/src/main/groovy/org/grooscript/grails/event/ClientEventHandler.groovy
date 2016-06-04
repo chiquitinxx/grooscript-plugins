@@ -2,9 +2,6 @@ package org.grooscript.grails.event
 
 import groovy.transform.TypeChecked
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 @TypeChecked
 class ClientEventHandler implements EventHandler {
 

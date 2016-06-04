@@ -1,11 +1,8 @@
-package org.grooscript.grails.promise
+package org.grooscript.grails.remote
 
-import org.grooscript.grails.util.GrooscriptGrails
+import org.grooscript.grails.core.util.GrooscriptGrails
 import spock.lang.Specification
 
-/**
- * Created by jorge on 22/12/13.
- */
 class RemoteDomainClassSpec extends Specification {
 
     private static final SUCCESS_ACTION = { -> 'ok' }
@@ -119,7 +116,7 @@ class RemoteDomainClassSpec extends Specification {
 
     private static getRemoteDomainClassInstance() {
         GroovyClassLoader invoker = new GroovyClassLoader()
-        def clazz = invoker.parseClass('@org.grooscript.grails.remote.RemoteDomainClass \n' +
+        def clazz = invoker.parseClass('@org.grooscript.grails.core.remote.RemoteDomainClass \n' +
                 "@grails.rest.Resource(uri='${URL}')\n" +
                 "class ${DOMAIN_CLASS_NAME} { String name }")
         clazz.newInstance()

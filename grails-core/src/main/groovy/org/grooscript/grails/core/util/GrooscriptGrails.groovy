@@ -1,10 +1,7 @@
-package org.grooscript.grails.util
+package org.grooscript.grails.core.util
 
 import org.grooscript.asts.GsNative
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 class GrooscriptGrails {
 
     static String remoteUrl
@@ -39,24 +36,6 @@ class GrooscriptGrails {
             }
         }
         return result;
-    */}
-
-    @GsNative
-    static void sendClientMessage(String channel, message) {/*
-        var sendMessage = message;
-        if (!gs.isGroovyObj(message)) {
-            sendMessage = gs.toGroovy(message);
-        }
-        gsEvents.sendMessage(channel, sendMessage);
-    */}
-
-    @GsNative
-    static void sendWebsocketMessage(String channel, message) {/*
-        var sendMessage = message;
-        if (gs.isGroovyObj(message)) {
-            sendMessage = gs.toJavascript(message);
-        }
-        websocketClient.send(channel, {}, JSON.stringify(sendMessage));
     */}
 
     @GsNative

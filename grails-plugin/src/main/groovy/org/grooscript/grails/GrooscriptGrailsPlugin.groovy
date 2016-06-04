@@ -2,12 +2,9 @@ package org.grooscript.grails
 
 import grails.plugins.Plugin
 
-import org.grooscript.grails.bean.GrooscriptConverter
-import org.grooscript.grails.util.GrooscriptTemplate
+import org.grooscript.grails.bean.JavascriptConverter
+import org.grooscript.grails.util.JavascriptTemplate
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 class GrooscriptGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
@@ -44,8 +41,8 @@ It converts the code to javascript and your groovy code will run in the browser.
     @Override
     Closure doWithSpring() {
         { ->
-            grooscriptConverter(GrooscriptConverter)
-            grooscriptTemplate(GrooscriptTemplate)
+            javascriptConverter(JavascriptConverter)
+            javascriptTemplate(JavascriptTemplate)
         } 
     }
 }

@@ -2,10 +2,6 @@ package org.grooscript.grails.event
 
 import spock.lang.Specification
 
-/**
- * User: jorgefrancoleza
- * Date: 14/09/13
- */
 class ClientEventHandlerSpec extends Specification {
 
     static final NAME_EVENT = 'nameEvent'
