@@ -1,14 +1,14 @@
 package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
-import org.codehaus.groovy.control.CompilerConfiguration
 import org.grooscript.GrooScript
-import org.grooscript.convert.ConversionOptions
+import org.grooscript.grails.core.Conversion
+import org.grooscript.grails.core.GrailsConversions
 import org.grooscript.grails.remote.RemoteDomainClass
 
 import javax.annotation.ParametersAreNonnullByDefault
 
-import static org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder.withConfig
+import static grails.util.Environment.isDevelopmentEnvironmentAvailable
 import static org.grooscript.grails.util.Util.*
 
 /**
@@ -17,11 +17,15 @@ import static org.grooscript.grails.util.Util.*
 @ParametersAreNonnullByDefault
 class GrooscriptConverter {
 
+    private static final String COMPONENT_EXTENSION = '.cs'
     private static final List DEFAULT_CONVERSION_SCOPE_VARS = ['$', 'gsEvents', 'window',
                                                                'document', 'HtmlBuilder',
                                                                'GQueryImpl', 'Observable',
                                                                'ClientEventHandler',
                                                                'GrooscriptGrails']
+
+    private boolean sourceCodeAvailable = developmentEnvironmentAvailable
+    private Conversion grailsConversions = new GrailsConversions()
 
     @Cacheable('conversions')
     String toJavascript(String groovyCode, Map conversionOptions = null) {
@@ -51,16 +55,15 @@ class GrooscriptConverter {
         }
     }
 
-    String convertComponent(String groovyCode) {
-        Map conversionOptions = [:]
-        conversionOptions[ConversionOptions.CLASSPATH.text] = GROOVY_SRC_DIR
-        conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
-        conversionOptions[ConversionOptions.CUSTOMIZATION.text] = {
-            withConfig(new CompilerConfiguration()) {
-                ast(Component)
-            }
+    String getComponentCodeConverted(String fullClassName, String shortClassName, String nameComponent) {
+        String result
+        if (sourceCodeAvailable) {
+            String source = getClassSource(fullClassName)
+            result = grailsConversions.convertComponent(source, shortClassName, nameComponent)
+        } else {
+            result = getResourceText(shortClassName + COMPONENT_EXTENSION)
         }
-        toJavascript(groovyCode, addScopeVars(conversionOptions))
+        result
     }
 
     private static Map addDefaultOptions(Map options) {

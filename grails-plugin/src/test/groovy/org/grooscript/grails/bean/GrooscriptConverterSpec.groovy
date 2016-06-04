@@ -1,6 +1,7 @@
 package org.grooscript.grails.bean
 
 import org.grooscript.GrooScript
+import org.grooscript.grails.core.Conversion
 import org.grooscript.grails.remote.RemoteDomainClass
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
@@ -12,19 +13,16 @@ import spock.lang.Specification
 class GrooscriptConverterSpec extends Specification {
 
     def 'convert to javascript without conversion options'() {
-        given:
-        def code = CODE
-
         when:
-        def result = grooscriptConverter.toJavascript(code, null)
+        def result = grooscriptConverter.toJavascript(groovyCode, null)
 
         then:
-        1 * GrooScript.convert(CODE, [
+        1 * GrooScript.convert(groovyCode, [
                 classpath: ['src/main/groovy'],
                 mainContextScope: ['$', 'gsEvents', 'window', 'document', 'HtmlBuilder', 'GQueryImpl',
-                                   'Observable', 'ClientEventHandler', 'GrooscriptGrails']
-        ])
-        result == 'var a = 5;\ngs.mc(b,"go",[]);\n'
+                                   'TODO','Observable', 'ClientEventHandler', 'GrooscriptGrails']
+        ]) >> jsCode
+        result == jsCode
     }
 
     def 'convert a remote model domain class'() {
@@ -36,10 +34,10 @@ class GrooscriptConverterSpec extends Specification {
         def result = grooscriptConverter.convertRemoteDomainClass(DOMAIN_CLASS)
 
         then:
-        1 * Util.getDomainFileText(DOMAIN_CLASS) >> CODE
+        1 * Util.getDomainFileText(DOMAIN_CLASS) >> groovyCode
         1 * Util.customizationAstOption(RemoteDomainClass) >> conversionOptions
-        1 * GrooScript.convert(CODE, conversionOptions) >> JS
-        result == JS
+        1 * GrooScript.convert(groovyCode, conversionOptions) >> jsCode
+        result == jsCode
     }
 
     def 'convert templates'() {
@@ -58,12 +56,44 @@ class GrooscriptConverterSpec extends Specification {
 '''
     }
 
-    private static final JS = 'var a = 5; b.go()'
-    private static final CODE = 'def a = 5; b.go()'
+    def 'get component converted code with source code available'() {
+        given:
+        GroovySpy(Util, global: true)
+        grooscriptConverter.sourceCodeAvailable = true
+        conversion.convertComponent(groovyCode, shortClassName, nameComponent) >> jsCode
+
+        when:
+        String result = grooscriptConverter.getComponentCodeConverted(fullClassName, shortClassName, nameComponent)
+
+        then:
+        1 * Util.getClassSource(fullClassName) >> groovyCode
+        result == jsCode
+    }
+
+    def 'get component converted code without source code available'() {
+        given:
+        GroovySpy(Util, global: true)
+        grooscriptConverter.sourceCodeAvailable = false
+
+        when:
+        String result = grooscriptConverter.getComponentCodeConverted(fullClassName, shortClassName, nameComponent)
+
+        then:
+        1 * Util.getResourceText(shortClassName + '.cs') >> jsCode
+        result == jsCode
+    }
+
     private static final DOMAIN_CLASS = 'domainClass'
-    def grooscriptConverter = new GrooscriptConverter()
+    private final String fullClassName = 'fullClassName'
+    private final String shortClassName = 'shortClassName'
+    private final String nameComponent = 'nameComponent'
+    private final String groovyCode = 'any groovy code'
+    private final String jsCode = 'any js code'
+    private Conversion conversion = Stub(Conversion)
+    private GrooscriptConverter grooscriptConverter = new GrooscriptConverter()
 
     def setup() {
         GroovySpy(GrooScript, global: true)
+        grooscriptConverter.grailsConversions = conversion
     }
 }

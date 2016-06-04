@@ -6,11 +6,14 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.GrooscriptConverter
+import org.grooscript.grails.util.GrailsHelpers
 import org.grooscript.grails.util.GrooscriptTemplate
 import org.grooscript.grails.util.Util
 
 import javax.annotation.Nullable
 import javax.annotation.ParametersAreNonnullByDefault
+
+import static grails.util.Environment.isDevelopmentEnvironmentAvailable
 
 /**
  * @author Jorge Franco <jorge.franco@osoco.es>
@@ -20,15 +23,16 @@ class GrooscriptTagLib {
 
     static namespace = 'grooscript'
 
-    private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
     private static final String WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
     private static final String REMOTE_DOMAIN_EXTENSION = '.gs'
-    private static final String COMPONENT_EXTENSION = '.cs'
+
+    private boolean sourceCodeAvailable = developmentEnvironmentAvailable
 
     GrailsApplication grailsApplication
     GrooscriptConverter grooscriptConverter
     LinkGenerator grailsLinkGenerator
     GrooscriptTemplate grooscriptTemplate
+    GrailsHelpers grailsHelpers
 
     /**
      * grooscript:code
@@ -37,11 +41,9 @@ class GrooscriptTagLib {
     def code = { attrs, body ->
         String script = body()
         if (script) {
-            initGrooscriptGrails()
+            grailsHelpers.initGrooscriptGrails(request, asset, out)
             String jsCode = grooscriptConverter.toJavascript(script, attrs.conversionOptions as Map)
-            asset.script(type: 'text/javascript') {
-                jsCode
-            }
+            grailsHelpers.addAssetScript(asset, out, jsCode)
         }
     }
 
@@ -62,7 +64,7 @@ class GrooscriptTagLib {
         String functionName = attrs.functionName ?: Util.newTemplateName
         String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
 
-        initGrooscriptGrails()
+        grailsHelpers.initGrooscriptGrails(request, asset, out)
 
         if (!attrs.itemSelector) {
             out << "\n<div id='${functionName}'></div>\n"
@@ -94,10 +96,11 @@ class GrooscriptTagLib {
     def remoteModel = { attrs ->
         String domainClass = attrs.domainClass as String
         if (validDomainClassName(domainClass)) {
-            initGrooscriptGrails()
+            grailsHelpers.initGrooscriptGrails(request, asset, out)
 
             out << asset.script(type: 'text/javascript') {
-                GrailsUtil.isDevelopmentEnv() ? grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(domainClass))
+                sourceCodeAvailable ?
+                        grooscriptConverter.convertRemoteDomainClass(getDomainClassCanonicalName(domainClass))
                         : Util.getResourceText(GrailsNameUtils.getShortName(domainClass) + REMOTE_DOMAIN_EXTENSION)
             }
         }
@@ -110,7 +113,7 @@ class GrooscriptTagLib {
     def onEvent = { attrs, body ->
         String name = attrs.name
         if (name) {
-            initGrooscriptGrails()
+            grailsHelpers.initGrooscriptGrails(request, asset, out)
 
             String script = body()
             String jsCode = grooscriptConverter.toJavascript("{ event -> ${script}}").trim()
@@ -134,7 +137,7 @@ class GrooscriptTagLib {
         String script = body()
         String jsCode = script ? grooscriptConverter.toJavascript(script) : ''
 
-        initGrooscriptGrails()
+        grailsHelpers.initGrooscriptGrails(request, asset, out)
 
         String endPoint = attrs.endPoint ?: '/stomp'
         String withDebugString = attrs.withDebug
@@ -196,33 +199,14 @@ class GrooscriptTagLib {
     def component = { attrs, body ->
         String fullClassName = attrs.src
         if (fullClassName) {
-            initGrooscriptGrails()
+            grailsHelpers.initGrooscriptGrails(request, asset, out)
 
             String shortClassName = GrailsNameUtils.getShortName(fullClassName)
-            String resource
-            if (GrailsUtil.isDevelopmentEnv()) {
-                String source = Util.getClassSource(fullClassName)
-                resource = grooscriptConverter.convertComponent(source)
-            } else {
-                resource = Util.getResourceText(shortClassName + COMPONENT_EXTENSION)
-            }
-
             String nameComponent = attrs.name ?: GrailsNameUtils.getScriptName(shortClassName)
-            out << asset.script(type: 'text/javascript') {
-                resource + ";GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
-            }
-        }
-    }
+            String convertedComponent =
+                    grooscriptConverter.getComponentCodeConverted(fullClassName, shortClassName, nameComponent)
 
-    private void initGrooscriptGrails() {
-        def urlSet = request.getAttribute(REMOTE_URL_SET)
-        if (!urlSet) {
-            asset.script(type: 'text/javascript') {
-                grooscriptTemplate.apply(
-                        Templates.INIT_GROOSCRIPT_GRAILS,
-                        [remoteUrl: grailsLinkGenerator.serverBaseURL])
-            }
-            request.setAttribute(REMOTE_URL_SET, true)
+            grailsHelpers.addAssetScript(asset, out, convertedComponent)
         }
     }
 
@@ -282,5 +266,4 @@ class GrooscriptTagLib {
         request.setAttribute(ON_SERVER_EVENT_COUNT, number + 1)
         ON_SERVER_EVENT_FUNCTION_NAME + number
     }
-
 }

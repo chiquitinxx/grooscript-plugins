@@ -2,6 +2,7 @@ package org.grooscript.grails.core
 
 import org.grooscript.convert.ConversionOptions
 import org.grooscript.grails.core.converter.Converter
+import org.grooscript.grails.core.converter.CoreConverter
 
 class GrailsConversions implements Conversion {
 
@@ -9,24 +10,33 @@ class GrailsConversions implements Conversion {
     private static final String DOMAIN_DIR = "grails-app${SEP}domain"
     private static final String GROOVY_SRC_DIR = "src${SEP}main${SEP}groovy"
     private static final List DEFAULT_CONVERSION_SCOPE_VARS = [
-            '$', 'gsEvents', 'window', 'document', 'HtmlBuilder',
+            '$', 'gsEvents', 'window', 'document', 'HtmlBuilder', 'GsHlp',
             'GQueryImpl', 'Observable', 'ClientEventHandler', 'GrooscriptGrails']
 
-    private Converter converter = new Converter()
+    private Converter converter = new CoreConverter()
+
+    public setConverter(Converter converter) {
+        this.converter = converter
+    }
 
     @Override
-    String convertComponent(File file) {
+    String convertComponent(String componentGroovyCode, String className, String nameComponent) {
         Map conversionOptions = [:]
         conversionOptions[ConversionOptions.CLASSPATH.text] = GROOVY_SRC_DIR
         conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
-        converter.convertComponent(file.text, addScopeVars(conversionOptions))
+        converter.convertComponent(componentGroovyCode, addGrailsDefaultJsMainContextScopeVars(conversionOptions)) +
+                getComponentRegisterCode(className, nameComponent)
     }
 
-    private static Map addScopeVars(Map options) {
+    private static Map addGrailsDefaultJsMainContextScopeVars(Map options) {
         if (!options.mainContextScope)
             options.mainContextScope = []
 
         options.mainContextScope.addAll DEFAULT_CONVERSION_SCOPE_VARS
         options
+    }
+
+    private static String getComponentRegisterCode(String className, String nameComponent) {
+        ";GrooscriptGrails.createComponent(${className}, '${nameComponent}');"
     }
 }

@@ -2,7 +2,7 @@ package org.grooscript.grails.core.converter
 
 import spock.lang.Specification
 
-class ConverterSpec extends Specification {
+class CoreConverterSpec extends Specification {
 
     def 'convert component'() {
         when:
@@ -12,5 +12,5 @@ class ConverterSpec extends Specification {
         result.contains 'gSobject.cId = null'
     }
 
-    private Converter converter = new Converter()
+    private Converter converter = new CoreConverter()
 }

@@ -1,10 +1,9 @@
 package org.grooscript.grails.util
 
 import groovy.text.SimpleTemplateEngine
+import org.springframework.stereotype.Component
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
+@Component
 class GrooscriptTemplate {
 
     private engine = new SimpleTemplateEngine()

@@ -8,6 +8,7 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.GrooscriptConverter
+import org.grooscript.grails.util.GrailsHelpers
 import org.grooscript.grails.util.GrooscriptTemplate
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
@@ -25,6 +26,7 @@ class GrooscriptTagLibSpec extends Specification {
     private AssetsTagLib assetsTagLib
     private GrooscriptTemplate template = new GrooscriptTemplate()
     private LinkGenerator linkGenerator = Mock(LinkGenerator)
+    private GrailsHelpers grailsHelpers = Mock(GrailsHelpers)
     private static final String CANONICAL_NAME = 'canonicalName'
     private stubDomainClass = [
             name: DOMAIN_CLASS_NAME,
@@ -43,6 +45,7 @@ class GrooscriptTagLibSpec extends Specification {
         tagLib.metaClass.asset = assetsTagLib
         tagLib.grooscriptTemplate = template
         tagLib.grailsLinkGenerator = linkGenerator
+        tagLib.grailsHelpers = grailsHelpers
     }
 
     void cleanup() {
@@ -50,21 +53,16 @@ class GrooscriptTagLibSpec extends Specification {
 
     static final GROOVY_CODE = 'code example'
     static final JS_CODE = 'js converted code'
-    static final REMOTE_URL = 'my url'
     static final TEMPLATE_NAME = 'template name'
-    static final COMPONENT_GROOVY_CODE = 'class Component { def draw() {} }'
-    static final COMPONENT_JS_CODE = 'component code in javascript'
 
     void 'test code taglib'() {
         when:
         applyTemplate("<grooscript:code>${GROOVY_CODE}</grooscript:code>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * grooscriptConverter.toJavascript(GROOVY_CODE, null) >> JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], { it() == JS_CODE})
+        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
         0 * _
     }
 
@@ -73,11 +71,9 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate("<grooscript:code conversionOptions='[recursive: true]'>${GROOVY_CODE}</grooscript:code>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * grooscriptConverter.toJavascript(GROOVY_CODE, [recursive: true]) >> JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], { it() == JS_CODE})
+        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
         0 * _
     }
 
@@ -90,9 +86,7 @@ class GrooscriptTagLibSpec extends Specification {
         def result = applyTemplate("<grooscript:template${extraCode}>assert true</grooscript:template>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * Util.newTemplateName >> TEMPLATE_NAME
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.TEMPLATE_DRAW, [
@@ -165,9 +159,7 @@ class GrooscriptTagLibSpec extends Specification {
         def result = applyTemplate("<grooscript:onEvent name='myEvent'>assert true</grooscript:onEvent>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * Util.removeLastSemicolon(JS_CODE)
         1 * grooscriptConverter.toJavascript('{ event -> assert true}') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
@@ -237,9 +229,7 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket withDebug="true"/>')
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: true])
         })
@@ -251,9 +241,7 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket withDebug="false"/>')
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
         })
@@ -265,9 +253,7 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket endPoint="/hello"/>')
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/hello', jsCode: '', withDebug: false])
         })
@@ -279,9 +265,7 @@ class GrooscriptTagLibSpec extends Specification {
         applyTemplate('<grooscript:initSpringWebsocket>assert true</grooscript:initSpringWebsocket>')
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * grooscriptConverter.toJavascript('assert true') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: JS_CODE, withDebug: false])
@@ -322,51 +306,14 @@ class GrooscriptTagLibSpec extends Specification {
     }
 
     @Unroll
-    void 'add a component in development'() {
-        given:
-        GroovySpy(GrailsUtil, global: true)
-        GroovySpy(Util, global: true)
-
+    void 'add a component'() {
         when:
         applyTemplate("<grooscript:component src='${className}'/>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
-        1 * GrailsUtil.isDevelopmentEnv() >> true
-        1 * Util.getClassSource(className) >> COMPONENT_GROOVY_CODE
-        1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(${componentClass}, '${componentName}');"
-        })
-        0 * _
-
-        where:
-        className                    | componentClass | componentName
-        'org.grooscript.MyComponent' | 'MyComponent'  | 'my-component'
-        'MyComponent'                | 'MyComponent'  | 'my-component'
-        'Name'                       | 'Name'         | 'name'
-    }
-
-    @Unroll
-    void 'add a component in production'() {
-        given:
-        GroovySpy(GrailsUtil, global: true)
-        GroovySpy(Util, global: true)
-
-        when:
-        applyTemplate("<grooscript:component src='${className}'/>")
-
-        then:
-        interaction {
-            initGrooscriptGrails()
-        }
-        1 * GrailsUtil.isDevelopmentEnv() >> false
-        1 * Util.getResourceText("${componentClass}.cs") >> COMPONENT_JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(${componentClass}, '${componentName}');"
-        })
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
+        1 * grooscriptConverter.getComponentCodeConverted(className, componentClass, componentName) >> JS_CODE
+        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
         0 * _
 
         where:
@@ -378,22 +325,16 @@ class GrooscriptTagLibSpec extends Specification {
 
     void 'can define name of the component'() {
         given:
-        GroovySpy(GrailsUtil, global: true)
-        GroovySpy(Util, global: true)
+        String className = 'Counter'
+        String componentName = 'my-counter'
 
         when:
-        applyTemplate("<grooscript:component src='Counter' name='my-counter'/>")
+        applyTemplate("<grooscript:component src='${className}' name='${componentName}'/>")
 
         then:
-        interaction {
-            initGrooscriptGrails()
-        }
-        1 * GrailsUtil.isDevelopmentEnv() >> true
-        1 * Util.getClassSource('Counter') >> COMPONENT_GROOVY_CODE
-        1 * grooscriptConverter.convertComponent(COMPONENT_GROOVY_CODE) >> COMPONENT_JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == "${COMPONENT_JS_CODE};GrooscriptGrails.createComponent(Counter, 'my-counter');"
-        })
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
+        1 * grooscriptConverter.getComponentCodeConverted(className, className, componentName) >> JS_CODE
+        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
         0 * _
     }
 
@@ -465,15 +406,8 @@ class GrooscriptTagLibSpec extends Specification {
         tagLib.grailsApplication.metaClass.getDomainClasses = { -> [stubDomainClass] }
     }
 
-    private void initGrooscriptGrails() {
-        1 * linkGenerator.getServerBaseURL() >> REMOTE_URL
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.INIT_GROOSCRIPT_GRAILS, [remoteUrl: REMOTE_URL])
-        })
-    }
-
     private void initWebsockets() {
-        initGrooscriptGrails()
+        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
         })

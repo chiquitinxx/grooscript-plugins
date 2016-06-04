@@ -1,5 +1,5 @@
 package org.grooscript.grails.core
 
 interface Conversion {
-    String convertComponent(File file)
+    String convertComponent(String componentGroovyCode, String className, String nameComponent)
 }
