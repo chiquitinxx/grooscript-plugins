@@ -4,6 +4,5 @@ target
 *.iws
 *.idea
 .gradle/
-grails-app/assets/javascripts/app/*.js
-grails-app/assets/javascripts/grooscript-grails.js
+grails-plugin/grails-app/assets/javascripts/grooscript-grails.js
 build/

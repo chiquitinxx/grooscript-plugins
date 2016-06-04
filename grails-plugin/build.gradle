@@ -134,3 +134,30 @@ asciidoctor {
             toclevels: 2,
             icons: 'font'
 }
+
+import org.grooscript.GrooScript
+import org.grooscript.convert.ConversionOptions
+
+task generateJavascriptFile() << {
+    String fileName = 'grails-app/assets/javascripts/grooscript-grails.js'
+    String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
+    text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-tools.js').text
+
+    Map conversionOptions = [:]
+    conversionOptions[ConversionOptions.CLASSPATH.text] =
+            [project.file('src/main/groovy').path, project.file('../grails-core/src/main/groovy').path]
+    text += GrooScript.convert(project.file(
+            '../grails-core/src/main/groovy/org/grooscript/grails/core/util/GrooscriptGrails.groovy').text, conversionOptions)
+    text += GrooScript.convert(project.file(
+            '../grails-core/src/main/groovy/org/grooscript/grails/core/promise/RemoteDomain.groovy').text, conversionOptions)
+
+    conversionOptions[ConversionOptions.FINAL_TEXT.text] = 'var gsEvents = ClientEventHandler();'
+    text += GrooScript.convert(project.file(
+            'src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
+
+    project.file('grails-app/assets/javascripts/').mkdirs()
+    project.file(fileName).text = text
+    println 'Generated javascript file in grails-plugin ' + fileName
+}
+
+classes.dependsOn 'generateJavascriptFile'
