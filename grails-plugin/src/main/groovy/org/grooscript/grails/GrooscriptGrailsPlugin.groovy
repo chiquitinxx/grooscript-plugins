@@ -3,6 +3,7 @@ package org.grooscript.grails
 import grails.plugins.Plugin
 
 import org.grooscript.grails.bean.JavascriptConverter
+import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
 
 class GrooscriptGrailsPlugin extends Plugin {
@@ -43,6 +44,7 @@ It converts the code to javascript and your groovy code will run in the browser.
         { ->
             javascriptConverter(JavascriptConverter)
             javascriptTemplate(JavascriptTemplate)
+            grooscriptGrailsHelpers(GrooscriptGrailsHelpers)
         } 
     }
 }

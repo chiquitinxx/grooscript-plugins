@@ -56,8 +56,10 @@ dependencies {
     runtime "com.h2database:h2"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.52.0"
+    testCompile "org.seleniumhq.selenium:selenium-support:2.52.0"
+    //testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+    //testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
 
 assets {

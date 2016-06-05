@@ -6,13 +6,11 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.JavascriptConverter
-import org.grooscript.grails.util.GrailsHelpers
+import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
 
 import javax.annotation.ParametersAreNonnullByDefault
-
-import static grails.util.Environment.isDevelopmentEnvironmentAvailable
 
 /**
  * @author Jorge Franco <jorge.franco@osoco.es>
@@ -24,13 +22,11 @@ class GrooscriptTagLib {
 
     private static final String WEBSOCKET_STARTED = 'grooscriptWebsocketStarted'
 
-    private boolean sourceCodeAvailable = developmentEnvironmentAvailable
-
     GrailsApplication grailsApplication
-    JavascriptConverter grooscriptConverter
+    JavascriptConverter javascriptConverter
     LinkGenerator grailsLinkGenerator
-    JavascriptTemplate grooscriptTemplate
-    GrailsHelpers grailsHelpers
+    JavascriptTemplate javascriptTemplate
+    GrooscriptGrailsHelpers grooscriptGrailsHelpers
 
     /**
      * grooscript:code
@@ -39,9 +35,9 @@ class GrooscriptTagLib {
     def code = { attrs, body ->
         String script = body()
         if (script) {
-            grailsHelpers.initGrooscriptGrails(request, asset, out)
-            String jsCode = grooscriptConverter.toJavascript(script, attrs.conversionOptions as Map)
-            grailsHelpers.addAssetScript(asset, out, jsCode)
+            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
+            String jsCode = javascriptConverter.toJavascript(script, attrs.conversionOptions as Map)
+            grooscriptGrailsHelpers.addAssetScript(asset, out, jsCode)
         }
     }
 
@@ -60,16 +56,16 @@ class GrooscriptTagLib {
         }
 
         String functionName = attrs.functionName ?: Util.newTemplateName
-        String jsCode = grooscriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
+        String jsCode = javascriptConverter.toJavascript("def gsTextHtml = { data -> HtmlBuilder.build { builderIt -> ${script}}}").trim()
 
-        grailsHelpers.initGrooscriptGrails(request, asset, out)
+        grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
 
         if (!attrs.itemSelector) {
             out << "\n<div id='${functionName}'></div>\n"
         }
 
         asset.script(type: 'text/javascript') {
-            String result = grooscriptTemplate.apply(
+            String result = javascriptTemplate.apply(
                     Templates.TEMPLATE_DRAW,
                     [functionName: functionName,
                      jsCode: jsCode,
@@ -77,7 +73,7 @@ class GrooscriptTagLib {
                     ])
 
             if (attrs['onLoad'] == null || attrs['onLoad'] == 'true' || attrs['onLoad'] == true) {
-                result += grooscriptTemplate.apply(
+                result += javascriptTemplate.apply(
                         Templates.TEMPLATE_ON_READY,
                         [functionName: functionName])
             }
@@ -93,10 +89,10 @@ class GrooscriptTagLib {
      */
     def remoteModel = { attrs ->
         String domainClass = attrs.domainClass as String
-        if (grailsHelpers.validDomainClassName(domainClass)) {
-            grailsHelpers.initGrooscriptGrails(request, asset, out)
-            String convertedDomainClass = grooscriptConverter.convertRemoteDomainClass(domainClass)
-            grailsHelpers.addAssetScript(asset, out, convertedDomainClass)
+        if (grooscriptGrailsHelpers.validDomainClassName(domainClass)) {
+            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
+            String convertedDomainClass = javascriptConverter.convertRemoteDomainClass(domainClass)
+            grooscriptGrailsHelpers.addAssetScript(asset, out, convertedDomainClass)
         } else {
             Util.consoleError 'GrooscriptTagLib remoteModel need define valid domainClass property'
         }
@@ -109,14 +105,14 @@ class GrooscriptTagLib {
     def onEvent = { attrs, body ->
         String name = attrs.name
         if (name) {
-            grailsHelpers.initGrooscriptGrails(request, asset, out)
+            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
 
             String script = body()
-            String jsCode = grooscriptConverter.toJavascript("{ event -> ${script}}").trim()
+            String jsCode = javascriptConverter.toJavascript("{ event -> ${script}}").trim()
             String jsCodeWithoutLastSemicolon = Util.removeLastSemicolon(jsCode)
 
             asset.script(type: 'text/javascript') {
-                grooscriptTemplate.apply(
+                javascriptTemplate.apply(
                         Templates.ON_EVENT_TAG,
                         [jsCode: jsCodeWithoutLastSemicolon, nameEvent: name])
             }
@@ -131,16 +127,16 @@ class GrooscriptTagLib {
      */
     def initSpringWebsocket = { attrs, body ->
         String script = body()
-        String jsCode = script ? grooscriptConverter.toJavascript(script) : ''
+        String jsCode = script ? javascriptConverter.toJavascript(script) : ''
 
-        grailsHelpers.initGrooscriptGrails(request, asset, out)
+        grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
 
         String endPoint = attrs.endPoint ?: '/stomp'
         String withDebugString = attrs.withDebug
         boolean withDebug = withDebugString == null ? false : Boolean.valueOf(withDebugString)
 
         asset.script(type: 'text/javascript') {
-            grooscriptTemplate.apply(
+            javascriptTemplate.apply(
                     Templates.SPRING_WEBSOCKET,
                     [endPoint: endPoint, jsCode: jsCode, withDebug: withDebug])
         }
@@ -154,12 +150,12 @@ class GrooscriptTagLib {
         String script = body()
         initWebsocket()
 
-        String template = grooscriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])
-        String jsCode = script ? grooscriptConverter.toJavascript(template) : ''
+        String template = javascriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])
+        String jsCode = script ? javascriptConverter.toJavascript(template) : ''
         String functionName = onServerEventFunctionName
 
         asset.script(type: 'text/javascript') {
-            grooscriptTemplate.apply(
+            javascriptTemplate.apply(
                     Templates.ON_SERVER_EVENT,
                     [jsCode: jsCode,
                      path: attrs.path,
@@ -179,7 +175,7 @@ class GrooscriptTagLib {
 
                 String functionName = onServerEventFunctionName
                 asset.script(type: 'text/javascript') {
-                    grooscriptTemplate.apply(
+                    javascriptTemplate.apply(
                             Templates.RELOAD_ON,
                             [path: path, functionName: functionName])
                 }
@@ -195,14 +191,14 @@ class GrooscriptTagLib {
     def component = { attrs, body ->
         String fullClassName = attrs.src
         if (fullClassName) {
-            grailsHelpers.initGrooscriptGrails(request, asset, out)
+            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
 
             String shortClassName = GrailsNameUtils.getShortName(fullClassName)
             String nameComponent = attrs.name ?: GrailsNameUtils.getScriptName(shortClassName)
             String convertedComponent =
-                    grooscriptConverter.getComponentCodeConverted(fullClassName, shortClassName, nameComponent)
+                    javascriptConverter.getComponentCodeConverted(fullClassName, shortClassName, nameComponent)
 
-            grailsHelpers.addAssetScript(asset, out, convertedComponent)
+            grooscriptGrailsHelpers.addAssetScript(asset, out, convertedComponent)
         }
     }
 
@@ -219,7 +215,7 @@ class GrooscriptTagLib {
 
             listEvents.each { String nameEvent ->
                 asset.script(type: 'text/javascript') {
-                    grooscriptTemplate.apply(
+                    javascriptTemplate.apply(
                             Templates.CLIENT_EVENT,
                             [functionName: functionName, nameEvent: nameEvent.trim()]
                     )

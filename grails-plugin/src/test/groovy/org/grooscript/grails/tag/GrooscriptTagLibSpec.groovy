@@ -8,7 +8,7 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.JavascriptConverter
-import org.grooscript.grails.util.GrailsHelpers
+import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
 import spock.lang.Specification
@@ -22,16 +22,16 @@ class GrooscriptTagLibSpec extends Specification {
     private AssetsTagLib assetsTagLib
     private JavascriptTemplate template = new JavascriptTemplate()
     private LinkGenerator linkGenerator = Mock(LinkGenerator)
-    private GrailsHelpers grailsHelpers = Mock(GrailsHelpers)
+    private GrooscriptGrailsHelpers grailsHelpers = Mock(GrooscriptGrailsHelpers)
 
     void setup() {
         grooscriptConverter = Mock(JavascriptConverter)
         assetsTagLib = Mock(AssetsTagLib)
-        tagLib.grooscriptConverter = grooscriptConverter
+        tagLib.javascriptConverter = grooscriptConverter
         tagLib.metaClass.asset = assetsTagLib
-        tagLib.grooscriptTemplate = template
+        tagLib.javascriptTemplate = template
         tagLib.grailsLinkGenerator = linkGenerator
-        tagLib.grailsHelpers = grailsHelpers
+        tagLib.grooscriptGrailsHelpers = grailsHelpers
     }
 
     void cleanup() {
