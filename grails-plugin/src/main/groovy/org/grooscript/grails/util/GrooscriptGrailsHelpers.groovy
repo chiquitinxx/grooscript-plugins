@@ -2,30 +2,35 @@ package org.grooscript.grails.util
 
 import grails.core.GrailsApplication
 import grails.web.mapping.LinkGenerator
+import org.grails.spring.GrailsApplicationContext
 import org.grooscript.grails.Templates
 import org.springframework.beans.factory.annotation.Autowired
 
-public class GrooscriptGrailsHelpers {
+class GrooscriptGrailsHelpers {
 
     private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
 
     private LinkGenerator grailsLinkGenerator
     private JavascriptTemplate grooscriptTemplate
     private GrailsApplication grailsApplication
+    private GrailsApplicationContext grailsApplicationContext
 
     @Autowired
-    public GrooscriptGrailsHelpers(LinkGenerator grailsLinkGenerator, JavascriptTemplate grooscriptTemplate,
-                                   GrailsApplication grailsApplication) {
+    GrooscriptGrailsHelpers(LinkGenerator grailsLinkGenerator,
+                                   JavascriptTemplate grooscriptTemplate,
+                                   GrailsApplication grailsApplication,
+                                   GrailsApplicationContext grailsApplicationContext) {
         this.grailsLinkGenerator = grailsLinkGenerator
         this.grooscriptTemplate = grooscriptTemplate
         this.grailsApplication = grailsApplication
+        this.grailsApplicationContext = grailsApplicationContext
     }
 
-    public void addAssetScript(assetTagLib, out, String content) {
+    void addAssetScript(assetTagLib, out, String content) {
         out << assetTagLib.script([type: 'text/javascript'], content)
     }
 
-    public void initGrooscriptGrails(request, assetTagLib, out) {
+    void initGrooscriptGrails(request, assetTagLib, out) {
         def urlSet = request.getAttribute(REMOTE_URL_SET)
         if (!urlSet) {
             String content = grooscriptTemplate.apply(
@@ -36,7 +41,7 @@ public class GrooscriptGrailsHelpers {
         }
     }
 
-    public boolean validDomainClassName(String name) {
+    boolean validDomainClassName(String name) {
         if (!name || !(name instanceof String)) {
             Util.consoleError "GrooscriptTagLib have to define domainClass property as String"
         } else {
@@ -47,6 +52,16 @@ public class GrooscriptGrailsHelpers {
             }
         }
         return false
+    }
+
+    boolean isSpringWebsocketsActive() {
+        grailsApplicationContext.getBean('brokerMessagingTemplate')
+    }
+
+    void sendWebsocketMessake(String key, Object data) {
+        if (springWebsocketsActive) {
+            grailsApplicationContext.brokerMessagingTemplate.convertAndSend key, data
+        }
     }
 
     private boolean domainClassFromName(String nameClass) {
