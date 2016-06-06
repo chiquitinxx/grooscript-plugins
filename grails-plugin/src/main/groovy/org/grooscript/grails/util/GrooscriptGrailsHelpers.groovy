@@ -2,9 +2,9 @@ package org.grooscript.grails.util
 
 import grails.core.GrailsApplication
 import grails.web.mapping.LinkGenerator
-import org.grails.spring.GrailsApplicationContext
 import org.grooscript.grails.Templates
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
 
 class GrooscriptGrailsHelpers {
 
@@ -13,17 +13,17 @@ class GrooscriptGrailsHelpers {
     private LinkGenerator grailsLinkGenerator
     private JavascriptTemplate grooscriptTemplate
     private GrailsApplication grailsApplication
-    private GrailsApplicationContext grailsApplicationContext
+    private ApplicationContext applicationContext
 
     @Autowired
     GrooscriptGrailsHelpers(LinkGenerator grailsLinkGenerator,
                                    JavascriptTemplate grooscriptTemplate,
                                    GrailsApplication grailsApplication,
-                                   GrailsApplicationContext grailsApplicationContext) {
+                                   ApplicationContext applicationContext) {
         this.grailsLinkGenerator = grailsLinkGenerator
         this.grooscriptTemplate = grooscriptTemplate
         this.grailsApplication = grailsApplication
-        this.grailsApplicationContext = grailsApplicationContext
+        this.applicationContext = applicationContext
     }
 
     void addAssetScript(assetTagLib, out, String content) {
@@ -55,12 +55,12 @@ class GrooscriptGrailsHelpers {
     }
 
     boolean isSpringWebsocketsActive() {
-        grailsApplicationContext.getBean('brokerMessagingTemplate')
+        applicationContext.getBean('brokerMessagingTemplate')
     }
 
     void sendWebsocketMessake(String key, Object data) {
         if (springWebsocketsActive) {
-            grailsApplicationContext.brokerMessagingTemplate.convertAndSend key, data
+            applicationContext.getBean('brokerMessagingTemplate').convertAndSend key, data
         }
     }
 

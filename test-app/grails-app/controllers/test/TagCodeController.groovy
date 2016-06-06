@@ -1,6 +1,6 @@
 package test
 
-class TagConvertController {
+class TagCodeController {
 
     def index() { }
 }

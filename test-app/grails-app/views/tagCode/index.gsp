@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="main"/>
-    <title>Init tag converter</title>
+    <title>Tag code tests</title>
     <asset:javascript src="grooscript-grails.js"/>
 </head>
 <body>

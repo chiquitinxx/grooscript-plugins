@@ -1,8 +1,5 @@
 package org.grooscript.grails
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 class Templates {
 
     static final String INIT_GROOSCRIPT_GRAILS = '''
@@ -13,12 +10,12 @@ class Templates {
 function ${functionName}(templateParams) {
   ${jsCode}
   var code = gsTextHtml(templateParams);
-  \\$('${selector}').html(code);
+  GsHlp.selectorHtml('${selector}', code);
 };
 '''
 
     static final String TEMPLATE_ON_READY = '''
-\\$(document).ready(function() {
+GsHlp.onReady(function(event) {
   ${functionName}();
 })
 '''
@@ -32,7 +29,7 @@ gsEvents.onEvent('${nameEvent}', ${jsCode});
 '''
 
     static final String SPRING_WEBSOCKET = '''
-\\$(document).ready(function() {
+GsHlp.onReady(function(event) {
 
     var socket = new SockJS("${endPoint}");
     websocketClient = Stomp.over(socket);

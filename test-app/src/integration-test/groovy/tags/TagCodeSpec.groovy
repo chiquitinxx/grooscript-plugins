@@ -6,11 +6,11 @@ import geb.spock.*
 
 @Integration
 @Rollback
-class ConvertSpec extends GebSpec {
+class TagCodeSpec extends GebSpec {
 
-    void "check grooscript:code works in tagConvert index"() {
+    void "check grooscript:code works"() {
         when:
-        go '/tagConvert'
+        go '/tagCode'
 
         then:
         $('body').text() == 'Hello World! from grooscript :)'

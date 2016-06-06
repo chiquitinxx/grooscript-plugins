@@ -139,9 +139,10 @@ import org.grooscript.GrooScript
 import org.grooscript.convert.ConversionOptions
 
 task generateJavascriptFile() << {
-    String fileName = 'grails-app/assets/javascripts/grooscript-grails.js'
+    String grooscriptGrailsJsLib = 'grails-app/assets/javascripts/grooscript-grails.js'
     String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
     text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-tools.js').text
+    text += project.file('grails-app/assets/javascripts/grooscript-helper.js').text
 
     Map conversionOptions = [:]
     conversionOptions[ConversionOptions.CLASSPATH.text] =
@@ -155,9 +156,8 @@ task generateJavascriptFile() << {
     text += GrooScript.convert(project.file(
             'src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
 
-    project.file('grails-app/assets/javascripts/').mkdirs()
-    project.file(fileName).text = text
-    println 'Generated javascript file in grails-plugin ' + fileName
+    project.file(grooscriptGrailsJsLib).text = text
+    println 'Generated javascript file in grails-plugin ' + grooscriptGrailsJsLib
 }
 
 classes.dependsOn 'generateJavascriptFile'
