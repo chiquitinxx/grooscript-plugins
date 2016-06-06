@@ -45,21 +45,7 @@ class GrooscriptGrails {
         if (action !== null) {
             url = url + '/' + action;
         }
-        $.ajax({
-            type: "POST",
-            data: (gs.isGroovyObj(params) ? gs.toJavascript(params) : params),
-            url: url
-        }).done(function(newData) {
-            if (onSuccess !== null && onSuccess !== undefined) {
-                var successData = gs.toGroovy(newData);
-                onSuccess(successData);
-            }
-        })
-        .fail(function(error) {
-            if (onFailure !== null && onFailure !== undefined) {
-                onFailure(error);
-            }
-        });
+        GsHlp.http(url, "POST", params, onSuccess, onFailure);
     */}
 
     @GsNative
@@ -80,22 +66,7 @@ class GrooscriptGrails {
             data = null;
             url = url + '/' + params.data.id;
         }
-        $.ajax({
-            type: type,
-            data: data,
-            url: url,
-            accepts: 'application/json'
-        }).done(function(newData) {
-            var successData = gs.toGroovy(newData, eval(name));
-            if (onSuccess !== null && onSuccess !== undefined) {
-                onSuccess(successData);
-            }
-        })
-        .fail(function(error) {
-            if (onFailure !== null && onFailure !== undefined) {
-                onFailure(error);
-            }
-        });
+        GsHlp.http(url, type, params, onSuccess, onFailure);
     */}
 
     @GsNative

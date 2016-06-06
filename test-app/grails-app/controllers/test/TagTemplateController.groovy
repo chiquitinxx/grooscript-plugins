@@ -1,4 +1,4 @@
-package test.app
+package test
 
 class TagTemplateController {
 

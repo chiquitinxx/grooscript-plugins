@@ -7,5 +7,41 @@ var GsHlp = {
     },
     onReady: function(func) {
         document.addEventListener("DOMContentLoaded", func);
+    },
+    serialize: function (obj) {
+        var str = [];
+        for(var p in obj)
+            if (obj.hasOwnProperty(p)) {
+                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            }
+        return str.join("&");
+    },
+    http: function(url, action, params, success, fail) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                if (success !== null && success !== undefined) {
+                    var response;
+                    try {
+                        response = JSON.parse(this.responseText);
+                        success(gs.toGroovy(response));
+                    } catch(e) {
+                        success(this.responseText);
+                    }
+                }
+            } else {
+                if (fail !== null && fail !== undefined) {
+                    fail(xhr.responseText);
+                }
+            }
+        };
+        var data = gs.isGroovyObj(params) ? gs.toJavascript(params) : params;
+        var finalUrl = url;
+        if (data !== null && data !== undefined) {
+            finalUrl = '?' + GsHlp.serialize(data);
+        }
+        xhr.open(action || "GET", finalUrl, true);
+        xhr.setRequestHeader('Accept','application/json; charset=utf-8');
+        xhr.send(null);
     }
 };
