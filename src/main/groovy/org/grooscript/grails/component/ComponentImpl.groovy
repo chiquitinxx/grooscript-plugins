@@ -57,15 +57,20 @@ public class ComponentImpl implements ASTTransformation {
         if (!renderAfter)
             return
 
-        if (renderAfter.initialExpression instanceof ConstantExpression) {
-            addRenderCallToMethod(renderAfter.initialExpression as ConstantExpression, classNode)
-        } else if (renderAfter.initialExpression instanceof ListExpression) {
-            ListExpression list = renderAfter.initialExpression as ListExpression
-            list.expressions.each { expression ->
-                if (expression instanceof ConstantExpression) {
-                    addRenderCallToMethod(expression, classNode)
+        switch (renderAfter.initialExpression) {
+            case ConstantExpression:
+                addRenderCallToMethod(renderAfter.initialExpression as ConstantExpression, classNode)
+                break
+            case ListExpression:
+                ListExpression list = renderAfter.initialExpression as ListExpression
+                list.expressions.each { expression ->
+                    if (expression instanceof ConstantExpression)
+                        addRenderCallToMethod(expression, classNode)
                 }
-            }
+                break
+            default:
+                throw new GroovyRuntimeException("Unexpected expression type " + renderAfter.initialExpression.type)
+                break
         }
     }
 

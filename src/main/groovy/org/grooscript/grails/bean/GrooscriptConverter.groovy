@@ -2,7 +2,7 @@ package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
 import org.codehaus.groovy.control.CompilerConfiguration
-import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer
+import org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder
 import org.grooscript.GrooScript
 import org.grooscript.convert.ConversionOptions
 import org.grooscript.grails.component.Component
@@ -10,7 +10,6 @@ import org.grooscript.grails.remote.RemoteDomainClass
 
 import javax.annotation.ParametersAreNonnullByDefault
 
-import static org.codehaus.groovy.control.customizers.builder.CompilerCustomizationBuilder.withConfig
 import static org.grooscript.grails.util.Util.*
 
 /**
@@ -58,7 +57,7 @@ class GrooscriptConverter {
         conversionOptions[ConversionOptions.CLASSPATH.text] = GROOVY_SRC_DIR
         conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
         conversionOptions[ConversionOptions.CUSTOMIZATION.text] = {
-            withConfig(new CompilerConfiguration()) {
+            CompilerCustomizationBuilder.withConfig(new CompilerConfiguration()) {
                 ast(Component)
             }
         }
