@@ -20,7 +20,6 @@ class RemoteDomainClassSpec extends Specification {
         remoteItem.name == null
         remoteItem.url == URL
         remoteItem.id == null
-        remoteItem.version == 0
     }
 
     def 'create a remote domain instance'() {

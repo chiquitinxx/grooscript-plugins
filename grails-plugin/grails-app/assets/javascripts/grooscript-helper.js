@@ -16,15 +16,15 @@ var GsHlp = {
             }
         return str.join("&");
     },
-    http: function(url, action, params, success, fail) {
+    http: function(url, action, params, success, fail, responseClass) {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
+            if (xhr.readyState == 4 && (xhr.status > 199 && xhr.status < 300)) {
                 if (success !== null && success !== undefined) {
                     var response;
                     try {
                         response = JSON.parse(this.responseText);
-                        success(gs.toGroovy(response));
+                        success(gs.toGroovy(response, responseClass));
                     } catch(e) {
                         success(this.responseText);
                     }
@@ -37,8 +37,8 @@ var GsHlp = {
         };
         var data = gs.isGroovyObj(params) ? gs.toJavascript(params) : params;
         var finalUrl = url;
-        if (data !== null && data !== undefined) {
-            finalUrl = '?' + GsHlp.serialize(data);
+        if (data) {
+            finalUrl = finalUrl + '?' + GsHlp.serialize(data);
         }
         xhr.open(action || "GET", finalUrl, true);
         xhr.setRequestHeader('Accept','application/json; charset=utf-8');

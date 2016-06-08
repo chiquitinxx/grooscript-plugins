@@ -8,7 +8,7 @@ import grails.transaction.Rollback
 @Rollback
 class ResponsesSpec extends GebSpec {
 
-    void "check ajx remote calls"() {
+    void "check ajax remote calls"() {
         when:
         go '/responses'
 

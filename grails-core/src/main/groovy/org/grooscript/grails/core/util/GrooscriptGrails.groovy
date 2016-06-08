@@ -4,9 +4,6 @@ import org.grooscript.asts.GsNative
 
 class GrooscriptGrails {
 
-    static String remoteUrl
-    static String controllerRemoteDomain = 'remoteDomain'
-    static String actionRemoteDomain = 'doAction'
     static long count = 0
     static Map components = [:]
 
@@ -40,8 +37,7 @@ class GrooscriptGrails {
 
     @GsNative
     static void doRemoteCall(String controller, String action, params, onSuccess, onFailure) {/*
-        var url = GrooscriptGrails.remoteUrl;
-        url = url + '/' + controller;
+        var url = '/' + controller;
         if (action !== null) {
             url = url + '/' + action;
         }
@@ -49,24 +45,21 @@ class GrooscriptGrails {
     */}
 
     @GsNative
-    static void remoteDomainAction(params, onSuccess, onFailure, name) {/*
-        var url = GrooscriptGrails.remoteUrl + params.url;
+    static void remoteDomainAction(params, onSuccess, onFailure, nameClass) {/*
+        var url = params.url;
         var data = (gs.isGroovyObj(params.data) ? gs.toJavascript(params.data) : params.data);
         var type = 'GET';
-        if (params.action == 'create') {
-            type = 'POST';
-        }
-        if (params.action == 'update') {
-            type = 'PUT';
-        }
-        if (params.action == 'delete') {
-            type = 'DELETE';
-        }
+        if (params.action == 'create') { type = 'POST'; }
+        if (params.action == 'update') { type = 'PUT'; }
+        if (params.action == 'delete') { type = 'DELETE'; }
         if (params.action == 'read' || params.action == 'delete') {
             data = null;
+        }
+        if (params.action == 'read' || params.action == 'delete' || params.action == 'update') {
             url = url + '/' + params.data.id;
         }
-        GsHlp.http(url, type, params, onSuccess, onFailure);
+
+        GsHlp.http(url, type, data, onSuccess, onFailure, eval(nameClass));
     */}
 
     @GsNative

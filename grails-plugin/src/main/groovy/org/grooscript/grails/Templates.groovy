@@ -2,10 +2,6 @@ package org.grooscript.grails
 
 class Templates {
 
-    static final String INIT_GROOSCRIPT_GRAILS = '''
-  GrooscriptGrails.remoteUrl = '${remoteUrl}';
-'''
-
     static final String TEMPLATE_DRAW = '''
 function ${functionName}(templateParams) {
   ${jsCode}

@@ -2,7 +2,6 @@ package org.grooscript.grails.util
 
 import grails.core.GrailsApplication
 import grails.web.mapping.LinkGenerator
-import org.grooscript.grails.Templates
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 
@@ -33,10 +32,6 @@ class GrooscriptGrailsHelpers {
     void initGrooscriptGrails(request, assetTagLib, out) {
         def urlSet = request.getAttribute(REMOTE_URL_SET)
         if (!urlSet) {
-            String content = grooscriptTemplate.apply(
-                    Templates.INIT_GROOSCRIPT_GRAILS,
-                    [remoteUrl: grailsLinkGenerator.serverBaseURL])
-            addAssetScript(assetTagLib, out, content)
             request.setAttribute(REMOTE_URL_SET, true)
         }
     }

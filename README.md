@@ -1,4 +1,4 @@
-Grooscript grails 3 plugin 1.2.2
+Grooscript grails 3 plugin 2.0.0-SNAPSHOT
 ===
 
 [![Build Status](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master)
@@ -19,12 +19,23 @@ files, templates,... and combine with this plugin to use in your gsp's.
 
 More info about [grooscript](http://grooscript.org/)
 
-Build
+Multi-project
 ---
 
-To install locally:
+Actually, there are 3 projects:
 
-    ./gradlew install
+grails-core: library used by grooscript gradle plugin and this grails plugin
+grails-plugin: this grails 3 plugin
+test-app: a grails 3 app to test the plugin
+
+TO-DO
+---
+
+- Remove the needed or add grooscript js libraries in the gsp's.
+- Publish grails events to listening clients using websockets.
+- Execute get test in sauce labs or something-similar.
+- Publish grails-core in bintray and use it in grooscript gradle plugin.
+
 
 Collaborators
 ---

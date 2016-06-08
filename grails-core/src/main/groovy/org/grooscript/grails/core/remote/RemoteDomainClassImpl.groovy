@@ -9,7 +9,6 @@ import org.codehaus.groovy.control.SourceUnit
 import org.codehaus.groovy.transform.ASTTransformation
 import org.codehaus.groovy.transform.GroovyASTTransformation
 import org.grooscript.grails.core.promise.RemoteDomain
-import org.grooscript.grails.core.util.GrooscriptGrails
 
 import java.lang.reflect.Modifier
 
@@ -45,8 +44,6 @@ class RemoteDomainClassImpl implements ASTTransformation {
     private static void addInstanceProperties(ClassNode classNode) {
         classNode.addProperty('id', Modifier.PUBLIC, ClassHelper.Long_TYPE,
             null, null, null)
-        classNode.addProperty('version', Modifier.PUBLIC, ClassHelper.long_TYPE,
-            constX(0, true), null, null)
         classNode.addProperty('url', Modifier.STATIC, ClassHelper.STRING_TYPE,
             constX(getResourceUrl(classNode)), null, null)
         classNode.addProperty('gsName', Modifier.STATIC, ClassHelper.STRING_TYPE,
