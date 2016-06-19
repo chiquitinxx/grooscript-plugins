@@ -3,6 +3,7 @@ package org.grooscript.grails
 import grails.plugins.Plugin
 
 import org.grooscript.grails.bean.JavascriptConverter
+import org.grooscript.grails.event.DefaultWebsocketConfig
 import org.grooscript.grails.event.GrooscriptEventsInterceptor
 import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
@@ -46,7 +47,10 @@ It converts the code to javascript and your groovy code will run in the browser.
             javascriptConverter(JavascriptConverter)
             javascriptTemplate(JavascriptTemplate)
             grooscriptGrailsHelpers(GrooscriptGrailsHelpers)
-            grooscriptEventsInterceptor(GrooscriptEventsInterceptor)
+            if (GrooscriptGrailsHelpers.isSpringWebsocketsActive(applicationContext)) {
+                grooscriptEventsInterceptor(GrooscriptEventsInterceptor)
+                webSocketConfig(DefaultWebsocketConfig)
+            }
         } 
     }
 }

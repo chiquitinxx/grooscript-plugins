@@ -13,6 +13,8 @@ class TagCodeSpec extends GebSpec {
         go '/tagCode'
 
         then:
-        $('body').text() == 'Hello World! from grooscript :)'
+        waitFor {
+            $('body').text() == 'Hello World! from grooscript :)'
+        }
     }
 }

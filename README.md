@@ -1,4 +1,4 @@
-Grooscript grails 3 plugin 2.0.0-SNAPSHOT
+Grooscript grails 3 plugin 1.3.0-SNAPSHOT
 ===
 
 [![Build Status](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-grails3-plugin/branch/master)
@@ -33,7 +33,7 @@ TO-DO
 
 - Remove the needed or add grooscript js libraries in the gsp's.
 - Publish grails events to listening clients using websockets.
-- Execute get test in sauce labs or something-similar.
+- Execute geb tests in sauce labs or something-similar.
 - Publish grails-core in bintray and use it in grooscript gradle plugin.
 
 

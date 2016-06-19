@@ -49,6 +49,8 @@ dependencies {
     provided "org.grails:grails-dependencies"
     provided 'javax.servlet:javax.servlet-api:3.1.0'
 
+    compileOnly "org.grails.plugins:grails-spring-websocket:2.3.0"
+
     testCompile "org.grails:grails-plugin-testing"
     compile "org.grails.plugins:asset-pipeline"
     compile "org.grails.plugins:cache"

@@ -8,6 +8,7 @@ buildscript {
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
         classpath "org.grails.plugins:hibernate4:5.0.6"
         classpath "org.grooscript:grooscript-gradle-plugin:${grooscriptGradlePluginVersion}"
+        classpath 'org.gebish:geb-gradle:0.13.1'
     }
 }
 
@@ -19,10 +20,20 @@ apply plugin: 'org.grails.grails-web'
 apply plugin: 'org.grails.grails-gsp'
 apply plugin: 'asset-pipeline'
 apply plugin: 'org.grooscript.conversion'
+apply plugin: "geb-saucelabs"
 
 repositories {
     mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
+    maven {
+        url "https://repo.grails.org/grails/core"
+    }
+    maven {
+        url "http://repository-saucelabs.forge.cloudbees.com/release"
+    }
+}
+
+dependencies {
+    sauceConnect "com.saucelabs:ci-sauce:1.81"
 }
 
 dependencyManagement {
@@ -58,8 +69,12 @@ dependencies {
     testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
     testCompile "org.seleniumhq.selenium:selenium-support:2.53.0"
+    if (System.getProperty("geb.saucelabs.browser")) {
+        testCompile "org.seleniumhq.selenium:selenium-remote-driver:2.53.0"
+    } else {
+        testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
+    }
     //testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     //testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
@@ -67,4 +82,25 @@ dependencies {
 assets {
     minifyJs = true
     minifyCss = true
+}
+
+sauceLabs {
+    browsers {
+        firefox_linux_19
+        //chrome_mac
+        delegate."internet explorer_vista_10"
+    }
+    task {
+        testClassesDir = integrationTest.testClassesDir
+        testSrcDirs = integrationTest.testSrcDirs
+        classpath = integrationTest.classpath
+    }
+    account {
+        username = getProperty('sauceLabs.username') ?: System.getenv('sauceLabs.username')
+        accessKey = getProperty('sauceLabs.accessKey') ?: System.getenv('sauceLabs.accessKey')
+    }
+    //connect {
+    //    port = 4445
+    //    additionalOptions = ['--proxy', 'localhost:8080']
+    //}
 }

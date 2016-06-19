@@ -2,11 +2,13 @@ package org.grooscript.grails.util
 
 import grails.core.GrailsApplication
 import grails.web.mapping.LinkGenerator
+import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 
 class GrooscriptGrailsHelpers {
 
+    private static final String WEBSOCKET_BEAN = 'brokerMessagingTemplate'
     private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
 
     private LinkGenerator grailsLinkGenerator
@@ -49,13 +51,18 @@ class GrooscriptGrailsHelpers {
         return false
     }
 
-    boolean isSpringWebsocketsActive() {
-        applicationContext.getBean('brokerMessagingTemplate')
+    static boolean isSpringWebsocketsActive(ApplicationContext applicationContext) {
+        try {
+            applicationContext.getBean(WEBSOCKET_BEAN)
+            true
+        } catch (NoSuchBeanDefinitionException e) {
+            return false
+        }
     }
 
     void sendWebsocketMessake(String key, Object data) {
-        if (springWebsocketsActive) {
-            applicationContext.getBean('brokerMessagingTemplate').convertAndSend key, data
+        if (isSpringWebsocketsActive(applicationContext)) {
+            applicationContext.getBean(WEBSOCKET_BEAN).convertAndSend key, data
         }
     }
 
