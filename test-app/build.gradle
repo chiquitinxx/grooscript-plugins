@@ -85,14 +85,6 @@ assets {
     minifyCss = true
 }
 
-task pp() << {
-    println '1-' + System.getenv('SNAP_CI')
-    println '2-' + System.getenv('GEB_SAUCE_LABS_USER')
-    println '3-' + System.getenv('sauceLabs.username')
-    println '4-' + System.getProperty('sauceLabs.username')
-    //println getProperty('sauceLabs.username')
-}
-
 sauceLabs {
     browsers {
         firefox_linux_19
@@ -105,8 +97,8 @@ sauceLabs {
         classpath = integrationTest.classpath
     }
     account {
-        username = ''//System.getenv('sauceLabs.username') ?: getProperty('sauceLabs.username')
-        accessKey = ''//System.getenv('sauceLabs.accessKey') ?: getProperty('sauceLabs.accessKey')
+        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
+        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
     }
     //connect {
     //    port = 4445
