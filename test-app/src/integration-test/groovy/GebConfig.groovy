@@ -11,5 +11,7 @@ if (sauceLabsBrowser) {
     }
 }
 
-//Start the tunnel
-//./bin/sc -u ... -k ...
+waiting {
+    timeout = 10
+    retryInterval = 0.5
+}
