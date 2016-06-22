@@ -85,6 +85,12 @@ assets {
     minifyCss = true
 }
 
+task pp() << {
+    println System.getenv('sauceLabs.username')
+    println System.getProperty('sauceLabs.username')
+    println getProperty('sauceLabs.username')
+}
+
 sauceLabs {
     browsers {
         firefox_linux_19
