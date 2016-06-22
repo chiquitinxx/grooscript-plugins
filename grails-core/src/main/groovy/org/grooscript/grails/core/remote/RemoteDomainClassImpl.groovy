@@ -23,14 +23,12 @@ class RemoteDomainClassImpl implements ASTTransformation {
     @Override
     @TypeChecked
     public void visit(ASTNode[] nodes, SourceUnit sourceUnit) {
-        if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode) {
+        if (!nodes[0] instanceof AnnotationNode || !nodes[1] instanceof ClassNode)
             throw new RuntimeException('RemoteDomainClassImpl only applies to classes.')
-        }
 
         ClassNode classNode = nodes[1] as ClassNode
-        if (classNode.hasProperty('id')) {
+        if (classNode.hasProperty('id'))
             return
-        }
 
         addInstanceProperties(classNode)
 
