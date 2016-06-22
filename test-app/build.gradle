@@ -97,8 +97,8 @@ sauceLabs {
         classpath = integrationTest.classpath
     }
     account {
-        username = getProperty('sauceLabs.username') ?: System.getenv('sauceLabs.username')
-        accessKey = getProperty('sauceLabs.accessKey') ?: System.getenv('sauceLabs.accessKey')
+        username = System.getenv('sauceLabs.username') ?: getProperty('sauceLabs.username')
+        accessKey = System.getenv('sauceLabs.accessKey') ?: getProperty('sauceLabs.accessKey')
     }
     //connect {
     //    port = 4445
