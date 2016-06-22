@@ -1,0 +1,199 @@
+= Gradle plugin tasks
+
+This plugin convert groovy files to javascript, convert groovy templates to a .js file, generate a little web
+static project to start with grooscript, and listen for changes in
+files. To do this tasks, uses http://grooscript.org[grooscript], a library that converts groovy code to javascript.
+In folders or files options, you can't use wildcards as * or **, just put relative path from folder where build is.
+
+== Convert files
+
+There are 2 tasks:
+
+* *convert* (org.grooscript.gradle.ConvertTask) to convert groovy files to javascript
+* *convertThread* (org.grooscript.gradle.ConvertThreadTask) listen changes in groovy files and convert them to javascript
+
+There is an extension to configure this tasks
+
+[source,groovy]
+--
+include::../src/main/groovy/org/grooscript/gradle/ConversionExtension.groovy[]
+
+//Example:
+grooscript {
+    source = ['src/main/groovy']
+    destination = 'js'
+}
+--
+
+If you execute `>gradle convert`, will convert groovy and java files in `src/main/groovy` to .js files, and will
+be saved in `./js` folder.
+
+You will use *convertThread* task when other task keeps gradle up, like a web application server.
+
+If you execute *convertThread* task with *blockExecution=true* option, gradle will be running forever doing conversions if files in `src/main/groovy` change.
+
+Apart from `source` and `destination`, mandatory properties, you can define conversion options:
+
+[source,groovy]
+--
+grooscript {
+    source = ['src/main/groovy/presenters'] //Sources to be converted
+    destination = 'js' //Target directory or js file
+    classpath = ['src/groovy'] //Needed classpath to compile source files
+    customization = null //Customization in files, for example { -> ast(groovy.transform.TypeChecked) }
+    initialText = '//Grooscript converted file'
+    initialText = '//End converted file'
+    recursive = true
+    mainContextScope = ['$'] //Variables available in main scope
+    addGsLib = 'grooscript, grooscript-tools' //Include libs (comma separated) from grooscript ('grooscript', 'grooscript.min', 'grooscript-tools' or 'jquery.min')
+    nashornConsole = true //Use 'print' and not 'console.log'
+}
+--
+
+Also you can create distinct conversion tasks to use in your gradle build:
+
+[source,groovy]
+--
+task convertCountries(type: org.grooscript.gradle.ConvertTask) {
+    source = ['src/main/groovy/countries']
+    mainContextScope = ['Snap']
+    destination = 'src/main/webapp/js'
+}
+
+task convertChatServer(type: org.grooscript.gradle.ConvertTask) {
+    source = ['src/main/groovy/chat/NodeServer.groovy', 'src/main/groovy/startServer.groovy']
+    destination = 'js/allTogether.js'
+}
+
+build.dependsOn convertCountries, convertChatServer
+--
+
+== Create static project
+
+There is 1 tasks:
+
+* *initStaticWeb* that will create files and folder to generate a little static web project to start with grooscript.
+
+Read this link:starting_gradle.html[guide]
+
+== Convert groovy templates
+
+There are 2 tasks:
+
+* *templatesJs* (org.grooscript.gradle.TemplatesTask) to convert groovy templates to a .js file
+* *templatesThread* (org.grooscript.gradle.TemplatesThreadTask) listen changes in groovy templates, and generate .js file if some file changes
+
+There is an extension to configure this task:
+
+[source,groovy]
+--
+include::../src/main/groovy/org/grooscript/gradle/TemplatesExtension.groovy[]
+
+//Example:
+templates {
+    templatesPath = 'templates'
+    templates = ['main.gtpl', 'little/small.tpl'] //Files from templatesPath
+    destinationFile = 'js/Templates.js'
+    classpath = ['src/groovy']
+    customTypeChecker = 'aCustomTypeCheckerFile.groovy'
+}
+--
+
+You can type check your templates with custom type checker, more info
+http://docs.codehaus.org/display/GROOVY/Type+checking+extensions[here]. Example:
+
+[source,groovy]
+--
+include::../src/test/resources/testTypeChecker.groovy[]
+--
+
+The support in convert templates is a bit limited, you can't use code out of the template's engine. You can't use
+imports, or insert data from other files. The destination js is the next class, converted, with templates map
+filled with all converted templates:
+
+[source,groovy]
+--
+package org.grooscript.templates
+
+class Templates {
+
+    static Map<String, Closure> templates
+
+    static String applyTemplate(String name, model = [:]) {
+        Closure cl = templates[name]
+        cl.delegate = model
+        cl(model)
+    }
+}
+--
+
+The *templatesThread* task, has a parameter `blockExecution`, by default false. If you set to true, the task will
+continue forever, blocking execution.
+
+== Spy file changes
+
+There is 1 tasks:
+
+* *spyChanges* (org.grooscript.gradle.ChangesTask) listen to changes on files
+
+There is an extension to configure this task:
+
+[source,groovy]
+--
+include::../src/main/groovy/org/grooscript/gradle/ChangesExtension.groovy[]
+
+//Example:
+spy {
+    files = ['src/main/webapp/static/css/app.css', 'src/main/webapp/static/js/app']
+    onChanges = { list ->
+        println 'Changes!! ' + list
+    }
+}
+--
+
+I have introduced spring websockets support in onChanges closure. Now you can send a groovy object to a spring websocket
+server that uses Stomp protocol. So you can notify by websockets changes on files, in this example I want to send to
+server a reload message.
+
+[source,groovy]
+--
+spy {
+    files = ['Templates.js']
+    onChanges = { list ->
+        springWebsocketTo 'http://localhost:8080/demo' data 'templates' onChannel '/app/reload'
+    }
+}
+--
+
+== Sync grooscript libraries
+
+There is 1 tasks:
+
+* *syncGsLibs* (org.grooscript.gradle.SyncGrooscriptLibsTask) sync grooscript js libs with actual version
+
+With this tasks, all your grooscript libraries in the project ('grooscript.js', 'grooscript.min.js',
+'grooscript-tools.js') will be replaced by the libs that comes in the grooscript version of the current plugin.
+
+== Require.js tasks
+
+There are 2 tasks:
+
+* *requireJs* (org.grooscript.gradle.RequireJsTask) to generate require.js modules from a groovy file
+* *requireJsThread* (org.grooscript.gradle.RequireJsThreadTask) to listen changes in groovy files to generate require.js modules
+
+There is an extension to configure this task:
+
+[source,groovy]
+--
+include::../src/main/groovy/org/grooscript/gradle/RequireJsExtension.groovy[]
+
+Example:
+requireJs {
+    sourceFile = 'src/main/groovy/MyApp.groovy'
+    // classpath by default is ['src/main/groovy']
+    destinationFolder = 'src/main/resources/web/js/app'
+}
+--
+
+The *requireJsThread* task, has a parameter `blockExecution`, by default false. If you set to true, the task will
+continue forever, blocking execution.

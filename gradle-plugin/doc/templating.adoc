@@ -1,0 +1,97 @@
+= Templating in the client with Groovy
+
+From Groovy 2.3, there is a new innovate template http://beta.groovy-lang.org/templating.html#_the_markuptemplateengine[engine].
+Is a very nice feature in the server side, but what happens in the client side? You can't use that templates in javascript, and you have to call server to render templates. But,
+wait, mmm... sure? No! http://grooscript.org[Grooscript] to the rescue.
+
+== What do you need?
+
+You have to use https://github.com/chiquitinxx/grooscript-gradle-plugin[grooscript gradle plugin], so you need also http://gradle.org/[gradle].
+To get more info about the plugin you can read getting started link:../starting_gradle.html[guide].
+Let's take a look to `build.gradle` file:
+
+[source,groovy]
+[subs="verbatim,attributes"]
+--
+plugins {
+  id "org.grooscript.conversion" version "{plugin-version}" //<1>
+}
+
+task templates(type: org.grooscript.gradle.TemplatesTask) { //<2>
+    templatesPath = 'tpls' //<3>
+    templates = ['one.gtpl', 'three.gtpl'] //<4>
+    destinationFile = 'js/Templates.js' //<5>
+}
+--
+
+<1> Add grooscript gradle plugin
+<2> Create a templates task
+<3> Folder where templates are
+<4> Templates you want to include in the javascript file
+<5> Javascript file with the groovy templates
+
+Each time you run this task `templates`, groovy templates ('one.gtpl' and 'three.gtpl') will be converted to javascript,
+and are available in the file `js/Templates.js`.
+
+== Using it
+
+To use this file in your javascript project, you have to add `grooscript.js` and `grooscript-tools.js` as dependencies.
+You can get that files from http://bower.io[bower] package or download from http://grooscript.org/downloads.html[website].
+Now, in javascript you can use the groovy templates with any javascript object, for example we have this two templates:
+
+[source,groovy]
+--
+//books.gtpl
+include::../src/test/resources/books.gtpl[]
+
+//numbers.gtpl
+include::../src/test/resources/numbers.gtpl[]
+--
+
+For apply the template with a model, just call `Templates.applyTemplate(templateName, data);` to get html code.
+
+[source,html]
+--
+include::../src/test/resources/gs/index.html[]
+--
+
+We will get in console:
+
+[source,shell]
+--
+<h1>Books</h1>
+<ul>
+	<p>Title: Book 1 Author: Author 1</p>
+	<p>Title: Book 2 Author: Author 2</p>
+</ul>
+<p>Groovy</p>
+<p>GroovyGroovyGroovy</p>
+--
+
+NOTE: You can use groovy code supported by grooscript in your groovy templates.
+
+== Don't forget
+
+- You can't use import's or any code out of the template.
+- You can use other templates with `include template: 'one.gtpl'`, but you can't include any other files.
+- Internationalization not supported.
+- You have to use `model` to access the model data.
+- Generated html code doesn't have any TAB or CR.
+- Available groovy templates functions: yield, comment, yieldUnescaped, newLine and include(template).
+
+== Conclusions
+
+Use groovy, use everywhere, even in your templates in the client side. Don't repeat yourself, use the same templates
+in the client and in the server. You can tests your client templates in the server side, yeah!
+
+You can explore deeper in plugin link:tasks.html[tasks]
+to discover more things. For example you can type check your groovy templates, or to have a daemon listening changes
+in groovy templates and generating javascript file itself.
+
+Groovy templates are very fast in the server, but also in the client. Apply templates are faster that handlebar's,
+but only first executions, later handlebar's are faster because they optimize / cache them.
+
+Please, if you have comments, suggestions, problems,... don't hesitate to contact me at grooscript@gmail.com, or open
+an issue or feature in https://github.com/chiquitinxx/grooscript-gradle-plugin/issues[Github]. This is an open source project and your feedback is more than welcome
+to improve it. More guides come in the future, also can find more documentation in http://grooscript.org[grooscript]
+site.

@@ -7,7 +7,8 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
         classpath "org.grails.plugins:hibernate4:5.0.6"
-        classpath "org.grooscript:grooscript-gradle-plugin:${grooscriptGradlePluginVersion}"
+        //classpath "org.grooscript:grooscript-gradle-plugin:${grooscriptGradlePluginVersion}"
+        //classpath project(':gradle-plugin')
         classpath 'org.gebish:geb-gradle:0.13.1'
     }
 }
@@ -19,7 +20,7 @@ apply plugin: 'war'
 apply plugin: 'org.grails.grails-web'
 apply plugin: 'org.grails.grails-gsp'
 apply plugin: 'asset-pipeline'
-apply plugin: 'org.grooscript.conversion'
+//apply plugin: org.grooscript.gradle.GrooscriptPlugin//'org.grooscript.conversion'
 apply plugin: "geb-saucelabs"
 
 repositories {

@@ -1,0 +1,60 @@
+plugins {
+    id "org.asciidoctor.convert" version "1.5.2"
+}
+
+apply plugin: 'idea'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply from: "$projectDir/gradle/publishing.gradle"
+apply from: "$projectDir/gradle/functional-test.gradle"
+
+group = 'org.grooscript'
+version = '1.2.4-SNAPSHOT'
+
+//ext {
+//    grooscriptVersion = ext.grooscriptVersion
+//    gradleVersion = ext.gradleVersion
+//}
+
+def compatibilityVersion = 1.7
+sourceCompatibility = compatibilityVersion
+targetCompatibility = compatibilityVersion
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: "groovy-all"
+    }
+    testCompile 'cglib:cglib-nodep:3.1'
+    compile("org.grooscript:grooscript:${grooscriptVersion}") {
+        exclude module: "groovy"
+        exclude module: "groovy-json"
+    }
+    compile('org.codehaus.gpars:gpars:1.2.1') {
+        exclude module: 'groovy-all'
+    }
+    compile "org.springframework:spring-websocket:${springVersion}"
+    compile "org.springframework:spring-messaging:${springVersion}"
+    compile 'org.apache.tomcat.embed:tomcat-embed-websocket:8.0.15'
+    compile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.15'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.4'
+}
+
+asciidoctor {
+    sourceDir = project.file 'doc'
+    sources { include 'starting_gradle.adoc', 'tasks.adoc', 'templating.adoc' }
+    attributes 'plugin-version': version,
+            'gradle-version': project.properties['gradleVersion'],
+            'grooscript-version': project.properties['grooscriptVersion'],
+            author: 'Jorge Franco',
+            email: 'grooscript@gmail.com',
+            'source-highlighter': 'prettify',
+            icons: 'font',
+            'index-file': 'index.html'
+}

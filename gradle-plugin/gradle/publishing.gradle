@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+    }
+}
+
+apply plugin: 'maven-publish'
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+bintray {
+    user = project.hasProperty('bintray_user') ? bintray_user : ''
+    key = project.hasProperty('bintray_key') ? bintray_key : ''
+
+    publications = ['mavenJava']
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    pkg {
+        repo = 'grooscript'
+        name = "org.grooscript:grooscript-gradle-plugin"
+        desc = 'Convert groovy code to javascript'
+        websiteUrl = 'http://grooscript.org/'
+        issueTrackerUrl = 'https://github.com/chiquitinxx/grooscript-gradle-plugin/issues'
+        vcsUrl = 'https://github.com/chiquitinxx/grooscript-gradle-plugin.git'
+        licenses = ['Apache-2.0']
+        labels = ['groovy', 'javascript', 'grooscript', 'gradle', 'plugin']
+        version {
+            name = '1.2.3'
+            desc = 'Upgrade to last grooscript version and fixes'
+            vcsTag = '1.2.3'
+            attributes = [
+                    'gradle-plugin': ['org.grooscript.conversion', 'org.grooscript', 'grooscript-gradle-plugin'].join(':')
+            ]
+        }
+    }
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}

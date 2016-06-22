@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>Trying to use web components</title>
+    <style type="text/css">
+        body {
+            background-color: darkseagreen;
+        }
+        p {
+            background-color: brown;
+        }
+        x-foo-shadowdom::shadow p {
+            background-color: blueviolet;
+        }
+    </style>
+    <script src="CustomElements.min.js"></script>
+    <script>
+        var XFooProto = Object.create(HTMLElement.prototype);
+        XFooProto.gol = function() {
+            console.log("Gol!");
+            console.log(this);
+        };
+        XFooProto.patata = {
+            hello: function() {
+                console.log("yayyyyy");
+                console.log(this);
+            },
+            yes: "yes"
+        };
+        XFooProto.createdCallback = function() {
+            // 1. Attach a shadow root on the element.
+            var shadow = this.createShadowRoot();
+            console.log(this);
+            // 2. Fill it with markup goodness.
+            var html = "<style>p {color: white}</style>";
+            html += "<p>I'm in the element's Shadow DOM!</p>";
+            html += '<input id="myInput" type="text"/>';
+            shadow.innerHTML = html;
+
+            console.log(shadow);
+            console.log(this.patata);
+            var input = document.querySelector('x-foo-shadowdom::shadow input');
+            input.addEventListener('input', function(e) {
+                console.log('input changed to: ', input.value);
+                console.log(this);
+                console.log(e);
+                //console.log(this.patata);
+            });
+        };
+
+        var XFoo = document.registerElement('x-foo-shadowdom', {prototype: XFooProto});
+    </script>
+</head>
+<body>
+    <x-foo-shadowdom>Hello!</x-foo-shadowdom>
+    <script>
+        var element = document.querySelector('x-foo-shadowdom');
+        console.log('Element');
+        element.patata.hello();
+        element.gol();
+    </script>
+</body>
+</html>
