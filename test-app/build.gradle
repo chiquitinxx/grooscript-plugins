@@ -86,11 +86,11 @@ assets {
 }
 
 task pp() << {
-    println System.getenv('SNAP_CI')
-    println System.getenv('GEB_SAUCE_LABS_USER')
-    println System.getenv('sauceLabs.username')
-    println System.getProperty('sauceLabs.username')
-    println getProperty('sauceLabs.username')
+    println '1-' + System.getenv('SNAP_CI')
+    println '2-' + System.getenv('GEB_SAUCE_LABS_USER')
+    println '3-' + System.getenv('sauceLabs.username')
+    println '4-' + System.getProperty('sauceLabs.username')
+    //println getProperty('sauceLabs.username')
 }
 
 sauceLabs {
