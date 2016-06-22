@@ -16,6 +16,8 @@ class BooksSpec extends Specification {
 
     @Shared
     def rest = new RESTClient('http://localhost:8080/')
+    @Shared
+    def idSaved
 
     void "get initial list of books"() {
         when:
@@ -32,6 +34,7 @@ class BooksSpec extends Specification {
         def resp = rest.post(path: 'books',
                              body: bookToInsert,
                 requestContentType: ContentType.JSON)
+        idSaved = resp.data.id
 
         then:
         resp.status == HttpStatus.CREATED.value()
@@ -54,7 +57,7 @@ class BooksSpec extends Specification {
 
     void 'update title'() {
         when:
-        def resp = rest.put(path: 'books/1',
+        def resp = rest.put(path: "books/${idSaved}",
                 body: toUpdateBook,
                 requestContentType: ContentType.JSON)
 
@@ -66,7 +69,7 @@ class BooksSpec extends Specification {
         resp.data == toUpdateBook
 
         when:
-        def getResp = rest.get(path: 'books/1')
+        def getResp = rest.get(path: "books/${idSaved}")
 
         then:
         getResp.status == HttpStatus.OK.value()
@@ -76,7 +79,7 @@ class BooksSpec extends Specification {
 
     void 'failing update number pages'() {
         when:
-        rest.put(path: 'books/1',
+        rest.put(path: "books/${idSaved}",
             body: toUpdateBook << [pages: 'a number?'],
             requestContentType: ContentType.JSON)
 
@@ -87,7 +90,7 @@ class BooksSpec extends Specification {
 
     void 'delete a book'() {
         when:
-        def resp = rest.delete(path: 'books/1')
+        def resp = rest.delete(path: "books/${idSaved}")
 
         then:
         resp.status == HttpStatus.NO_CONTENT.value()
@@ -101,7 +104,9 @@ class BooksSpec extends Specification {
         newResp.data.size() == 0
     }
 
-    private Map bookToInsert = [author:'Any author', pages:123, title:'Book title']
-    private Map initialSavedBook = [author:'Any author', id:1, pages:123, title:'Book title']
-    private Map toUpdateBook = [author:'Any author', id:1, pages:121, title:'New Title']
+    private Map bookToInsert = [author: 'Any author', pages: 123, title: 'Book title']
+    private Map getInitialSavedBook() {
+        [author: 'Any author', id: idSaved, pages: 123, title: 'Book title']
+    }
+    private Map toUpdateBook = [author: 'Any author', id: idSaved, pages: 121, title: 'New Title']
 }
