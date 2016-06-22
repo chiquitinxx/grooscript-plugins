@@ -1,14 +1,12 @@
 buildscript {
     repositories {
-        mavenLocal()
+        //mavenLocal()
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
         classpath "org.grails.plugins:hibernate4:5.0.6"
-        //classpath "org.grooscript:grooscript-gradle-plugin:${grooscriptGradlePluginVersion}"
-        //classpath project(':gradle-plugin')
         classpath 'org.gebish:geb-gradle:0.13.1'
     }
 }
@@ -24,7 +22,7 @@ apply plugin: 'asset-pipeline'
 apply plugin: "geb-saucelabs"
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
     maven {
         url "https://repo.grails.org/grails/core"
     }
@@ -76,8 +74,6 @@ dependencies {
     } else {
         testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
     }
-    //testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    //testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
 }
 
 assets {
@@ -100,8 +96,4 @@ sauceLabs {
         username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
         accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
     }
-    //connect {
-    //    port = 4445
-    //    additionalOptions = ['--proxy', 'localhost:8080']
-    //}
 }

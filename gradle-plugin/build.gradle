@@ -11,17 +11,11 @@ apply from: "$projectDir/gradle/functional-test.gradle"
 group = 'org.grooscript'
 version = '1.2.4-SNAPSHOT'
 
-//ext {
-//    grooscriptVersion = ext.grooscriptVersion
-//    gradleVersion = ext.gradleVersion
-//}
-
-def compatibilityVersion = 1.7
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
     jcenter()
 }
 
@@ -39,6 +33,7 @@ dependencies {
     compile('org.codehaus.gpars:gpars:1.2.1') {
         exclude module: 'groovy-all'
     }
+    compile project(':grails-core')
     compile "org.springframework:spring-websocket:${springVersion}"
     compile "org.springframework:spring-messaging:${springVersion}"
     compile 'org.apache.tomcat.embed:tomcat-embed-websocket:8.0.15'
