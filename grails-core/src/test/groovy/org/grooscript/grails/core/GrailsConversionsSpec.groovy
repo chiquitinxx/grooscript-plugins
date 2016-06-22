@@ -36,7 +36,7 @@ class GrailsConversionsSpec extends Specification {
         String result = conversions.convertComponent(fullClassName, nameComponent)
 
         then:
-        1 * fileSupport.getFileContent("src/main/groovy/package/${shortClassName}.groovy") >> code
+        1 * fileSupport.getFileContent("src${SEP}main${SEP}groovy${SEP}package${SEP}${shortClassName}.groovy") >> code
         result == "${convertedCode};GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
     }
 
@@ -51,7 +51,7 @@ class GrailsConversionsSpec extends Specification {
         String result = conversions.convertRemoteDomainClass(fullClassName)
 
         then:
-        1 * fileSupport.getFileContent("grails-app/domain/package/${shortClassName}.groovy") >> code
+        1 * fileSupport.getFileContent("grails-app${SEP}domain${SEP}package${SEP}${shortClassName}.groovy") >> code
         result == convertedCode
     }
 

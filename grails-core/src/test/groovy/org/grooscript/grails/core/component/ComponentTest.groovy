@@ -19,7 +19,7 @@ class ComponentTest extends GroovyTestCase {
 '''
             assert false
         } catch (RuntimeException e) {
-            assert e.message.startsWith('startup failed:\nGeneral error during semantic analysis:' +
+            assert e.message.contains('General error during semantic analysis:' +
                     ' You have to define a render method')
         }
     }
