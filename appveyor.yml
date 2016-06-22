@@ -17,7 +17,7 @@ install:
 build_script:
   - gradlew.bat -u -i clean assemble
 test_script:
-  - gradlew.bat -u -i -S check allSauceLabsTests
+  - gradlew.bat -u -i -S check
 cache:
   - .gradle
   - C:\Users\appveyor\.gradle
