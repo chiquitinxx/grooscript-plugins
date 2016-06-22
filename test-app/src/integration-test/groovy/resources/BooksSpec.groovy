@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
+import test.Book
 
 @Integration
 @Stepwise
