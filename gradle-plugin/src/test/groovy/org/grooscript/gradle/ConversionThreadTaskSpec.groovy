@@ -1,6 +1,5 @@
 package org.grooscript.gradle
 
-import org.apache.tomcat.jni.Thread
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -9,6 +8,7 @@ import org.grooscript.gradle.daemon.FilesDaemon
 import org.grooscript.util.GsConsole
 import spock.lang.Specification
 import spock.lang.Unroll
+import spock.util.concurrent.PollingConditions
 
 import static org.grooscript.util.Util.SEP
 
@@ -62,15 +62,16 @@ class ConversionThreadTaskSpec extends Specification {
         GroovySpy(GsConsole, global: true)
         task.source = ANY_SOURCE
         task.destination = ANY_DESTINATION
+        def conditions = new PollingConditions()
 
         when:
         task.launchDaemon()
-        //Wait until raise error in conversion
-        Thread.sleep(450)
 
         then:
-        1 * GsConsole.exception({ it.startsWith('FilesActor Error in file/folder')})
-        1 * ConversionDaemon.start([project.file(ANY_SOURCE[0]).path], project.file(ANY_DESTINATION).path, _)
+        conditions.eventually {
+            1 * GsConsole.exception({ it.startsWith('FilesActor Error in file/folder') })
+            1 * ConversionDaemon.start([project.file(ANY_SOURCE[0]).path], project.file(ANY_DESTINATION).path, _)
+        }
     }
 
     def 'launch daemon and do conversion'() {
