@@ -41,6 +41,8 @@ It converts the code to javascript and your groovy code will run in the browser.
 
     def scm = [ url: "https://github.com/chiquitinxx/grooscript-grails3-plugin" ]
 
+    def loadAfter = ['grails-spring-websocket']
+
     @Override
     Closure doWithSpring() {
         { ->
