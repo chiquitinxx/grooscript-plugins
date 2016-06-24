@@ -10,7 +10,7 @@ buildscript {
 apply plugin: geb.gradle.saucelabs.SaucePlugin
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
     maven {
         url "http://repository-saucelabs.forge.cloudbees.com/release"
     }
@@ -27,9 +27,9 @@ sauceLabs {
         delegate."internet explorer_vista_10"
     }
     task {
-        testClassesDir = integrationTest.testClassesDir
-        testSrcDirs = integrationTest.testSrcDirs
-        classpath = integrationTest.classpath
+        testClassesDir = tasks.findByName('integrationTest').testClassesDir
+        testSrcDirs = tasks.findByName('integrationTest').testSrcDirs
+        classpath = tasks.findByName('integrationTest').classpath
     }
     account {
         username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
