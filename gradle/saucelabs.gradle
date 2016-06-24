@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.gebish:geb-gradle:0.13.1'
+    }
+}
+
+apply plugin: geb.gradle.saucelabs.SaucePlugin
+
+repositories {
+    mavenLocal()
+    maven {
+        url "http://repository-saucelabs.forge.cloudbees.com/release"
+    }
+}
+
+dependencies {
+    sauceConnect "com.saucelabs:ci-sauce:1.81"
+}
+
+sauceLabs {
+    browsers {
+        firefox_linux_19
+        //chrome_mac
+        delegate."internet explorer_vista_10"
+    }
+    task {
+        testClassesDir = integrationTest.testClassesDir
+        testSrcDirs = integrationTest.testSrcDirs
+        classpath = integrationTest.classpath
+    }
+    account {
+        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
+        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
+    }
+}

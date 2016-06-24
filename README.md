@@ -11,19 +11,21 @@ More info about [grooscript](http://grooscript.org/)
 Multi-project
 ---
 
-Actually, there are 4 projects:
+Actually, there are 5 projects:
 
 - grails-core: library used by grooscript gradle and grails plugins
-- grails-plugin: grooscript grails 3 plugin
-- gradle-plugin: grooscript gradle plugin
+- grails-plugin: grooscript grails 3 plugin(*)
+- gradle-plugin: grooscript gradle plugin(*)
 - test-app: a grails 3 app to test the grails plugin
+- websockets-test-app: a grails 3 app to test the grails plugin websocket features
+
+(*) published in [bintray](https://bintray.com/chiquitinxx/grooscript)
 
 TO-DO
 ---
 
 - Remove the needed or add grooscript js libraries in the gsp's.
 - Publish grails events to listening clients using websockets.
-- Execute geb tests in sauce labs or something-similar.
 - In the gradle plugin, convert components and remote domain classes before jar / war is done in grails apps.
 
 Build
