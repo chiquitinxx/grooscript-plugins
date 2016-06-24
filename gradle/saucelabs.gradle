@@ -15,7 +15,3 @@ repositories {
         url "http://repository-saucelabs.forge.cloudbees.com/release"
     }
 }
-
-dependencies {
-    sauceConnect "com.saucelabs:ci-sauce:1.81"
-}

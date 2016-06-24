@@ -17,7 +17,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
-apply from: "$rootDir/gradle/saucelabs.gradle"
+//apply from: "$rootDir/gradle/saucelabs.gradle"
 
 repositories {
     mavenLocal()
@@ -67,21 +67,4 @@ dependencies {
 assets {
     minifyJs = true
     minifyCss = true
-}
-
-sauceLabs {
-    browsers {
-        firefox_linux_19
-        //chrome_mac
-        delegate."internet explorer_vista_10"
-    }
-    task {
-        testClassesDir = integrationTest.testClassesDir
-        testSrcDirs = integrationTest.testSrcDirs
-        classpath = integrationTest.classpath
-    }
-    account {
-        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
-        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
-    }
 }

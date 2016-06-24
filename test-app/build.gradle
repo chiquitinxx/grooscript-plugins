@@ -73,6 +73,10 @@ assets {
     minifyCss = true
 }
 
+dependencies {
+    sauceConnect "com.saucelabs:ci-sauce:1.81"
+}
+
 sauceLabs {
     browsers {
         firefox_linux_19
