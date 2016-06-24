@@ -4,7 +4,7 @@ Grooscript plugins
 [![Build Status](https://snap-ci.com/chiquitinxx/grooscript-plugins/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-plugins/branch/master)
 [![Build status](https://ci.appveyor.com/api/projects/status/rdu67y0p9fac50pu/branch/master?svg=true)](https://ci.appveyor.com/project/chiquitinxx/grooscript-plugins/branch/master)
 
-This is a multiproject gradle where the grooscript plugin sources are.
+This is a gradle multiproject where the grooscript gradle and grails plugins sources are.
 
 More info about [grooscript](http://grooscript.org/)
 

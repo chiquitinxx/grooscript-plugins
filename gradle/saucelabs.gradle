@@ -10,7 +10,7 @@ buildscript {
 apply plugin: geb.gradle.saucelabs.SaucePlugin
 
 repositories {
-    //mavenLocal()
+    mavenLocal()
     maven {
         url "http://repository-saucelabs.forge.cloudbees.com/release"
     }
@@ -18,21 +18,4 @@ repositories {
 
 dependencies {
     sauceConnect "com.saucelabs:ci-sauce:1.81"
-}
-
-sauceLabs {
-    browsers {
-        firefox_linux_19
-        //chrome_mac
-        delegate."internet explorer_vista_10"
-    }
-    task {
-        testClassesDir = tasks.findByName('integrationTest').testClassesDir
-        testSrcDirs = tasks.findByName('integrationTest').testSrcDirs
-        classpath = tasks.findByName('integrationTest').classpath
-    }
-    account {
-        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
-        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
-    }
 }
