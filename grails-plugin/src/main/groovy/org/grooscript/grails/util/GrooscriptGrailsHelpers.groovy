@@ -10,6 +10,9 @@ class GrooscriptGrailsHelpers {
 
     private static final String WEBSOCKET_BEAN = 'brokerMessagingTemplate'
     private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
+    private static final String WEBSOKET_HANDLER = 'grailsSimpAnnotationMethodMessageHandler'
+    private static final String DEFAULT_WEBSOCKET_DESTINATION_PEFIX = '/app'
+    private static final String DEFAULT_WEBSOCKET_TOPIC_PEFIX = '/topic'
 
     private LinkGenerator grailsLinkGenerator
     private JavascriptTemplate grooscriptTemplate
@@ -60,10 +63,28 @@ class GrooscriptGrailsHelpers {
         }
     }
 
-    void sendWebsocketMessake(String key, Object data) {
+    void sendWebsocketEventMessage(String key, Object data) {
         if (isSpringWebsocketsActive(applicationContext)) {
-            applicationContext.getBean(WEBSOCKET_BEAN).convertAndSend key, data
+            try {
+                applicationContext.getBean(WEBSOCKET_BEAN).convertAndSend key, data
+            } catch (Exception e) {
+                Util.consoleError("Fail sending websocket message of type " + data.class)
+                Util.consoleError("Error: " + e.message)
+            }
         }
+    }
+
+    String getWebsocketDestinationPrefix() {
+        try {
+            def bean = applicationContext.getBean(WEBSOKET_HANDLER)
+            return bean?.destinationPrefixes?.first() ?: DEFAULT_WEBSOCKET_DESTINATION_PEFIX
+        } catch (NoSuchBeanDefinitionException e) {
+            return DEFAULT_WEBSOCKET_DESTINATION_PEFIX
+        }
+    }
+
+    String getWebsocketTopicPrefix() {
+        return DEFAULT_WEBSOCKET_TOPIC_PEFIX
     }
 
     private boolean domainClassFromName(String nameClass) {

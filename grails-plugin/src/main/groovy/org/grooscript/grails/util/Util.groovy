@@ -10,7 +10,7 @@ final class Util {
         // don't init me
     }
 
-    private static final String PLUGIN_MESSAGE = '[Grooscript Plugin]'
+    private static final String PLUGIN_MESSAGE = '[Grooscript Grails Plugin]'
 
     static void consoleMessage(message) {
         println "${PLUGIN_MESSAGE} [INFO] $message"

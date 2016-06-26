@@ -154,10 +154,6 @@ task generateJavascriptFile() << {
     text += GrooScript.convert(project.file(
             '../grails-core/src/main/groovy/org/grooscript/grails/core/promise/RemoteDomain.groovy').text, conversionOptions)
 
-    conversionOptions[ConversionOptions.FINAL_TEXT.text] = 'var gsEvents = ClientEventHandler();'
-    text += GrooScript.convert(project.file(
-            'src/main/groovy/org/grooscript/grails/event/ClientEventHandler.groovy').text, conversionOptions)
-
     project.file(grooscriptGrailsJsLib).text = text
     println 'Generated javascript file in grails-plugin ' + grooscriptGrailsJsLib
 }

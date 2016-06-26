@@ -16,21 +16,13 @@ GsHlp.onReady(function(event) {
 })
 '''
 
-    static final String CLIENT_EVENT = '''
-gsEvents.onEvent('${nameEvent}', ${functionName});
-'''
-
-    static final String ON_EVENT_TAG = '''
-gsEvents.onEvent('${nameEvent}', ${jsCode});
-'''
-
     static final String SPRING_WEBSOCKET = '''
 GsHlp.onReady(function(event) {
 
     var socket = new SockJS("${endPoint}");
-    websocketClient = Stomp.over(socket);
-    ${withDebug ? '' : 'websocketClient.debug = null;'}
-    websocketClient.connect({}, function() {
+    GrooscriptGrails.websocketClient = Stomp.over(socket);
+    ${withDebug ? '' : 'GrooscriptGrails.websocketClient.debug = null;'}
+    GrooscriptGrails.websocketClient.connect({}, function() {
         proccessWebsocketSubscribes();
         ${jsCode}
     });
@@ -51,22 +43,29 @@ GsHlp.onReady(function(event) {
         }
     }
 });
+GrooscriptGrails.wsPrefix = "${wsPrefix}";
 '''
 
     static final String ON_SERVER_EVENT_RUN = '''def run = { data -> ${code} }'''
 
     static final String ON_SERVER_EVENT = '''
 var ${functionName} = function() {
-    websocketClient.subscribe("${path}", function(message) {
+    GrooscriptGrails.websocketClient.subscribe("${path}", function(message) {
         ${jsCode}
-        run(gs.toGroovy(jQuery.parseJSON(message.body), ${type}));
+        var body;
+        try {
+            body = JSON.parse(message.body);
+            run(gs.toGroovy(body, ${type}));
+        } catch(e) {
+            run(message.body);
+        }
     });
 };
 '''
 
     static final String RELOAD_ON = '''
 var ${functionName} = function() {
-    websocketClient.subscribe("${path}", function(message) {
+    GrooscriptGrails.websocketClient.subscribe("${path}", function(message) {
         window.location.reload();
     });
 };

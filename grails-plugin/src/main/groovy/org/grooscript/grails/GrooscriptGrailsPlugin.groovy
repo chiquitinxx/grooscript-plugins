@@ -3,10 +3,10 @@ package org.grooscript.grails
 import grails.plugins.Plugin
 
 import org.grooscript.grails.bean.JavascriptConverter
-import org.grooscript.grails.event.DefaultWebsocketConfig
 import org.grooscript.grails.event.GrooscriptEventsInterceptor
 import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
+import org.grooscript.grails.util.Util
 
 class GrooscriptGrailsPlugin extends Plugin {
 
@@ -41,7 +41,7 @@ It converts the code to javascript and your groovy code will run in the browser.
 
     def scm = [ url: "https://github.com/chiquitinxx/grooscript-grails3-plugin" ]
 
-    def loadAfter = ['grails-spring-websocket']
+    def loadAfter = ['springWebsocket']
 
     @Override
     Closure doWithSpring() {
@@ -49,9 +49,9 @@ It converts the code to javascript and your groovy code will run in the browser.
             javascriptConverter(JavascriptConverter)
             javascriptTemplate(JavascriptTemplate)
             grooscriptGrailsHelpers(GrooscriptGrailsHelpers)
-            if (GrooscriptGrailsHelpers.isSpringWebsocketsActive(applicationContext)) {
+            if (manager?.hasGrailsPlugin('springWebsocket')) {
+                Util.consoleMessage 'Websocket support included'
                 grooscriptEventsInterceptor(GrooscriptEventsInterceptor)
-                webSocketConfig(DefaultWebsocketConfig)
             }
         } 
     }

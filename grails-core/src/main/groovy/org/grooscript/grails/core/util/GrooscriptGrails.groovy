@@ -6,6 +6,8 @@ class GrooscriptGrails {
 
     static long count = 0
     static Map components = [:]
+    static def websocketClient = null
+    static String wsPrefix = "/app"
 
     static final List GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
         'transients', 'constraints', 'mapping', 'hasMany', 'belongsTo', 'validationSkipMap',
@@ -80,6 +82,23 @@ class GrooscriptGrails {
         };
         document.registerElement(name, {prototype: component});
     */}
+
+    @GsNative
+    static void sendWebsocketMessage(String path, message) {/*
+        var sendMessage = message;
+        if (GrooscriptGrails.websocketClient === null) {
+            console.log("Websocket connection not up!");
+        } else {
+            if (gs.isGroovyObj(message)) {
+                sendMessage = gs.toJavascript(message);
+            }
+            GrooscriptGrails.websocketClient.send(path, {}, JSON.stringify(sendMessage));
+        }
+    */}
+
+    static void notifyEvent(String eventName, data) {
+        sendWebsocketMessage(wsPrefix + "/gswsevent", ['name': eventName, 'data': data])
+    }
 
     static findComponentById(String id) {
         components.find { key, value ->

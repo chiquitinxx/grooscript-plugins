@@ -6,15 +6,13 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.JavascriptConverter
+import org.grooscript.grails.event.GrooscriptEventsInterceptor
 import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
 
 import javax.annotation.ParametersAreNonnullByDefault
 
-/**
- * @author Jorge Franco <jorge.franco@osoco.es>
- */
 @ParametersAreNonnullByDefault
 class GrooscriptTagLib {
 
@@ -27,6 +25,7 @@ class GrooscriptTagLib {
     LinkGenerator grailsLinkGenerator
     JavascriptTemplate javascriptTemplate
     GrooscriptGrailsHelpers grooscriptGrailsHelpers
+    GrooscriptEventsInterceptor grooscriptEventsInterceptor
 
     /**
      * grooscript:code
@@ -47,7 +46,6 @@ class GrooscriptTagLib {
      * functionName - optional - name of the function that renders the template
      * itemSelector - optional - jQuery string selector where html generated will be placed
      * onLoad - optional defaults true - if template will be render onReady page event
-     * onEvent - optional - string list of events that render the page
      */
     def template = { attrs, body ->
         String script = body()
@@ -79,8 +77,6 @@ class GrooscriptTagLib {
             }
             result
         }
-
-        processTemplateEvents(attrs.onEvent as String, functionName)
     }
 
     /**
@@ -99,30 +95,6 @@ class GrooscriptTagLib {
     }
 
     /**
-     * grooscript:onEvent
-     * name - name of the event
-     */
-    def onEvent = { attrs, body ->
-        String name = attrs.name
-        if (name) {
-            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
-
-            String script = body()
-            String jsCode = javascriptConverter.toJavascript("{ event -> ${script}}").trim()
-            String jsCodeWithoutLastSemicolon = Util.removeLastSemicolon(jsCode)
-
-            asset.script(type: 'text/javascript') {
-                javascriptTemplate.apply(
-                        Templates.ON_EVENT_TAG,
-                        [jsCode: jsCodeWithoutLastSemicolon, nameEvent: name])
-            }
-
-        } else {
-            Util.consoleError 'GrooscriptTagLib onEvent need define name property'
-        }
-    }
-
-    /**
      * grooscript:initSpringWebsocket
      */
     def initSpringWebsocket = { attrs, body ->
@@ -134,34 +106,38 @@ class GrooscriptTagLib {
         String endPoint = attrs.endPoint ?: '/stomp'
         String withDebugString = attrs.withDebug
         boolean withDebug = withDebugString == null ? false : Boolean.valueOf(withDebugString)
+        String wsPrefix = grooscriptGrailsHelpers.websocketDestinationPrefix
 
         asset.script(type: 'text/javascript') {
             javascriptTemplate.apply(
                     Templates.SPRING_WEBSOCKET,
-                    [endPoint: endPoint, jsCode: jsCode, withDebug: withDebug])
+                    [endPoint: endPoint, jsCode: jsCode, withDebug: withDebug, wsPrefix: wsPrefix])
         }
         request.setAttribute(WEBSOCKET_STARTED, true)
     }
 
     /**
-     * grooscript:onServerEvent
+     * grooscript:onGrailsEvent
      */
-    def onServerEvent = { attrs, body ->
+    def onGrailsEvent = { attrs, body ->
         String script = body()
         initWebsocket()
 
         String template = javascriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])
         String jsCode = script ? javascriptConverter.toJavascript(template) : ''
         String functionName = onServerEventFunctionName
+        String eventName = attrs.name
+        String eventPath = grooscriptGrailsHelpers.websocketTopicPrefix + '/gswsevent/' + eventName
 
         asset.script(type: 'text/javascript') {
             javascriptTemplate.apply(
                     Templates.ON_SERVER_EVENT,
                     [jsCode: jsCode,
-                     path: attrs.path,
+                     path: eventPath,
                      functionName: functionName,
                      type: attrs.type ?: 'null'])
         }
+        grooscriptEventsInterceptor.addEventToIntercept(eventName)
     }
 
     /**
@@ -206,21 +182,6 @@ class GrooscriptTagLib {
         def websocketStarted = request.getAttribute(WEBSOCKET_STARTED)
         if (!websocketStarted) {
             initSpringWebsocket([:], { -> ''})
-        }
-    }
-
-    private void processTemplateEvents(String onEvent, String functionName) {
-        if (onEvent) {
-            List listEvents = onEvent.contains(',') ? onEvent.split(',') as List : [onEvent]
-
-            listEvents.each { String nameEvent ->
-                asset.script(type: 'text/javascript') {
-                    javascriptTemplate.apply(
-                            Templates.CLIENT_EVENT,
-                            [functionName: functionName, nameEvent: nameEvent.trim()]
-                    )
-                }
-            }
         }
     }
 

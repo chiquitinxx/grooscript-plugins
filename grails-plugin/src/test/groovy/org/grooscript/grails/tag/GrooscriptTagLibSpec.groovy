@@ -8,6 +8,7 @@ import grails.util.GrailsUtil
 import grails.web.mapping.LinkGenerator
 import org.grooscript.grails.Templates
 import org.grooscript.grails.bean.JavascriptConverter
+import org.grooscript.grails.event.GrooscriptEventsInterceptor
 import org.grooscript.grails.util.GrooscriptGrailsHelpers
 import org.grooscript.grails.util.JavascriptTemplate
 import org.grooscript.grails.util.Util
@@ -23,6 +24,7 @@ class GrooscriptTagLibSpec extends Specification {
     private JavascriptTemplate template = new JavascriptTemplate()
     private LinkGenerator linkGenerator = Mock(LinkGenerator)
     private GrooscriptGrailsHelpers grailsHelpers = Mock(GrooscriptGrailsHelpers)
+    private GrooscriptEventsInterceptor grooscriptEventsInterceptor = Mock(GrooscriptEventsInterceptor)
 
     void setup() {
         grooscriptConverter = Mock(JavascriptConverter)
@@ -32,14 +34,13 @@ class GrooscriptTagLibSpec extends Specification {
         tagLib.javascriptTemplate = template
         tagLib.grailsLinkGenerator = linkGenerator
         tagLib.grooscriptGrailsHelpers = grailsHelpers
+        tagLib.grooscriptEventsInterceptor = grooscriptEventsInterceptor
     }
 
-    void cleanup() {
-    }
-
-    static final GROOVY_CODE = 'code example'
-    static final JS_CODE = 'js converted code'
-    static final TEMPLATE_NAME = 'template name'
+    static final String GROOVY_CODE = 'code example'
+    static final String JS_CODE = 'js converted code'
+    static final String TEMPLATE_NAME = 'template name'
+    static final String wsPrefix = '/aPrefix'
 
     void 'test code taglib'() {
         when:
@@ -101,60 +102,6 @@ class GrooscriptTagLibSpec extends Specification {
         !result
     }
 
-    void 'test template with onEvent option'() {
-        given:
-        GroovySpy(Util, global: true)
-
-        when:
-        applyTemplate("<grooscript:template onEvent='myEvent' onLoad=\"${false}\">assert true</grooscript:template>")
-
-        then:
-        1 * Util.newTemplateName >> TEMPLATE_NAME
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.CLIENT_EVENT, [
-                    functionName: TEMPLATE_NAME, nameEvent: 'myEvent'])
-        })
-        1 * grooscriptConverter.toJavascript(_) >> JS_CODE
-    }
-
-    void 'test template with onEvent list option'() {
-        given:
-        GroovySpy(Util, global: true)
-
-        when:
-        applyTemplate("<grooscript:template onEvent='eventOne, eventTwo' onLoad=\"${false}\">assert true</grooscript:template>")
-
-        then:
-        1 * Util.newTemplateName >> TEMPLATE_NAME
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.CLIENT_EVENT, [
-                    functionName: TEMPLATE_NAME, nameEvent: 'eventOne'])
-        })
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.CLIENT_EVENT, [
-                    functionName: TEMPLATE_NAME, nameEvent: 'eventTwo'])
-        })
-        1 * grooscriptConverter.toJavascript(_) >> JS_CODE
-    }
-
-    void 'test onEvent tag'() {
-        given:
-        GroovySpy(Util, global: true)
-
-        when:
-        def result = applyTemplate("<grooscript:onEvent name='myEvent'>assert true</grooscript:onEvent>")
-
-        then:
-        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
-        1 * Util.removeLastSemicolon(JS_CODE)
-        1 * grooscriptConverter.toJavascript('{ event -> assert true}') >> JS_CODE
-        1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.ON_EVENT_TAG, [nameEvent: 'myEvent', jsCode: JS_CODE])
-        })
-        0 * _
-        result == ''
-    }
-
     void 'test remote model with domain class that exists'() {
         given:
         String domainClassName = 'package.AnyClass'
@@ -201,8 +148,10 @@ class GrooscriptTagLibSpec extends Specification {
         then:
         1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: true])
+            it() == template.apply(Templates.SPRING_WEBSOCKET,
+                    [endPoint: '/stomp', jsCode: '', withDebug: true, wsPrefix: wsPrefix])
         })
+        1 * grailsHelpers.getWebsocketDestinationPrefix() >> wsPrefix
         0 * _
     }
 
@@ -213,8 +162,10 @@ class GrooscriptTagLibSpec extends Specification {
         then:
         1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET,
+                    [endPoint: '/stomp', jsCode: '', withDebug: false, wsPrefix: wsPrefix])
         })
+        1 * grailsHelpers.getWebsocketDestinationPrefix() >> wsPrefix
         0 * _
     }
 
@@ -225,8 +176,10 @@ class GrooscriptTagLibSpec extends Specification {
         then:
         1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/hello', jsCode: '', withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET,
+                    [endPoint: '/hello', jsCode: '', withDebug: false, wsPrefix: wsPrefix])
         })
+        1 * grailsHelpers.getWebsocketDestinationPrefix() >> wsPrefix
         0 * _
     }
 
@@ -238,14 +191,16 @@ class GrooscriptTagLibSpec extends Specification {
         1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
         1 * grooscriptConverter.toJavascript('assert true') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: JS_CODE, withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET,
+                    [endPoint: '/stomp', jsCode: JS_CODE, withDebug: false, wsPrefix: wsPrefix])
         })
+        1 * grailsHelpers.getWebsocketDestinationPrefix() >> wsPrefix
         0 * _
     }
 
-    void 'on server event'() {
+    void 'on grails event'() {
         when:
-        applyTemplate('<grooscript:onServerEvent path="/myPath">assert true</grooscript:onServerEvent>')
+        applyTemplate('<grooscript:onGrailsEvent name="myEvent">assert true</grooscript:onGrailsEvent>')
 
         then:
         interaction {
@@ -254,14 +209,16 @@ class GrooscriptTagLibSpec extends Specification {
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
-                    [jsCode: JS_CODE, path: '/myPath', functionName: 'gSonServerEvent0', type: 'null'])
+                    [jsCode: JS_CODE, path: '/topic/gswsevent/myEvent', functionName: 'gSonServerEvent0', type: 'null'])
         })
+        1 * grooscriptEventsInterceptor.addEventToIntercept('myEvent')
+        1 * grailsHelpers.getWebsocketTopicPrefix() >> '/topic'
         0 * _
     }
 
-    void 'on server event with type response'() {
+    void 'on grails event with type response'() {
         when:
-        applyTemplate('<grooscript:onServerEvent path="/myPath" type="Type">assert true</grooscript:onServerEvent>')
+        applyTemplate('<grooscript:onGrailsEvent name="myEvent" type="Type">assert true</grooscript:onGrailsEvent>')
 
         then:
         interaction {
@@ -270,8 +227,10 @@ class GrooscriptTagLibSpec extends Specification {
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
-                    [jsCode: JS_CODE, path: '/myPath', functionName: 'gSonServerEvent0', type: 'Type'])
+                    [jsCode: JS_CODE, path: '/topic/gswsevent/myEvent', functionName: 'gSonServerEvent0', type: 'Type'])
         })
+        1 * grooscriptEventsInterceptor.addEventToIntercept('myEvent')
+        1 * grailsHelpers.getWebsocketTopicPrefix() >> '/topic'
         0 * _
     }
 
@@ -374,8 +333,10 @@ class GrooscriptTagLibSpec extends Specification {
 
     private void initWebsockets() {
         1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
+        1 * grailsHelpers.getWebsocketDestinationPrefix() >> wsPrefix
         1 * assetsTagLib.script(['type':'text/javascript'], {
-            it() == template.apply(Templates.SPRING_WEBSOCKET, [endPoint: '/stomp', jsCode: '', withDebug: false])
+            it() == template.apply(Templates.SPRING_WEBSOCKET,
+                    [endPoint: '/stomp', jsCode: '', withDebug: false, wsPrefix: wsPrefix])
         })
     }
 }

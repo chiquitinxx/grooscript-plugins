@@ -1,6 +1,5 @@
 package tags
 
-import geb.driver.CachingDriverFactory
 import geb.spock.GebSpec
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
@@ -21,9 +20,5 @@ class TagRemoteDomainSpec extends GebSpec {
             $('#update').text() == 'Updated book to title: New title'
             $('#delete').text() == 'Book deleted!'
         }
-    }
-
-    def setup() {
-        CachingDriverFactory.clearCache()
     }
 }

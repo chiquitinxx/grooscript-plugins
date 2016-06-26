@@ -66,6 +66,7 @@ dependencies {
     } else {
         testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
     }
+    sauceConnect "com.saucelabs:ci-sauce:1.116"
 }
 
 assets {
@@ -73,23 +74,4 @@ assets {
     minifyCss = true
 }
 
-dependencies {
-    sauceConnect "com.saucelabs:ci-sauce:1.81"
-}
-
-sauceLabs {
-    browsers {
-        firefox_linux_19
-        //chrome_mac
-        delegate."internet explorer_vista_10"
-    }
-    task {
-        testClassesDir = integrationTest.testClassesDir
-        testSrcDirs = integrationTest.testSrcDirs
-        classpath = integrationTest.classpath
-    }
-    account {
-        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
-        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
-    }
-}
+sauceLabs defaultSauceLabs

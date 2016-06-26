@@ -17,7 +17,7 @@ apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.grails-gsp"
 apply plugin:"asset-pipeline"
-//apply from: "$rootDir/gradle/saucelabs.gradle"
+apply from: "$rootDir/gradle/saucelabs.gradle"
 
 repositories {
     mavenLocal()
@@ -62,9 +62,12 @@ dependencies {
     } else {
         testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
     }
+    sauceConnect "com.saucelabs:ci-sauce:1.116"
 }
 
 assets {
     minifyJs = true
     minifyCss = true
 }
+
+sauceLabs defaultSauceLabs
