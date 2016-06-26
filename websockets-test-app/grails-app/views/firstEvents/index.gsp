@@ -30,7 +30,8 @@
     <grooscript:onGrailsEvent name="hello">
         GsHlp.selectorHtml '#second', data
     </grooscript:onGrailsEvent>
-    <grooscript:onGrailsEvent name="gotMap">
+    <grooscript:onGrailsEvent name="gotmap">
+        addJsError 'gotMap->' + data
         GsHlp.selectorHtml '#third', data
     </grooscript:onGrailsEvent>
     <grooscript:onGrailsEvent name="somethingHappened">
