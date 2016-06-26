@@ -14,6 +14,7 @@ class FirstEventsSpec extends GebSpec {
 
         then:
         waitFor {
+            println $('body').text()
             $('#first').text() == 'Ok'
             $('#second').text() == 'hello from service!'
             $('#third').text() == '[a: a ,b: 1.23 ,c: 1348230211000 ,]'
