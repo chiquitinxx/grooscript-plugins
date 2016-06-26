@@ -11,8 +11,15 @@
     <div id="second"></div>
     <div id="third"></div>
     <div id="fourth"></div>
+    <div id="errors"></div>
     <grooscript:code>
         def numberHappens = 0
+        def jsErrors = []
+        def addJsError = { error ->
+            jsErrors << error
+            GsHlp.selectorHtml '#errors', jsErrors
+        }
+        window.onerror = addJsError
     </grooscript:code>
     <grooscript:initSpringWebsocket>
         GrooscriptGrails.doRemoteCall 'firstEvents', 'doEvents', null, { result ->
