@@ -24,7 +24,6 @@ Actually, there are 5 projects:
 TO-DO
 ---
 
-- Remove the needed or add grooscript js libraries in the gsp's.
 - Publish grails events to listening clients using websockets.
 - In the gradle plugin, convert components and remote domain classes before jar / war is done in grails apps.
 

@@ -3,7 +3,6 @@
 <head>
     <meta name="layout" content="main"/>
     <title>Javascript json calls</title>
-    <asset:javascript src="grooscript-grails.js"/>
 </head>
 <body>
     <div id="first"></div>

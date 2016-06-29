@@ -9,7 +9,8 @@ import org.springframework.context.ApplicationContext
 class GrooscriptGrailsHelpers {
 
     private static final String WEBSOCKET_BEAN = 'brokerMessagingTemplate'
-    private static final String REMOTE_URL_SET = 'grooscriptRemoteUrl'
+    private static final String GROOSCRIPT_JS_LIB_ADDED = 'grooscriptJsLibAdded'
+    private static final String GROOSCRIPT_JS_LIB = 'grooscript-grails.js'
     private static final String WEBSOKET_HANDLER = 'grailsSimpAnnotationMethodMessageHandler'
     private static final String DEFAULT_WEBSOCKET_DESTINATION_PEFIX = '/app'
     private static final String DEFAULT_WEBSOCKET_TOPIC_PEFIX = '/topic'
@@ -35,9 +36,10 @@ class GrooscriptGrailsHelpers {
     }
 
     void initGrooscriptGrails(request, assetTagLib, out) {
-        def urlSet = request.getAttribute(REMOTE_URL_SET)
-        if (!urlSet) {
-            request.setAttribute(REMOTE_URL_SET, true)
+        def gsLibAdded = request.getAttribute(GROOSCRIPT_JS_LIB_ADDED)
+        if (!gsLibAdded) {
+            out << assetTagLib.javascript(src: GROOSCRIPT_JS_LIB)
+            request.setAttribute(GROOSCRIPT_JS_LIB_ADDED, true)
         }
     }
 

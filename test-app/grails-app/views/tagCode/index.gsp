@@ -3,7 +3,6 @@
 <head>
     <meta name="layout" content="main"/>
     <title>Tag code tests</title>
-    <asset:javascript src="grooscript-grails.js"/>
 </head>
 <body>
     <asset:script>

@@ -109,7 +109,6 @@ class BooksSpec extends Specification {
     def idSaved
 
     def setup() {
-        println 'sp:'+serverPort
         rest = new RESTClient("http://localhost:${serverPort}/")
     }
 

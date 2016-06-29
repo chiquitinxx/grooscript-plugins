@@ -3,7 +3,6 @@
 <head>
     <meta name="layout" content="main"/>
     <title>Tag remote domain tests</title>
-    <asset:javascript src="grooscript-grails.js"/>
 </head>
 <body>
     <grooscript:remoteModel domainClass="test.Book"/>
