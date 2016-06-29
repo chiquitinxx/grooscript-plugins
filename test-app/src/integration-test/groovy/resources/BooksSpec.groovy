@@ -5,6 +5,7 @@ import grails.web.mime.MimeType
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
 import groovyx.net.http.RESTClient
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import spock.lang.Shared
 import spock.lang.Specification
@@ -14,11 +15,6 @@ import test.Book
 @Integration
 @Stepwise
 class BooksSpec extends Specification {
-
-    @Shared
-    def rest = new RESTClient('http://localhost:8080/')
-    @Shared
-    def idSaved
 
     void "get initial list of books"() {
         when:
@@ -103,6 +99,18 @@ class BooksSpec extends Specification {
         newResp.status == HttpStatus.OK.value()
         newResp.contentType == MimeType.JSON.name
         newResp.data.size() == 0
+    }
+
+    @Value('${local.server.port}')
+    Integer serverPort
+
+    private RESTClient rest
+    @Shared
+    def idSaved
+
+    def setup() {
+        println 'sp:'+serverPort
+        rest = new RESTClient("http://localhost:${serverPort}/")
     }
 
     private Map bookToInsert = [author: 'Any author', pages: 123, title: 'Book title']

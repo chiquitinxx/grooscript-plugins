@@ -31,11 +31,9 @@
         GsHlp.selectorHtml '#second', data
     </grooscript:onGrailsEvent>
     <grooscript:onGrailsEvent name="gotmap">
-        addJsError 'gotMap->' + data
         GsHlp.selectorHtml '#third', data
     </grooscript:onGrailsEvent>
     <grooscript:onGrailsEvent name="somethingHappened">
-        println data
         numberHappens = numberHappens + 1
         GsHlp.selectorHtml '#fourth', numberHappens
     </grooscript:onGrailsEvent>
