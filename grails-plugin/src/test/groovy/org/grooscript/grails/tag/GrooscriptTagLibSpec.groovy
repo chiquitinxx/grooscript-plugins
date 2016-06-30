@@ -209,10 +209,10 @@ class GrooscriptTagLibSpec extends Specification {
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
-                    [jsCode: JS_CODE, path: '/topic/gswsevent/myEvent', functionName: 'gSonServerEvent0', type: 'null'])
+                    [jsCode: JS_CODE, path: '/topic/myEvent', functionName: 'gSonServerEvent0', type: 'null'])
         })
         1 * grooscriptEventsInterceptor.addEventToIntercept('myEvent')
-        1 * grailsHelpers.getWebsocketTopicPrefix() >> '/topic'
+        1 * grailsHelpers.getGrooscriptWebsocketTopicPrefix() >> '/topic/'
         0 * _
     }
 
@@ -227,10 +227,10 @@ class GrooscriptTagLibSpec extends Specification {
         1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
         1 * assetsTagLib.script(['type':'text/javascript'], {
             it() == template.apply(Templates.ON_SERVER_EVENT,
-                    [jsCode: JS_CODE, path: '/topic/gswsevent/myEvent', functionName: 'gSonServerEvent0', type: 'Type'])
+                    [jsCode: JS_CODE, path: '/topic/myEvent', functionName: 'gSonServerEvent0', type: 'Type'])
         })
         1 * grooscriptEventsInterceptor.addEventToIntercept('myEvent')
-        1 * grailsHelpers.getWebsocketTopicPrefix() >> '/topic'
+        1 * grailsHelpers.getGrooscriptWebsocketTopicPrefix() >> '/topic/'
         0 * _
     }
 

@@ -49,6 +49,6 @@ class GrooscriptEventsInterceptor implements Events {
     }
 
     private String getWebsocketGrooscriptPath() {
-        grooscriptGrailsHelpers.websocketTopicPrefix + '/gswsevent/'
+        grooscriptGrailsHelpers.grooscriptWebsocketTopicPrefix
     }
 }

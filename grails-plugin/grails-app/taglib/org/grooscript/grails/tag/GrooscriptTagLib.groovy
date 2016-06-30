@@ -127,7 +127,7 @@ class GrooscriptTagLib {
         String jsCode = script ? javascriptConverter.toJavascript(template) : ''
         String functionName = onServerEventFunctionName
         String eventName = attrs.name
-        String eventPath = grooscriptGrailsHelpers.websocketTopicPrefix + '/gswsevent/' + eventName
+        String eventPath = grooscriptGrailsHelpers.grooscriptWebsocketTopicPrefix + eventName
 
         asset.script(type: 'text/javascript') {
             javascriptTemplate.apply(

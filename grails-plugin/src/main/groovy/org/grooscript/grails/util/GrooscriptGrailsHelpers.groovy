@@ -85,8 +85,8 @@ class GrooscriptGrailsHelpers {
         }
     }
 
-    String getWebsocketTopicPrefix() {
-        return DEFAULT_WEBSOCKET_TOPIC_PEFIX
+    String getGrooscriptWebsocketTopicPrefix() {
+        DEFAULT_WEBSOCKET_TOPIC_PEFIX + '/gswsevent/'
     }
 
     private boolean domainClassFromName(String nameClass) {
