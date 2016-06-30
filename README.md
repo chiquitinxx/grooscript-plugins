@@ -24,7 +24,8 @@ Actually, there are 5 projects:
 TO-DO
 ---
 
-- Publish grails events to listening clients using websockets.
+- Test components.
+- Update documentation.
 - In the gradle plugin, convert components and remote domain classes before jar / war is done in grails apps.
 
 Build

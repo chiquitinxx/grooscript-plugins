@@ -234,6 +234,38 @@ class GrooscriptTagLibSpec extends Specification {
         0 * _
     }
 
+    void 'on websocket message'() {
+        when:
+        applyTemplate('<grooscript:onWebsocket path="/path">assert true</grooscript:onWebsocket>')
+
+        then:
+        interaction {
+            initWebsockets()
+        }
+        1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.ON_SERVER_EVENT,
+                    [jsCode: JS_CODE, path: '/path', functionName: 'gSonServerEvent0', type: 'null'])
+        })
+        0 * _
+    }
+
+    void 'on websocket message with type response'() {
+        when:
+        applyTemplate('<grooscript:onWebsocket path="/path2" type="Type">assert true</grooscript:onWebsocket>')
+
+        then:
+        interaction {
+            initWebsockets()
+        }
+        1 * grooscriptConverter.toJavascript('def run = { data -> assert true }') >> JS_CODE
+        1 * assetsTagLib.script(['type':'text/javascript'], {
+            it() == template.apply(Templates.ON_SERVER_EVENT,
+                    [jsCode: JS_CODE, path: '/path2', functionName: 'gSonServerEvent0', type: 'Type'])
+        })
+        0 * _
+    }
+
     @Unroll
     void 'add a component'() {
         when:

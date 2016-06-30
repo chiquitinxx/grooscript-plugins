@@ -141,6 +141,28 @@ class GrooscriptTagLib {
     }
 
     /**
+     * grooscript:onWebsocket
+     */
+    def onWebsocket = { attrs, body ->
+        String script = body()
+        initWebsocket()
+
+        String template = javascriptTemplate.apply(Templates.ON_SERVER_EVENT_RUN, [code: script])
+        String jsCode = script ? javascriptConverter.toJavascript(template) : ''
+        String functionName = onServerEventFunctionName
+        String path = attrs.path
+
+        asset.script(type: 'text/javascript') {
+            javascriptTemplate.apply(
+                    Templates.ON_SERVER_EVENT,
+                    [jsCode: jsCode,
+                     path: path,
+                     functionName: functionName,
+                     type: attrs.type ?: 'null'])
+        }
+    }
+
+    /**
      * grooscript:reloadOn
      */
     def reloadOn = { attrs, body ->
