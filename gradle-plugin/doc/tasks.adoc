@@ -68,14 +68,6 @@ task convertChatServer(type: org.grooscript.gradle.ConvertTask) {
 build.dependsOn convertCountries, convertChatServer
 --
 
-== Create static project
-
-There is 1 tasks:
-
-* *initStaticWeb* that will create files and folder to generate a little static web project to start with grooscript.
-
-Read this link:starting_gradle.html[guide]
-
 == Convert groovy templates
 
 There are 2 tasks:

@@ -10,14 +10,12 @@ class TestConversions extends GroovyTestCase {
 
     void testConvertTrait() {
         def result = GrooScript.convert '''
-    import org.grooscript.jquery.*
-
     trait Jquery {
-        GQuery gquery = new GQueryImpl()
+        def DOM
     }
 
     class A implements Jquery {}
 '''
-        assert result.contains('Jquery.$init$(gSobject);')
+        assert result.contains('Jquery.$init$')
     }
 }

@@ -143,7 +143,7 @@ import org.grooscript.convert.ConversionOptions
 task generateJavascriptFile() << {
     String grooscriptGrailsJsLib = 'grails-app/assets/javascripts/grooscript-grails.js'
     String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
-    text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-tools.js').text
+    text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-html-builder.js').text
     text += project.file('grails-app/assets/javascripts/grooscript-helper.js').text
 
     Map conversionOptions = [:]

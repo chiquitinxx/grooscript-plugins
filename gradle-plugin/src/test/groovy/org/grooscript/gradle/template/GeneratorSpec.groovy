@@ -129,7 +129,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('hello.gtpl', [name: 'Jorge'])\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -143,7 +143,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('hello.gtpl', [name: 'Jorge'])\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -158,7 +158,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('initial.gtpl', [name: 'Jorge'])\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -172,7 +172,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('hello.gtpl', [name: 'Jorge'])\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -186,7 +186,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('hello.gtpl')\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -201,7 +201,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('hello.tpl', [name: 'Jorge'])\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception
@@ -215,7 +215,7 @@ class Templates {
         code += "\nprintln Templates.applyTemplate('notExists.tpl')\n"
 
         when:
-        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-tools')
+        JsTestResult result = GrooScript.evaluateGroovyCode(code, 'grooscript-html-builder')
 
         then:
         !result.exception

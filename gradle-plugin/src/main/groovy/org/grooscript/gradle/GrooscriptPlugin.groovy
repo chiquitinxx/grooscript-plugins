@@ -23,7 +23,6 @@ class GrooscriptPlugin implements Plugin<Project> {
         project.extensions.create('grooscriptGrails', GrailsExtension)
         configureConvertTask(project)
         configureConvertThreadTask(project)
-        configureInitStaticWeb(project)
         configureTemplates(project)
         configureTemplatesThread(project)
         configureUpdatesTask(project)
@@ -43,13 +42,6 @@ class GrooscriptPlugin implements Plugin<Project> {
         ConvertThreadTask daemonTask = project.tasks.create('convertThread', ConvertThreadTask)
         daemonTask.description = 'Start a daemon to convert groovy files to javascript if any file changes.'
         daemonTask.group = GROOSCRIPT_GROUP
-    }
-
-    private configureInitStaticWeb(Project project) {
-        InitStaticWebTask initStaticWebTask = project.tasks.create('initStaticWeb', InitStaticWebTask)
-        initStaticWebTask.initTools = new InitToolsImpl()
-        initStaticWebTask.description = 'Init static web project.'
-        initStaticWebTask.group = GROOSCRIPT_GROUP
     }
 
     private configureTemplates(Project project) {
@@ -74,7 +66,7 @@ class GrooscriptPlugin implements Plugin<Project> {
         SyncGrooscriptLibsTask syncGsLibsTask = project.tasks.create('syncGsLibs', SyncGrooscriptLibsTask)
         syncGsLibsTask.initTools = new InitToolsImpl()
         syncGsLibsTask.description = 'Synchronize grooscript libraries (grooscript.js, grooscript.min.js and ' +
-                'grooscript-tools.js) with grooscript plugin version.'
+                'grooscript-html-builder.js) with grooscript plugin version.'
         syncGsLibsTask.group = GROOSCRIPT_GROUP
     }
 

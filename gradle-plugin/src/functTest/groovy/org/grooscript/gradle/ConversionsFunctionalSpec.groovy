@@ -1,12 +1,13 @@
 package org.grooscript.gradle
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static org.grooscript.gradle.InitStaticWebTask.SEP
 
 /**
  * Created by jorge on 22/8/15.
  */
 class ConversionsFunctionalSpec extends AbstractFunctionalSpec {
+
+    private static final String SEP = System.getProperty('file.separator')
 
     def "convert files"() {
         given:

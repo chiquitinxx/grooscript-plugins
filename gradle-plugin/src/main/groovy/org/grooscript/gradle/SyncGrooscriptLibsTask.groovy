@@ -12,7 +12,7 @@ import static groovy.io.FileType.*
 class SyncGrooscriptLibsTask extends DefaultTask {
 
     InitTools initTools
-    final List<String> filesToSync = ['grooscript.js', 'grooscript.min.js', 'grooscript-tools.js']
+    final List<String> filesToSync = ['grooscript.js', 'grooscript.min.js', 'grooscript-html-builder.js']
     final excludedDirs = ['.svn', '.git', '.hg', '.idea', project.buildDir.name, 'out']
 
     @TaskAction

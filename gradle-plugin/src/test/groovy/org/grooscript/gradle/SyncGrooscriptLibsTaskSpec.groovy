@@ -31,7 +31,7 @@ class SyncGrooscriptLibsTaskSpec extends Specification {
     void 'create the task'() {
         expect:
         task instanceof SyncGrooscriptLibsTask
-        task.filesToSync == ['grooscript.js', 'grooscript.min.js', 'grooscript-tools.js']
+        task.filesToSync == ['grooscript.js', 'grooscript.min.js', 'grooscript-html-builder.js']
     }
 
     @Unroll
@@ -50,9 +50,9 @@ class SyncGrooscriptLibsTaskSpec extends Specification {
         new File(TEMP_FOLDER).deleteDir()
 
         where:
-        nameFile << ['grooscript.js', 'grooscript.min.js', 'grooscript-tools.js',
+        nameFile << ['grooscript.js', 'grooscript.min.js', 'grooscript-html-builder.js',
                      "${TEMP_FOLDER}${SEP}grooscript.js", "${TEMP_FOLDER}${SEP}grooscript.min.js",
-                     "${TEMP_FOLDER}${SEP}two${SEP}grooscript-tools.js"]
+                     "${TEMP_FOLDER}${SEP}two${SEP}grooscript-html-builder.js"]
     }
 
     @Unroll

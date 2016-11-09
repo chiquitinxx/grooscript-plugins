@@ -20,14 +20,13 @@ class GrooscriptPluginSpec extends Specification {
         expect:
         project.tasks.convert instanceof ConvertTask
         project.tasks.convertThread instanceof ConvertThreadTask
-        project.tasks.initStaticWeb instanceof InitStaticWebTask
         project.tasks.templatesJs instanceof TemplatesTask
         project.tasks.templatesThread instanceof TemplatesThreadTask
         project.tasks.spyChanges instanceof ChangesTask
         project.tasks.syncGsLibs instanceof SyncGrooscriptLibsTask
         project.tasks.requireJs instanceof RequireJsTask
         project.tasks.requireJsThread instanceof RequireJsThreadTask
-        project.tasks.size() == 9
+        project.tasks.size() == 8
 
         and:
         project.extensions.grooscript instanceof ConversionExtension

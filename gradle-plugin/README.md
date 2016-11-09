@@ -66,13 +66,11 @@ requireJs {
 }
 </pre>
 
-There are 9 tasks:
+There are 8 tasks:
 
 __convert__ - to convert groovy files to javascript
 
 __convertThread__ - to run conversion daemon that detect file changes and convert the files to javascript
-
-__initStaticWeb__ - create a static web project with index.html in src/main/webabb, to work with grooscript
 
 __templatesJs__ - generate javascript file with groovy templates defined
 
@@ -87,8 +85,6 @@ __requireJs__ - to generate require.js modules from groovy code
 __requireJsThread__ - listen changes in groovy code to regenerate require.js modules
 
 More info about tasks [here](http://grooscript.org/gradle/tasks.html)
-
-Guide about using this plugin [here](http://grooscript.org/starting_gradle.html)
 
 Contributors
 ---
