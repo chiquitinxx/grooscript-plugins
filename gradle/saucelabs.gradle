@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.gebish:geb-gradle:0.13.1'
+        classpath 'org.gebish:geb-gradle:1.0'
     }
 }
 

@@ -6,3 +6,4 @@ target
 .gradle/
 grails-plugin/grails-app/assets/javascripts/grooscript-grails.js
 build/
+prodDb.mv.db

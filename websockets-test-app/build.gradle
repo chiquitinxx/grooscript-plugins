@@ -6,7 +6,7 @@ buildscript {
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.8.2"
-        classpath "org.grails.plugins:hibernate4:5.0.6"
+        classpath "org.grails.plugins:hibernate4:5.0.10"
     }
 }
 
@@ -51,7 +51,7 @@ dependencies {
     compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:grails-spring-websocket:2.3.0"
     console "org.grails:grails-console"
-    profile "org.grails.profiles:web:${grailsVersion}"
+    profile "org.grails.profiles:web"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.8.2"
     runtime "com.h2database:h2"
     testCompile "org.grails:grails-plugin-testing"
@@ -62,7 +62,7 @@ dependencies {
     } else {
         testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
     }
-    sauceConnect "com.saucelabs:ci-sauce:1.116"
+    sauceConnect "com.saucelabs:ci-sauce:1.81"
 }
 
 assets {
