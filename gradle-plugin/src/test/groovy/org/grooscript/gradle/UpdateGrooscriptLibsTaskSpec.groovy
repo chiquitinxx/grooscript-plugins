@@ -11,10 +11,10 @@ import static org.grooscript.util.Util.SEP
 /**
  * Created by jorgefrancoleza on 23/1/15.
  */
-class SyncGrooscriptLibsTaskSpec extends Specification {
+class UpdateGrooscriptLibsTaskSpec extends Specification {
 
     Project project
-    SyncGrooscriptLibsTask task
+    UpdateGrooscriptLibsTask task
     InitTools initTools
 
     private final static EMPTY_CONTENT = ''
@@ -23,14 +23,14 @@ class SyncGrooscriptLibsTaskSpec extends Specification {
     def setup() {
         initTools = Mock(InitTools)
         project = ProjectBuilder.builder().withProjectDir(new File('.')).build()
-        task = project.task('syncGsLibs', type: SyncGrooscriptLibsTask)
+        task = project.task('updateGsLibs', type: UpdateGrooscriptLibsTask)
         task.initTools = initTools
         task.project = project
     }
 
     void 'create the task'() {
         expect:
-        task instanceof SyncGrooscriptLibsTask
+        task instanceof UpdateGrooscriptLibsTask
         task.filesToSync == ['grooscript.js', 'grooscript.min.js', 'grooscript-html-builder.js']
     }
 

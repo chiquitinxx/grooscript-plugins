@@ -157,14 +157,14 @@ spy {
 }
 --
 
-== Sync grooscript libraries
+== Update grooscript libraries
 
 There is 1 tasks:
 
-* *syncGsLibs* (org.grooscript.gradle.SyncGrooscriptLibsTask) sync grooscript js libs with actual version
+* *updateGsLibs* (org.grooscript.gradle.UpdateGrooscriptLibsTask) update grooscript js libs with actual version
 
 With this tasks, all your grooscript libraries in the project ('grooscript.js', 'grooscript.min.js',
-'grooscript-tools.js') will be replaced by the libs that comes in the grooscript version of the current plugin.
+'grooscript-html-builder.js') will be replaced by the updated libs by the grooscript version of the current plugin.
 
 == Require.js tasks
 

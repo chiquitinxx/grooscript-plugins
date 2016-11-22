@@ -9,7 +9,7 @@ import static groovy.io.FileType.*
  * User: jorgefrancoleza
  * Date: 23/1/15
  */
-class SyncGrooscriptLibsTask extends DefaultTask {
+class UpdateGrooscriptLibsTask extends DefaultTask {
 
     InitTools initTools
     final List<String> filesToSync = ['grooscript.js', 'grooscript.min.js', 'grooscript-html-builder.js']
