@@ -69,7 +69,7 @@ class ConversionThreadTaskSpec extends Specification {
 
         then:
         conditions.eventually {
-            1 * GsConsole.exception({ it.startsWith('FilesActor Error in file/folder') })
+            1 * GsConsole.exception({ it.startsWith('FilesActor Error in file/folder') && it.endsWith(ANY_SOURCE[0]) })
             1 * ConversionDaemon.start([project.file(ANY_SOURCE[0]).path], project.file(ANY_DESTINATION).path, _)
         }
     }
