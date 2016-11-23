@@ -12,7 +12,7 @@ class GrooscriptGrailsHelpers {
     private static final String GROOSCRIPT_JS_LIB_ADDED = 'grooscriptJsLibAdded'
     private static final String GROOSCRIPT_JS_LIB = 'grooscript-grails.js'
     private static final String WEBSOKET_HANDLER = 'grailsSimpAnnotationMethodMessageHandler'
-    private static final String DEFAULT_WEBSOCKET_DESTINATION_PEFIX = '/app'
+    private static final String DEFAULT_WEBSOCKET_DESTINATION_PREFIX = '/app'
     private static final String DEFAULT_WEBSOCKET_TOPIC_PEFIX = '/topic'
 
     private LinkGenerator grailsLinkGenerator
@@ -79,9 +79,9 @@ class GrooscriptGrailsHelpers {
     String getWebsocketDestinationPrefix() {
         try {
             def bean = applicationContext.getBean(WEBSOKET_HANDLER)
-            return bean?.destinationPrefixes?.first() ?: DEFAULT_WEBSOCKET_DESTINATION_PEFIX
+            return removeLastSlash(bean?.destinationPrefixes?.first() ?: DEFAULT_WEBSOCKET_DESTINATION_PREFIX)
         } catch (NoSuchBeanDefinitionException e) {
-            return DEFAULT_WEBSOCKET_DESTINATION_PEFIX
+            return DEFAULT_WEBSOCKET_DESTINATION_PREFIX
         }
     }
 
@@ -91,5 +91,13 @@ class GrooscriptGrailsHelpers {
 
     private boolean domainClassFromName(String nameClass) {
         grailsApplication.getDomainClasses().find { it.fullName == nameClass }
+    }
+
+    private String removeLastSlash(String path) {
+        if (path.endsWith("/")) {
+            path.substring(0, path.length() - 1)
+        } else {
+            path
+        }
     }
 }

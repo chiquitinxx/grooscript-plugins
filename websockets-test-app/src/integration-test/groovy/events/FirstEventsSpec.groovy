@@ -17,8 +17,8 @@ class FirstEventsSpec extends GebSpec {
             println $('body').text()
             $('#first').text() == 'Ok'
             $('#second').text() == 'hello from service!'
-            $('#third').text() == '[a: a ,b: 1.23 ,c: 1348230211000 ,]'
-            $('#fourth').text() == '1'
+            $('#third').text() == '1.23'
+            $('#fourth').text() == '3'
         }
     }
 }
