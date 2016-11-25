@@ -20,7 +20,6 @@ class GrooscriptPlugin implements Plugin<Project> {
         project.extensions.create('templates', TemplatesExtension)
         project.extensions.create('spy', ChangesExtension)
         project.extensions.create('requireJs', RequireJsExtension)
-        project.extensions.create('grooscriptGrails', GrailsExtension)
         configureConvertTask(project)
         configureConvertThreadTask(project)
         configureTemplates(project)

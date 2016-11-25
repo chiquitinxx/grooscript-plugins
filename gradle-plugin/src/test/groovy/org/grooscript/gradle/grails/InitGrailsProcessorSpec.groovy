@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class InitGrailsProcessorSpec extends Specification {
 
-    void 'start grails processor if not a grails project'() {
+    void 'start grails processor in a not a grails project'() {
         when:
         initGrailsProcessor.start(projectWithoutGrailsFolder)
 
@@ -35,7 +35,7 @@ class InitGrailsProcessorSpec extends Specification {
     private Project projectWithGrails = Stub(Project) {
         it.file('grails-app/views') >> grailsAppFolder
         it.tasks >> taskContainer
-        it.task(type: GenerateStaticFiles, "generateGrooscriptGrailsStaticFiles") >> generateStaticFilesTask
+        it.task(type: GenerateStaticFilesTask, "generateGrooscriptGrailsStaticFiles") >> generateStaticFilesTask
     }
     private InitGrailsProcessor initGrailsProcessor = new InitGrailsProcessor()
 }

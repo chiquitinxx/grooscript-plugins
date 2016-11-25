@@ -33,7 +33,6 @@ class GrooscriptPluginSpec extends Specification {
         project.extensions.templates instanceof TemplatesExtension
         project.extensions.spy instanceof ChangesExtension
         project.extensions.requireJs instanceof RequireJsExtension
-        project.extensions.grooscriptGrails instanceof GrailsExtension
 
         and: 'without changes in conversion options'
         ConversionOptions.values().collect { it.text } ==

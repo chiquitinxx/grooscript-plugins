@@ -8,13 +8,13 @@ class InitGrailsProcessor {
 
     public static GRAILS_VIEW_FOLDER = 'grails-app/views'
 
-    public void start(Project project) {
+    void start(Project project) {
         if (isGrailsProjectWithGsps(project)) {
 
             Task assetCompileTask = getGrailsAssetCompileTask(project)
             if (assetCompileTask) {
                 Task generateStaticFiles = project.task(
-                        type: GenerateStaticFiles, "generateGrooscriptGrailsStaticFiles")
+                        type: GenerateStaticFilesTask, 'generateGrooscriptGrailsStaticFiles')
                 assetCompileTask.dependsOn(generateStaticFiles)
             }
         }
