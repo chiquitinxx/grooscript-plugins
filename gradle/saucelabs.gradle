@@ -22,7 +22,9 @@ ext.defaultSauceLabs = {
         classpath = integrationTest.classpath
     }
     account {
-        username = System.getenv('GEB_SAUCE_LABS_USER') ?: getProperty('sauceLabs.username')
-        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?: getProperty('sauceLabs.accessKey')
+        username = System.getenv('GEB_SAUCE_LABS_USER') ?:
+                (project.hasProperty('sauceLabs.username') ? getProperty('sauceLabs.username') : '')
+        accessKey = System.getenv('GEB_SAUCE_LABS_ACCESS_PASSWORD') ?:
+                (project.hasProperty('sauceLabs.username') ? getProperty('sauceLabs.accessKey') : '')
     }
 }
