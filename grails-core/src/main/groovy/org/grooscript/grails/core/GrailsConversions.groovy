@@ -49,6 +49,24 @@ class GrailsConversions implements Conversion {
         converter.convertRemoteDomainClass(domainFileText, grailsRemoteDomainConversionOptions)
     }
 
+    @Override
+    List saveConversionForPackaging(File path, String fileName, String jsCode) {
+        boolean result = false
+        String fullPathFileName = path.absolutePath + SEP + fileName
+        String errorMessage
+        try {
+            new File(fullPathFileName).text = jsCode
+            result = true
+        } catch (Throwable t) {
+            errorMessage = "Error saving file (${fullPathFileName}) for packaging. Error: ${t.getMessage()}"
+        }
+        [result, errorMessage]
+    }
+
+    static String getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
+        "${domainClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
+    }
+
     private Map addDefaultOptions(Map options) {
         if (!options[ConversionOptions.CLASSPATH.text])
             options[ConversionOptions.CLASSPATH.text] = []
@@ -92,10 +110,6 @@ class GrailsConversions implements Conversion {
     private String getFileContentsIfExists(String baseDir, String fileClassName) {
         def filePath = "${baseDir}${SEP}${getFileNameFromDomainClassCanonicalName(fileClassName)}"
         fileSupport.getFileContent(filePath)
-    }
-
-    private String getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
-        "${domainClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
 
     private Map getGrailsRemoteDomainConversionOptions() {
