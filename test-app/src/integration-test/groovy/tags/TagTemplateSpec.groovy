@@ -1,12 +1,8 @@
 package tags
 
-import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import geb.MyGebTests
 
-@Integration
-@Rollback
-class TagTemplateSpec extends GebSpec {
+class TagTemplateSpec extends MyGebTests {
 
     void "check grooscript:template works"() {
         when:

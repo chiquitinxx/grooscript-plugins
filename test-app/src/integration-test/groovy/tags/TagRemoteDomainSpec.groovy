@@ -1,12 +1,8 @@
 package tags
 
-import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import geb.MyGebTests
 
-@Integration
-@Rollback
-class TagRemoteDomainSpec extends GebSpec {
+class TagRemoteDomainSpec extends MyGebTests {
 
     void "remote domain a simple domain class with @Resource"() {
         when:

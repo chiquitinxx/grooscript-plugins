@@ -1,12 +1,8 @@
 package javascript
 
-import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import geb.MyGebTests
 
-@Integration
-@Rollback
-class ResponsesSpec extends GebSpec {
+class ResponsesSpec extends MyGebTests {
 
     void "check ajax remote calls"() {
         when:
