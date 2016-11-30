@@ -1,12 +1,8 @@
 package websockets
 
-import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
-import grails.transaction.Rollback
+import geb.MyGebTests
 
-@Integration
-@Rollback
-class WebsocketsSpec extends GebSpec {
+class WebsocketsSpec extends MyGebTests {
 
     void "normal websocket messages"() {
         when:

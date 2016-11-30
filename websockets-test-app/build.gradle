@@ -55,13 +55,15 @@ dependencies {
     profile "org.grails.profiles:web"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.8.2"
     runtime "com.h2database:h2"
+
+    testCompile 'io.github.bonigarcia:webdrivermanager:1.5.0'
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
-    testCompile "org.seleniumhq.selenium:selenium-support:2.53.0"
+    testCompile "org.seleniumhq.selenium:selenium-support:3.0.1"
     if (System.getProperty("geb.saucelabs.browser")) {
-        testCompile "org.seleniumhq.selenium:selenium-remote-driver:2.53.0"
+        testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.0.1"
     } else {
-        testCompile "org.seleniumhq.selenium:selenium-firefox-driver:2.53.0"
+        testCompile "org.seleniumhq.selenium:selenium-firefox-driver:3.0.1"
     }
     sauceConnect "com.saucelabs:ci-sauce:1.81"
 }

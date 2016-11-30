@@ -9,6 +9,8 @@ if (sauceLabsBrowser) {
         assert accessKey
         new SauceLabsDriverFactory().create(sauceLabsBrowser, username, accessKey)
     }
+} else {
+    driver = "firefox"
 }
 
 waiting {
