@@ -7,9 +7,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
  */
 class ConversionsFunctionalSpec extends AbstractFunctionalSpec {
 
-    private static final String SEP = System.getProperty('file.separator')
-
-    def "convert files"() {
+    void "convert files"() {
         given:
         copyTestResourcesFiles('C.groovy', 'UseC.groovy', 'E.groovy')
         buildFile << """
