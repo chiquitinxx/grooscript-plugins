@@ -1,7 +1,9 @@
 package events
 
 import geb.MyGebTests
+import spock.lang.IgnoreIf
 
+@IgnoreIf({ System.getProperty("geb.saucelabs.browser") })
 class FirstEventsSpec extends MyGebTests {
 
     void "first test grails events"() {

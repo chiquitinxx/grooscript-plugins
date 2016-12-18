@@ -1,10 +1,10 @@
 package org.grooscript.gradle
 
+import spock.lang.Unroll
+
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-/**
- * Created by jorge on 22/8/15.
- */
+@Unroll
 class ConversionsFunctionalSpec extends AbstractFunctionalSpec {
 
     void "convert files"() {

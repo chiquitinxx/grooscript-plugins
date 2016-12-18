@@ -62,13 +62,14 @@ dependencies {
     testCompile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"
-    testCompile "org.seleniumhq.selenium:selenium-support:3.0.1"
     if (System.getProperty("geb.saucelabs.browser")) {
-        testCompile "org.seleniumhq.selenium:selenium-remote-driver:3.0.1"
+        testCompile "org.seleniumhq.selenium:selenium-support:2.53.1"
+        testCompile "org.seleniumhq.selenium:selenium-remote-driver:2.53.1"
     } else {
+        testCompile "org.seleniumhq.selenium:selenium-support:3.0.1"
         testCompile "org.seleniumhq.selenium:selenium-firefox-driver:3.0.1"
     }
-    sauceConnect "com.saucelabs:ci-sauce:1.81"
+    sauceConnect "com.saucelabs:ci-sauce:1.123"
 }
 
 assets {

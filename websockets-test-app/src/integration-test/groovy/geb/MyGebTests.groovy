@@ -11,6 +11,10 @@ import io.github.bonigarcia.wdm.FirefoxDriverManager
 class MyGebTests extends GebSpec {
 
     def setup() {
-        FirefoxDriverManager.getInstance().setup()
+        if (System.getProperty("geb.saucelabs.browser")) {
+            browser.config.cacheDriverPerThread = false
+        } else {
+            FirefoxDriverManager.getInstance().setup()
+        }
     }
 }

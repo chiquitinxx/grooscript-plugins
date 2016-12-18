@@ -1,10 +1,12 @@
 package tags
 
 import geb.MyGebTests
+import spock.lang.IgnoreIf
 
+@IgnoreIf({ System.getProperty("geb.saucelabs.browser") })
 class TagComponentSpec extends MyGebTests {
 
-    void "check grooscript:code works"() {
+    void "check components work"() {
         when:
         go '/tagComponent'
 

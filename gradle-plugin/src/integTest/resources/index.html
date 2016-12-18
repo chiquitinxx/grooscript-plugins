@@ -34,15 +34,19 @@
             var html = "<style>p {color: white}</style>";
             html += "<p>I'm in the element's Shadow DOM!</p>";
             html += '<input id="myInput" type="text"/>';
+            html += '<div id="inserted"/>';
             shadow.innerHTML = html;
+            var component = this;
 
             console.log(shadow);
             console.log(this.patata);
-            var input = document.querySelector('x-foo-shadowdom::shadow input');
+            var input = component.querySelector('x-foo-shadowdom::shadow input');
             input.addEventListener('input', function(e) {
                 console.log('input changed to: ', input.value);
                 console.log(this);
                 console.log(e);
+                var d = component.querySelector('x-foo-shadowdom::shadow #inserted');
+                d.innerHTML = input.value;
                 //console.log(this.patata);
             });
         };
@@ -52,6 +56,7 @@
 </head>
 <body>
     <x-foo-shadowdom>Hello!</x-foo-shadowdom>
+    <x-foo-shadowdom>Bye!</x-foo-shadowdom>
     <script>
         var element = document.querySelector('x-foo-shadowdom');
         console.log('Element');

@@ -14,6 +14,12 @@ if (sauceLabsBrowser) {
 }
 
 waiting {
-    timeout = 10
-    retryInterval = 0.5
+    if (sauceLabsBrowser) {
+        timeout = 30
+        retryInterval = 1
+
+    } else {
+        timeout = 10
+        retryInterval = 0.5
+    }
 }
