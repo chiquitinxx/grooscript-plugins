@@ -20,7 +20,7 @@ class GenerateStaticFilesTaskSpec extends Specification {
     def setup() {
         project = ProjectBuilder.builder().build()
 
-        task = project.task('generateGrooscriptGrailsStaticFiles', type: GenerateStaticFilesTask)
+        task = project.task('generateGrailsFiles', type: GenerateStaticFilesTask)
         task.project = project
     }
 }

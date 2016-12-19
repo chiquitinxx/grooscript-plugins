@@ -13,8 +13,7 @@ class InitGrailsProcessor {
 
             Task assetCompileTask = getGrailsAssetCompileTask(project)
             if (assetCompileTask) {
-                Task generateStaticFiles = project.task(
-                        type: GenerateStaticFilesTask, 'generateGrooscriptGrailsStaticFiles')
+                Task generateStaticFiles = project.tasks.findByName('generateGrailsFiles')
                 assetCompileTask.dependsOn(generateStaticFiles)
             }
         }
@@ -27,6 +26,11 @@ class InitGrailsProcessor {
 
     private static Task getGrailsAssetCompileTask(Project project) {
         TaskContainer taskContainer = project.tasks
-        taskContainer.getByName('assetCompile')
+        try {
+            return taskContainer.getByName('assetCompile')
+        } catch (Exception e) {
+            project.logger.info("No grails project with asset-pipeline detected to generate static files for it.")
+        }
+        return null
     }
 }

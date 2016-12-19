@@ -2,6 +2,7 @@ package org.grooscript.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.grooscript.gradle.grails.GenerateStaticFilesTask
 import org.grooscript.gradle.grails.InitGrailsProcessor
 import org.grooscript.gradle.util.InitToolsImpl
 
@@ -28,6 +29,7 @@ class GrooscriptPlugin implements Plugin<Project> {
         configureSyncGsLibsTask(project)
         configureRequireJsTask(project)
         configureRequireJsThreadTask(project)
+        configureGenerateGrailsStaticFiles(project)
         initGrailsProcessor.start(project)
     }
 
@@ -79,5 +81,11 @@ class GrooscriptPlugin implements Plugin<Project> {
         RequireJsThreadTask requireJsThreadTask = project.tasks.create('requireJsThread', RequireJsThreadTask)
         requireJsThreadTask.description = 'Start a daemon to convert require.js modules if any file changes.'
         requireJsThreadTask.group = GROOSCRIPT_GROUP
+    }
+
+    private configureGenerateGrailsStaticFiles(Project project) {
+        GenerateStaticFilesTask task = project.tasks.create('generateGrailsFiles', GenerateStaticFilesTask)
+        task.description = 'Generate grooscript static files to include in the jar/war.'
+        task.group = GROOSCRIPT_GROUP
     }
 }

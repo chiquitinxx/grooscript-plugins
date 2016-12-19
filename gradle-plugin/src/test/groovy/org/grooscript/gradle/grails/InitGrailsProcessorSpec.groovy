@@ -27,6 +27,7 @@ class InitGrailsProcessorSpec extends Specification {
     private Task generateStaticFilesTask = Stub(Task)
     private TaskContainer taskContainer = Stub(TaskContainer) {
         it.getByName('assetCompile') >> assetCompileTask
+        it.getByName('generateGrailsFiles') >> generateStaticFilesTask
     }
     private File grailsAppFolder = new File('.')
     private Project projectWithoutGrailsFolder = Stub(Project) {
@@ -35,7 +36,6 @@ class InitGrailsProcessorSpec extends Specification {
     private Project projectWithGrails = Stub(Project) {
         it.file('grails-app/views') >> grailsAppFolder
         it.tasks >> taskContainer
-        it.task(type: GenerateStaticFilesTask, "generateGrooscriptGrailsStaticFiles") >> generateStaticFilesTask
     }
     private InitGrailsProcessor initGrailsProcessor = new InitGrailsProcessor()
 }

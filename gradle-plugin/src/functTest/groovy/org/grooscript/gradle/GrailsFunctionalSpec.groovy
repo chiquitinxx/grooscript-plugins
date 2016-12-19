@@ -15,7 +15,9 @@ abstract class GrailsFunctionalSpec extends Specification {
     @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
 
     def setup() {
+        System.setProperty('org.gradle.testkit.debug', 'true')
         downloadAndUnzipGrailsProject(testProjectDir.newFile("${NAME_GRAILS_PROJECT}.zip"))
+        addPluginInfoInBuildFile()
     }
 
     String getGrailsProjectDir() {
@@ -31,7 +33,16 @@ abstract class GrailsFunctionalSpec extends Specification {
         AntBuilder ant = new AntBuilder()
         ant.unzip(src: zipFile.absolutePath,
                 dest: testProjectDir.root.absolutePath,
-                overwrite:"true" )
+                overwrite: "true")
+    }
+
+    private void addPluginInfoInBuildFile() {
+        File buildFile = new File(grailsProjectDir + SEP + 'build.gradle')
+        buildFile.text = buildFile.text.replaceAll(/version \"0\.1\"/,'''plugins {
+            id 'org.grooscript.conversion'
+        }
+        version "0.1"''')
+
     }
 
     BuildResult runWithArguments(String arguments) {
@@ -39,7 +50,6 @@ abstract class GrailsFunctionalSpec extends Specification {
                 .withGradleVersion('2.14')
                 .withProjectDir(new File(grailsProjectDir))
                 .withArguments(arguments)
-                .withDebug(true)
                 .withPluginClasspath()
                 .build()
     }

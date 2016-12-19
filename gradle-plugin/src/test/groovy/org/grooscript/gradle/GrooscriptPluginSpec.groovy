@@ -3,6 +3,7 @@ package org.grooscript.gradle
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.grooscript.convert.ConversionOptions
+import org.grooscript.gradle.grails.GenerateStaticFilesTask
 import org.grooscript.gradle.grails.InitGrailsProcessor
 import spock.lang.Specification
 
@@ -26,7 +27,8 @@ class GrooscriptPluginSpec extends Specification {
         project.tasks.updateGsLibs instanceof UpdateGrooscriptLibsTask
         project.tasks.requireJs instanceof RequireJsTask
         project.tasks.requireJsThread instanceof RequireJsThreadTask
-        project.tasks.size() == 8
+        project.tasks.generateGrailsFiles instanceof GenerateStaticFilesTask
+        project.tasks.size() == 9
 
         and:
         project.extensions.grooscript instanceof ConversionExtension
