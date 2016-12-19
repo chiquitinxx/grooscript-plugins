@@ -1,5 +1,6 @@
 plugins {
     id "org.asciidoctor.convert" version "1.5.3"
+    id "com.github.hierynomus.license" version "0.13.1"
 }
 
 apply plugin: 'idea'
@@ -52,4 +53,10 @@ asciidoctor {
             'source-highlighter': 'prettify',
             icons: 'font',
             'index-file': 'index.html'
+}
+
+license {
+    header = file('LICENSE.txt')
+    include "**/*.groovy"
+    includes(["**/*.java"])
 }

@@ -6,9 +6,6 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-/**
- * Created by jorgefrancoleza on 29/11/16.
- */
 class GrailsConversionsSpec extends Specification {
 
     void 'convert a remote domain class'() {

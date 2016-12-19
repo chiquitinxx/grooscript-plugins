@@ -16,6 +16,7 @@ buildscript {
 plugins {
     id "com.jfrog.bintray" version "1.6"
     id "org.asciidoctor.convert" version "1.5.3"
+    id "com.github.hierynomus.license" version "0.13.1"
 }
 
 version "2.0.0-SNAPSHOT"
@@ -159,3 +160,9 @@ task generateJavascriptFile() << {
 }
 
 classes.dependsOn 'generateJavascriptFile'
+
+license {
+    header = file('LICENSE.txt')
+    include "**/*.groovy"
+    includes(["**/*.java"])
+}
