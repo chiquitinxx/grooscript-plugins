@@ -29,12 +29,12 @@ class GrailsServerPages {
         result
     }
 
-    List<String> getComponents(List<File> gsps) {
-        extractTagsFromFiles(gsps, 'grooscript:component', 'src')
+    List<Map<String, String>> getComponents(List<File> gsps) {
+        extractTagsFromFiles(gsps, 'grooscript:component')
     }
 
-    private List<String> extractTagsFromFiles(List<File> gsps, String tag, String property) {
-        gsps.collect({ File file -> tagsFinder.getAttributes(tag, file.text)*."${property}" })
+    private List<Map<String, String>> extractTagsFromFiles(List<File> gsps, String tag) {
+        gsps.collect({ File file -> tagsFinder.getAttributes(tag, file.text) })
                 .flatten()
                 .unique()
     }

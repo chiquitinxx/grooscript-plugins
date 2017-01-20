@@ -60,6 +60,15 @@ class GrailsConversions implements Conversion {
         "${fullClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
 
+    static String getShortName(String fullClassName) {
+        String result = fullClassName
+        int i = result.lastIndexOf(".")
+        if (i > -1) {
+            result = result.substring(i + 1, result.length())
+        }
+        result
+    }
+
     private Map addDefaultOptions(Map options) {
         if (!options[ConversionOptions.CLASSPATH.text])
             options[ConversionOptions.CLASSPATH.text] = []
@@ -99,14 +108,5 @@ class GrailsConversions implements Conversion {
     private String getFileContentsIfExists(String baseDir, String fileClassName) {
         def filePath = "${baseDir}${SEP}${getFileNameFromClassCanonicalName(fileClassName)}"
         fileSupport.getFileContent(filePath)
-    }
-
-    private String getShortName(String fullClassName) {
-        String result = fullClassName
-        int i = result.lastIndexOf(".")
-        if (i > -1) {
-            result = result.substring(i + 1, result.length())
-        }
-        result
     }
 }

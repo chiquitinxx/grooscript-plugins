@@ -18,7 +18,6 @@ import org.gradle.api.tasks.TaskAction
 
 class GenerateStaticFilesTask extends DefaultTask {
 
-    private static final String SEP = System.getProperty('file.separator')
     private static final String NAME = '[Grooscript Gradle Plugin]'
     private GrailsServerPages grailsServerPages = new GrailsServerPages()
 
@@ -29,32 +28,10 @@ class GenerateStaticFilesTask extends DefaultTask {
         logger.debug "$NAME Extracting tags from views dir $viewsDir."
         List<File> gsps = grailsServerPages.find(viewsDir)
 
-        List<String> grooscriptComponents = grailsServerPages.getComponents(gsps)
-        println grooscriptComponents
+        List<Map<String, String>> components = grailsServerPages.getComponents(gsps)
 
-        if (project && grooscriptComponents) {
-            logger.debug "$NAME Generating static files for grails jar / war."
-            logger.debug ' Components -> ' + grooscriptComponents.size()
-            logger.debug "$NAME End generation."
-        } else {
-            logger.debug "$NAME Without components for grails jar / war."
+        if (project && components) {
+            new ComponentsGenerator(project, logger).generate(components)
         }
     }
-
-    /*
-    private void generateRemoteDomains(List<String> remoteDomains) {
-        GrailsConversions conversions = new GrailsConversions()
-        conversions.setBaseDir(project.projectDir.absolutePath + SEP)
-        remoteDomains.each { domainClassName ->
-            String jsCode = conversions.convertRemoteDomainClass(domainClassName)
-            String shortName = conversions.getFileNameFromClassCanonicalName(domainClassName)
-            def (result, errorMessage) = conversions.saveConversionForPackaging(
-                    project.buildDir,
-                    shortName + Conversion.REMOTE_DOMAIN_EXTENSION,
-                    jsCode)
-            if (!result) {
-                logger.error "$NAME Error generating domain class ($domainClassName), error: $errorMessage"
-            }
-        }
-    }*/
 }

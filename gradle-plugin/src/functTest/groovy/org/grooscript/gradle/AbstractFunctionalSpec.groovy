@@ -44,12 +44,20 @@ plugins {
         }
     }
 
+    void copyTestResourcesFile(String resourceFileName, String pathDestination) {
+        testProjectDir.newFolder(*(pathDestination.split('/')))
+        ClassLoader classLoader = getClass().getClassLoader()
+        def file = testProjectDir.newFile(pathDestination + SEP + resourceFileName)
+        file.text = new File(classLoader.getResource(resourceFileName).getFile()).text
+    }
+
     BuildResult runWithArguments(String arguments) {
         GradleRunner.create()
                 .withGradleVersion('2.13')
                 .withProjectDir(testProjectDir.root)
                 .withArguments(arguments)
                 .withPluginClasspath()
+                .withDebug(true)
                 .build()
     }
 }

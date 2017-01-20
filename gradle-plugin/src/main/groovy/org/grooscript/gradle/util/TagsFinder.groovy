@@ -31,7 +31,7 @@ class TagsFinder {
         }
     }
 
-    List<Map> getAttributes(String tag, String text) {
+    List<Map<String, String>> getAttributes(String tag, String text) {
         Matcher matcher = text =~ /\$BEGIN$tag[^\$END]*/
         matcher.collect {
             String attributes = it.toString().substring(1 + tag.length()).trim()

@@ -13,27 +13,23 @@
  */
 package org.grooscript.gradle
 
-import spock.lang.Ignore
-
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class GrailsComponentsFunctionalSpec extends GrailsFunctionalSpec {
+class GenerateGrailsStaticFilesSpec extends AbstractFunctionalSpec {
 
-    @Ignore
-    void 'download grails project and build it'() {
+    void "generate grails component"() {
         given:
-        File grailsDir = new File(grailsProjectDir)
-        File buildFile = new File(grailsProjectDir + SEP + 'build.gradle')
-
-        expect:
-        grailsDir.isDirectory()
-        buildFile.exists()
-        buildFile.text.concat('id \'org.grooscript.conversion\'')
+        copyTestResourcesFile('component.gsp', 'grails-app/views')
+        copyTestResourcesFile('Component.groovy', 'src/main/groovy/component')
 
         when:
-        def result = runWithArguments('build')
+        def result = runWithArguments('generateGrailsFiles')
+        def generatedFile = new File(testProjectDir.root.absolutePath + SEP + 'build' + SEP + 'Component.gcs')
 
         then:
-        result.task(":build").outcome == SUCCESS
+        result.task(":generateGrailsFiles").outcome == SUCCESS
+
+        and:
+        generatedFile.exists()
     }
 }

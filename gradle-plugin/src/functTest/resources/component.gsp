@@ -1,0 +1,1 @@
+<grooscript:component src="component.Component" name="my-component" />>

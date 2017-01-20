@@ -26,7 +26,7 @@ TO-DO
 
 - Test components.
 - Update documentation.
-- In the gradle plugin, convert components classes before jar / war is done in grails apps.
+- Test components included in the jar.
 
 Build
 ---
