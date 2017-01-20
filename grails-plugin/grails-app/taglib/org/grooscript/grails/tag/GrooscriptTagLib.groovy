@@ -93,21 +93,6 @@ class GrooscriptTagLib {
     }
 
     /**
-     * grooscript:remoteModel
-     * domainClass - REQUIRED full name of the model class
-     */
-    def remoteModel = { attrs ->
-        String domainClass = attrs.domainClass as String
-        if (grooscriptGrailsHelpers.validDomainClassName(domainClass)) {
-            grooscriptGrailsHelpers.initGrooscriptGrails(request, asset, out)
-            String convertedDomainClass = javascriptConverter.convertRemoteDomainClass(domainClass)
-            grooscriptGrailsHelpers.addAssetScript(asset, out, convertedDomainClass)
-        } else {
-            Util.consoleError 'GrooscriptTagLib remoteModel need define valid domainClass property'
-        }
-    }
-
-    /**
      * grooscript:initSpringWebsocket
      */
     def initSpringWebsocket = { attrs, body ->

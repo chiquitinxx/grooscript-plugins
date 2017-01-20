@@ -30,31 +30,6 @@ class JavascriptConverterSpec extends Specification {
         result == jsCode
     }
 
-    def 'convert a remote model domain class with source code available'() {
-        given:
-        javascriptConverter.sourceCodeAvailable = true
-        conversion.convertRemoteDomainClass(fullDomainClassName) >> jsCode
-
-        when:
-        String result = javascriptConverter.convertRemoteDomainClass(fullDomainClassName)
-
-        then:
-        result == jsCode
-    }
-
-    def 'convert a remote model domain class without source code available'() {
-        given:
-        GroovySpy(Util, global: true)
-        javascriptConverter.sourceCodeAvailable = false
-
-        when:
-        String result = javascriptConverter.convertRemoteDomainClass(fullDomainClassName)
-
-        then:
-        1 * Util.getResourceText(shortDomainClassName + '.grs') >> jsCode
-        result == jsCode
-    }
-
     def 'get component converted code with source code available'() {
         given:
         javascriptConverter.sourceCodeAvailable = true
@@ -80,8 +55,6 @@ class JavascriptConverterSpec extends Specification {
         result == jsCode
     }
 
-    private final String shortDomainClassName = 'Short'
-    private final String fullDomainClassName = "package.${shortDomainClassName}"
     private final String fullClassName = 'fullClassName'
     private final String shortClassName = 'shortClassName'
     private final String nameComponent = 'nameComponent'

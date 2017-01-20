@@ -40,22 +40,6 @@ class GrailsConversionsSpec extends Specification {
         result == "${convertedCode};GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
     }
 
-    @Ignore
-    void 'convert grails domain class'() {
-        given:
-        converter.convertRemoteDomainClass(code, [
-                classpath: [GROOVY_SRC_DIR, DOMAIN_DIR],
-                includeDependencies: true
-        ]) >> convertedCode
-
-        when:
-        String result = conversions.convertRemoteDomainClass(fullClassName)
-
-        then:
-        1 * fileSupport.getFileContent("grails-app${SEP}domain${SEP}package${SEP}${shortClassName}.groovy") >> code
-        result == convertedCode
-    }
-
     private String fullClassName = 'package.Plass'
     private String shortClassName = 'Plass'
     private String code = 'code'

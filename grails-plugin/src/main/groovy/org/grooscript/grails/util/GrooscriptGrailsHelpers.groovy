@@ -56,19 +56,6 @@ class GrooscriptGrailsHelpers {
         }
     }
 
-    boolean validDomainClassName(String name) {
-        if (!name || !(name instanceof String)) {
-            Util.consoleError "GrooscriptTagLib have to define domainClass property as String"
-        } else {
-            if (domainClassFromName(name)) {
-                return true
-            } else {
-                Util.consoleError "Not exist domain class ${name}"
-            }
-        }
-        return false
-    }
-
     static boolean isSpringWebsocketsActive(ApplicationContext applicationContext) {
         try {
             applicationContext.getBean(WEBSOCKET_BEAN)
@@ -100,10 +87,6 @@ class GrooscriptGrailsHelpers {
 
     String getGrooscriptWebsocketTopicPrefix() {
         DEFAULT_WEBSOCKET_TOPIC_PEFIX + '/gswsevent/'
-    }
-
-    private boolean domainClassFromName(String nameClass) {
-        grailsApplication.getDomainClasses().find { it.fullName == nameClass }
     }
 
     private String removeLastSlash(String path) {

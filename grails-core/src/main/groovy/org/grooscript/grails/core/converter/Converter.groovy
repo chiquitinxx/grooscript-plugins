@@ -4,5 +4,4 @@ interface Converter {
 
     String convert(String groovyCode, Map conversionOptions)
     String convertComponent(String groovyCode, Map conversionOptions)
-    String convertRemoteDomainClass(String groovyCode, Map conversionOptions)
 }

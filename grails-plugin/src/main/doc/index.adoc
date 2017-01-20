@@ -30,7 +30,6 @@ include::groovyCode.adoc[]
 include::templates.adoc[]
 include::websocket-tags.adoc[]
 include::onEvent.adoc[]
-include::remoteDomain.adoc[]
 include::component.adoc[]
 
 = Websockets step by step guide
@@ -40,10 +39,6 @@ include::websocket-step.adoc[]
 = Demo
 
 include::setupDemos.adoc[]
-
-= Using remote domain classes
-
-include::rest-demo.adoc[]
 
 = Feedback
 

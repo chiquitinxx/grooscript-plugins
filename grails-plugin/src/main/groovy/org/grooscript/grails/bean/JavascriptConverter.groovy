@@ -14,7 +14,6 @@
 package org.grooscript.grails.bean
 
 import grails.plugin.cache.Cacheable
-import grails.util.GrailsNameUtils
 import org.grooscript.grails.core.Conversion
 import org.grooscript.grails.core.GrailsConversions
 
@@ -23,7 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault
 import static grails.util.Environment.isDevelopmentEnvironmentAvailable
 import static org.grooscript.grails.util.Util.*
 import static org.grooscript.grails.core.Conversion.COMPONENT_EXTENSION
-import static org.grooscript.grails.core.Conversion.REMOTE_DOMAIN_EXTENSION
 
 @ParametersAreNonnullByDefault
 class JavascriptConverter {
@@ -42,17 +40,6 @@ class JavascriptConverter {
             consoleError "Error converting to javascript: ${e.message}"
             ''
         }
-    }
-
-    String convertRemoteDomainClass(String domainClassName) {
-
-        String result
-        if (sourceCodeAvailable) {
-            result = grailsConversions.convertRemoteDomainClass(domainClassName)
-        } else {
-            result = getResourceText(GrailsNameUtils.getShortName(domainClassName) + REMOTE_DOMAIN_EXTENSION)
-        }
-        result
     }
 
     String getComponentCodeConverted(String fullClassName, String shortClassName, String nameComponent) {

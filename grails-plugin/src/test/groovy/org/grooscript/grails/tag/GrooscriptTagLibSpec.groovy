@@ -115,34 +115,6 @@ class GrooscriptTagLibSpec extends Specification {
         !result
     }
 
-    void 'test remote model with domain class that exists'() {
-        given:
-        String domainClassName = 'package.AnyClass'
-
-        when:
-        applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
-
-        then:
-        1 * grailsHelpers.validDomainClassName(domainClassName) >> true
-        1 * grailsHelpers.initGrooscriptGrails(request, assetsTagLib, tagLib.out)
-        1 * grooscriptConverter.convertRemoteDomainClass(domainClassName) >> JS_CODE
-        1 * grailsHelpers.addAssetScript(assetsTagLib, tagLib.out, JS_CODE)
-        0 * _
-    }
-
-    void 'test remote model with invalid domain class name'() {
-        given:
-        GroovySpy(Util, global: true)
-        String domainClassName = 'package.AnyClass'
-
-        when:
-        applyTemplate("<grooscript:remoteModel domainClass='${domainClassName}'/>")
-
-        then:
-        1 * grailsHelpers.validDomainClassName(domainClassName) >> false
-        1 * Util.consoleError(_)
-    }
-
     void 'init spring websockets'() {
         when:
         applyTemplate('<grooscript:initSpringWebsocket />')

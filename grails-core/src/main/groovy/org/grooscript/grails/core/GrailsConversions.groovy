@@ -16,7 +16,6 @@ class GrailsConversions implements Conversion {
             '$', 'gsEvents', 'window', 'document', 'HtmlBuilder', 'GsHlp',
             'GQueryImpl', 'Observable', 'ClientEventHandler', 'GrooscriptGrails']
     static final String GROOVY_SRC_DIR = "src${SEP}main${SEP}groovy"
-    static final String DOMAIN_DIR = "grails-app${SEP}domain"
 
     private Converter converter = new CoreConverter()
     private FileSupport fileSupport = new GradleFile()
@@ -32,21 +31,15 @@ class GrailsConversions implements Conversion {
     }
 
     @Override
-    String convertComponent(String remoteDomainClassFullName, String nameComponent) {
+    String convertComponent(String componentClassFullName, String nameComponent) {
         Map conversionOptions = [:]
         conversionOptions[ConversionOptions.CLASSPATH.text] = [GROOVY_SRC_DIR]
         conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
-        String shortClassName = getShortName(remoteDomainClassFullName)
-        String componentGroovyCode = getClassSource(remoteDomainClassFullName)
+        String shortClassName = getShortName(componentClassFullName)
+        String componentGroovyCode = getClassSource(componentClassFullName)
 
         converter.convertComponent(componentGroovyCode, addGrailsDefaultJsMainContextScopeVars(conversionOptions)) +
                 getComponentRegisterCode(shortClassName, nameComponent)
-    }
-
-    @Override
-    String convertRemoteDomainClass(String domainClassFullName) {
-        String domainFileText = getDomainFileText(domainClassFullName)
-        converter.convertRemoteDomainClass(domainFileText, grailsRemoteDomainConversionOptions)
     }
 
     @Override
@@ -63,8 +56,8 @@ class GrailsConversions implements Conversion {
         [result, errorMessage]
     }
 
-    static String getFileNameFromDomainClassCanonicalName(String domainClassCanonicalName) {
-        "${domainClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
+    static String getFileNameFromClassCanonicalName(String fullClassCanonicalName) {
+        "${fullClassCanonicalName.replaceAll("\\.", Matcher.quoteReplacement(SEP))}.groovy"
     }
 
     private Map addDefaultOptions(Map options) {
@@ -103,23 +96,9 @@ class GrailsConversions implements Conversion {
         getFileContentsIfExists(GROOVY_SRC_DIR, fullClassName)
     }
 
-    private String getDomainFileText(String domainClassCanonicalName) {
-        getFileContentsIfExists(DOMAIN_DIR, domainClassCanonicalName)
-    }
-
     private String getFileContentsIfExists(String baseDir, String fileClassName) {
-        def filePath = "${baseDir}${SEP}${getFileNameFromDomainClassCanonicalName(fileClassName)}"
+        def filePath = "${baseDir}${SEP}${getFileNameFromClassCanonicalName(fileClassName)}"
         fileSupport.getFileContent(filePath)
-    }
-
-    private Map getGrailsRemoteDomainConversionOptions() {
-        Map conversionOptions = [:]
-        conversionOptions[ConversionOptions.CLASSPATH.text] = [
-                fileSupport.getFolderPath(GROOVY_SRC_DIR),
-                fileSupport.getFolderPath(DOMAIN_DIR)
-        ]
-        conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
-        conversionOptions
     }
 
     private String getShortName(String fullClassName) {

@@ -9,11 +9,6 @@ class GrooscriptGrails {
     static def websocketClient = null
     static String wsPrefix = "/app"
 
-    static final List GRAILS_PROPERTIES = ['url', 'class', 'clazz', 'gsName',
-        'transients', 'constraints', 'mapping', 'hasMany', 'belongsTo', 'validationSkipMap',
-        'gormPersistentEntity', 'properties', 'gormDynamicFinders', 'all', 'domainClass', 'attached',
-        'validationErrorsMap', 'dirtyPropertyNames', 'errors', 'dirty', 'count']
-
     static register(component) {
         def number = count++
         component.cId = number
@@ -26,42 +21,12 @@ class GrooscriptGrails {
     }
 
     @GsNative
-    static Map getRemoteDomainClassProperties(remoteDomainClass) {/*
-        var data;
-        var result = gs.map();
-        for (data in remoteDomainClass) {
-            if ((typeof remoteDomainClass[data] !== "function") && !GrooscriptGrails.GRAILS_PROPERTIES.contains(data)) {
-                result.add(data, remoteDomainClass[data]);
-            }
-        }
-        return result;
-    */}
-
-    @GsNative
     static void doRemoteCall(String controller, String action, params, onSuccess, onFailure) {/*
         var url = '/' + controller;
         if (action !== null) {
             url = url + '/' + action;
         }
         GsHlp.http(url, "POST", params, onSuccess, onFailure);
-    */}
-
-    @GsNative
-    static void remoteDomainAction(params, onSuccess, onFailure, nameClass) {/*
-        var url = params.url;
-        var data = (gs.isGroovyObj(params.data) ? gs.toJavascript(params.data) : params.data);
-        var type = 'GET';
-        if (params.action == 'create') { type = 'POST'; }
-        if (params.action == 'update') { type = 'PUT'; }
-        if (params.action == 'delete') { type = 'DELETE'; }
-        if (params.action == 'read' || params.action == 'delete') {
-            data = null;
-        }
-        if (params.action == 'read' || params.action == 'delete' || params.action == 'update') {
-            url = url + '/' + params.data.id;
-        }
-
-        GsHlp.http(url, type, data, onSuccess, onFailure, eval(nameClass));
     */}
 
     @GsNative

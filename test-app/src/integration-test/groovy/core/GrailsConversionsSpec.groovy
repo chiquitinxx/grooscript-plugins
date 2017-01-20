@@ -8,9 +8,9 @@ import spock.lang.Specification
 
 class GrailsConversionsSpec extends Specification {
 
-    void 'convert a remote domain class'() {
+    void 'convert a component'() {
         when:
-        String jsCode = grailsConversions.convertRemoteDomainClass('test.Book')
+        String jsCode = grailsConversions.convertComponent('component.Message', 'my-message')
         File file = testProjectDir.newFile()
 
         then:

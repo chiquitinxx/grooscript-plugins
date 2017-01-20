@@ -33,10 +33,6 @@ class GrailsServerPages {
         extractTagsFromFiles(gsps, 'grooscript:component', 'src')
     }
 
-    List<String> getRemoteDomains(List<File> gsps) {
-        extractTagsFromFiles(gsps, 'grooscript:remoteModel', 'domainClass')
-    }
-
     private List<String> extractTagsFromFiles(List<File> gsps, String tag, String property) {
         gsps.collect({ File file -> tagsFinder.getAttributes(tag, file.text)*."${property}" })
                 .flatten()

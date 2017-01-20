@@ -152,8 +152,6 @@ task generateJavascriptFile() << {
             [project.file('src/main/groovy').path, project.file('../grails-core/src/main/groovy').path]
     text += GrooScript.convert(project.file(
             '../grails-core/src/main/groovy/org/grooscript/grails/core/util/GrooscriptGrails.groovy').text, conversionOptions)
-    text += GrooScript.convert(project.file(
-            '../grails-core/src/main/groovy/org/grooscript/grails/core/promise/RemoteDomain.groovy').text, conversionOptions)
 
     project.file(grooscriptGrailsJsLib).text = text
     println 'Generated javascript file in grails-plugin ' + grooscriptGrailsJsLib

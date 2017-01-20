@@ -36,7 +36,7 @@ class GrooscriptEventsInterceptor implements Events {
         this.grooscriptGrailsHelpers = grooscriptGrailsHelpers
     }
 
-    synchronized public void addEventToIntercept(String name) {
+    synchronized void addEventToIntercept(String name) {
         if (!eventsListening) {
             eventsListening = [] as Set
             if (grooscriptGrailsHelpers.isSpringWebsocketsActive(applicationContext)) {
