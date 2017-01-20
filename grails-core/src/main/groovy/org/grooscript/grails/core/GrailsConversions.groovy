@@ -114,7 +114,10 @@ class GrailsConversions implements Conversion {
 
     private Map getGrailsRemoteDomainConversionOptions() {
         Map conversionOptions = [:]
-        conversionOptions[ConversionOptions.CLASSPATH.text] = [GROOVY_SRC_DIR, DOMAIN_DIR]
+        conversionOptions[ConversionOptions.CLASSPATH.text] = [
+                fileSupport.getFolderPath(GROOVY_SRC_DIR),
+                fileSupport.getFolderPath(DOMAIN_DIR)
+        ]
         conversionOptions[ConversionOptions.INCLUDE_DEPENDENCIES.text] = true
         conversionOptions
     }

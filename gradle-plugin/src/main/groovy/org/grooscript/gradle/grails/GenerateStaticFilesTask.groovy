@@ -20,14 +20,21 @@ import org.grooscript.grails.core.GrailsConversions
 
 class GenerateStaticFilesTask extends DefaultTask {
 
+    private static final String SEP = System.getProperty('file.separator')
     private static final String NAME = '[Grooscript Gradle Plugin]'
-    private final GrailsConversions grailsConversions = new GrailsConversions()
+    private GrailsServerPages grailsServerPages = new GrailsServerPages()
 
     @TaskAction
     void generateGrooscriptStaticFiles() {
 
-        List<String> grooscriptComponents
-        List<String> grooscriptRemoteDomains
+        String viewsDir = project.file(InitGrailsProcessor.GRAILS_VIEW_FOLDER)
+        logger.debug "$NAME Extracting tags from views dir $viewsDir."
+        List<File> gsps = grailsServerPages.find(viewsDir)
+
+        List<String> grooscriptComponents = grailsServerPages.getComponents(gsps)
+        println grooscriptComponents
+        List<String> grooscriptRemoteDomains = grailsServerPages.getRemoteDomains(gsps)
+        println grooscriptRemoteDomains
 
         if (project && (grooscriptComponents || grooscriptRemoteDomains)) {
             logger.debug "$NAME Generating static files for grails jar / war."
@@ -41,10 +48,12 @@ class GenerateStaticFilesTask extends DefaultTask {
     }
 
     private void generateRemoteDomains(List<String> remoteDomains) {
+        GrailsConversions conversions = new GrailsConversions()
+        conversions.setBaseDir(project.projectDir.absolutePath + SEP)
         remoteDomains.each { domainClassName ->
-            String jsCode = grailsConversions.convertRemoteDomainClass(domainClassName)
-            String shortName = GrailsConversions.getFileNameFromDomainClassCanonicalName(domainClassName)
-            def (result, errorMessage) = grailsConversions.saveConversionForPackaging(
+            String jsCode = conversions.convertRemoteDomainClass(domainClassName)
+            String shortName = conversions.getFileNameFromDomainClassCanonicalName(domainClassName)
+            def (result, errorMessage) = conversions.saveConversionForPackaging(
                     project.buildDir,
                     shortName + Conversion.REMOTE_DOMAIN_EXTENSION,
                     jsCode)

@@ -4,4 +4,5 @@ interface FileSupport {
 
     void setBaseDir(String path)
     String getFileContent(String path)
+    String getFolderPath(String path)
 }

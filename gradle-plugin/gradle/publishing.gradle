@@ -8,12 +8,19 @@ buildscript {
     }
 }
 
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.artifactId = 'grooscript-gradle-plugin'
+    }
 }
 
 bintray {

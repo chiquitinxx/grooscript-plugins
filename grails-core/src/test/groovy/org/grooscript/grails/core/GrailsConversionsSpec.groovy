@@ -2,6 +2,7 @@ package org.grooscript.grails.core
 
 import org.grooscript.grails.core.converter.Converter
 import org.grooscript.grails.core.util.FileSupport
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.grooscript.grails.core.GrailsConversions.*
@@ -39,6 +40,7 @@ class GrailsConversionsSpec extends Specification {
         result == "${convertedCode};GrooscriptGrails.createComponent(${shortClassName}, '${nameComponent}');"
     }
 
+    @Ignore
     void 'convert grails domain class'() {
         given:
         converter.convertRemoteDomainClass(code, [

@@ -7,4 +7,8 @@ class GradleFile implements FileSupport {
     String getFileContent(String path) {
         new File(baseDir + path).text
     }
+
+    String getFolderPath(String path) {
+        new File(baseDir + path).absolutePath
+    }
 }

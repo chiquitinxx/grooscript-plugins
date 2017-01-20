@@ -15,10 +15,12 @@ package org.grooscript.gradle.grails
 
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class GenerateStaticFilesTaskSpec extends Specification {
 
+    @Ignore
     void 'start task'() {
         expect:
         task.generateGrooscriptStaticFiles()
