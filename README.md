@@ -16,15 +16,15 @@ Actually, there are 5 projects:
 - grails-core: library used by grooscript gradle and grails plugins
 - grails-plugin: grooscript grails 3 plugin(*)
 - gradle-plugin: grooscript gradle plugin(*)
-- test-app: a grails 3 app to test the grails plugin
-- websockets-test-app: a grails 3 app to test the grails plugin websocket features
+- test-app: a grails 3 app to test the grails plugin (build from test-app-sources with gradle task createTestApp )
+- websockets-test-app: a grails 3 app to test the grails plugin websocket features (build from websockets-test-app-sources with gradle task createWebsocketsTestApp)
 
 (*) published in [bintray](https://bintray.com/chiquitinxx/grooscript)
 
 TO-DO
 ---
 
-- Test components.
+- Test components (how check final test? not in normal DOM).
 - Update documentation.
 - Test components included in the jar.
 

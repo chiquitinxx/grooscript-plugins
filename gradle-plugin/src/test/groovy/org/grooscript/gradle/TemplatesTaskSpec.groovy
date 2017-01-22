@@ -118,6 +118,5 @@ class TemplatesTaskSpec extends Specification {
         project.extensions.templates = [:]
 
         task = project.task('templatesJs', type: TemplatesTask)
-        task.project = project
     }
 }

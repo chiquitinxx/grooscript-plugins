@@ -67,6 +67,5 @@ class TemplatesThreadTaskSpec extends Specification {
         project.extensions.templates = [:]
 
         task = project.task('templatesThread', type: TemplatesThreadTask)
-        task.project = project
     }
 }

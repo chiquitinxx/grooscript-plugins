@@ -31,7 +31,6 @@ class RequireJsTaskSpec extends Specification {
         project = ProjectBuilder.builder().build()
 
         task = project.task('require', type: RequireJsTask)
-        task.project = project
         task.sourceFile = SOURCE
         task.destinationFolder = DESTINATION
     }

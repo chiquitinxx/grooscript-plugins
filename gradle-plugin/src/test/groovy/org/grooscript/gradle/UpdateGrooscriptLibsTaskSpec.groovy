@@ -35,7 +35,6 @@ class UpdateGrooscriptLibsTaskSpec extends Specification {
         project = ProjectBuilder.builder().withProjectDir(new File('.')).build()
         task = project.task('updateGsLibs', type: UpdateGrooscriptLibsTask)
         task.initTools = initTools
-        task.project = project
     }
 
     void 'create the task'() {

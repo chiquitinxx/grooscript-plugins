@@ -31,7 +31,6 @@ class ConvertTaskSpec extends Specification {
         project = ProjectBuilder.builder().build()
 
         task = project.task('convert', type: ConvertTask)
-        task.project = project
     }
 
     def 'create the task'() {

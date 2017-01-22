@@ -39,6 +39,7 @@ dependencies {
     compile 'org.apache.tomcat.embed:tomcat-embed-websocket:8.0.15'
     compile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.15'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.4'
+    testCompile 'org.objenesis:objenesis:2.5.1'
 }
 
 asciidoctor {

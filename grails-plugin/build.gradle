@@ -141,20 +141,22 @@ asciidoctor {
 import org.grooscript.GrooScript
 import org.grooscript.convert.ConversionOptions
 
-task generateJavascriptFile() << {
-    String grooscriptGrailsJsLib = 'grails-app/assets/javascripts/grooscript-grails.js'
-    String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
-    text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-html-builder.js').text
-    text += project.file('grails-app/assets/javascripts/grooscript-helper.js').text
+task generateJavascriptFile() {
+    doLast {
+        String grooscriptGrailsJsLib = 'grails-app/assets/javascripts/grooscript-grails.js'
+        String text = GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript.js').text
+        text += GrooScript.classLoader.getResourceAsStream('META-INF/resources/grooscript-html-builder.js').text
+        text += project.file('grails-app/assets/javascripts/grooscript-helper.js').text
 
-    Map conversionOptions = [:]
-    conversionOptions[ConversionOptions.CLASSPATH.text] =
-            [project.file('src/main/groovy').path, project.file('../grails-core/src/main/groovy').path]
-    text += GrooScript.convert(project.file(
-            '../grails-core/src/main/groovy/org/grooscript/grails/core/util/GrooscriptGrails.groovy').text, conversionOptions)
+        Map conversionOptions = [:]
+        conversionOptions[ConversionOptions.CLASSPATH.text] =
+                [project.file('src/main/groovy').path, project.file('../grails-core/src/main/groovy').path]
+        text += GrooScript.convert(project.file(
+                '../grails-core/src/main/groovy/org/grooscript/grails/core/util/GrooscriptGrails.groovy').text, conversionOptions)
 
-    project.file(grooscriptGrailsJsLib).text = text
-    println 'Generated javascript file in grails-plugin ' + grooscriptGrailsJsLib
+        project.file(grooscriptGrailsJsLib).text = text
+        println 'Generated javascript file in grails-plugin ' + grooscriptGrailsJsLib
+    }
 }
 
 classes.dependsOn 'generateJavascriptFile'

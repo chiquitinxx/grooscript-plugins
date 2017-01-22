@@ -1,1 +1,1 @@
-include 'websockets-test-app', 'test-app', 'grails-plugin', 'grails-core', 'gradle-plugin'
+include 'grails-plugin', 'grails-core', 'gradle-plugin', 'test-app', 'websockets-test-app'

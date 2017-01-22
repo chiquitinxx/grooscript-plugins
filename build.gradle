@@ -10,3 +10,32 @@ idea.project {
     jdkName = '1.8'
     languageLevel = compatibilityVersion
 }
+
+task createTestApp(type: CreateGrailsApp) {
+    sources = 'test-app-sources'
+    app = 'test-app'
+    options = {
+        addGrailsProjectDependency('grails-plugin')
+        comment('testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver')
+        comment('testRuntime "net.sourceforge.htmlunit:htmlunit')
+        addDependency('testCompile', 'org.seleniumhq.selenium:selenium-support:3.0.1')
+        addDependency('testCompile', 'org.seleniumhq.selenium:selenium-chrome-driver:3.0.1')
+        addDependency('testCompile', 'io.github.bonigarcia:webdrivermanager:1.5.0')
+        addDependency('testCompile', 'org.gebish:geb-spock:1.1.1')
+    }
+}
+
+task createWebsocketsTestApp(type: CreateGrailsApp) {
+    sources = 'websockets-test-app-sources'
+    app = 'tryit'
+    options = {
+        addGrailsProjectDependency('grails-plugin')
+        comment('testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver')
+        comment('testRuntime "net.sourceforge.htmlunit:htmlunit')
+        addDependency('compile', 'org.grails.plugins:grails-spring-websocket:2.3.0')
+        addDependency('testCompile', 'org.seleniumhq.selenium:selenium-support:3.0.1')
+        addDependency('testCompile', 'org.seleniumhq.selenium:selenium-chrome-driver:3.0.1')
+        addDependency('testCompile', 'io.github.bonigarcia:webdrivermanager:1.5.0')
+        addDependency('testCompile', 'org.gebish:geb-spock:1.1.1')
+    }
+}

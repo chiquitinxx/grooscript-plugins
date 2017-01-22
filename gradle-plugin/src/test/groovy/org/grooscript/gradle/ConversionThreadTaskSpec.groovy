@@ -39,7 +39,6 @@ class ConversionThreadTaskSpec extends Specification {
         GroovySpy(ConversionDaemon, global:true)
         project = ProjectBuilder.builder().build()
         task = project.task('daemon', type: ConvertThreadTask)
-        task.project = project
         task.project.extensions.grooscript = [:]
     }
 

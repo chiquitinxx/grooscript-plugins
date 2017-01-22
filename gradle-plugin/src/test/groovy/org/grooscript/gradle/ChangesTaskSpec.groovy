@@ -28,7 +28,6 @@ class ChangesTaskSpec extends Specification {
         project = ProjectBuilder.builder().build()
 
         task = project.task('spyChanges', type: ChangesTask)
-        task.project = project
     }
 
     def 'create the task'() {
