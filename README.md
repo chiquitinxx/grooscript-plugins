@@ -31,6 +31,6 @@ TO-DO
 Build
 ---
 
-To make all checks (included geb tests using firefox driver):
+To make all checks (included geb tests using chrome remote driver):
 
     ./gradlew check
