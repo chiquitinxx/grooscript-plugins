@@ -27,7 +27,7 @@ task createTestApp(type: CreateGrailsApp) {
 
 task createWebsocketsTestApp(type: CreateGrailsApp) {
     sources = 'websockets-test-app-sources'
-    app = 'tryit'
+    app = 'websockets-test-app'
     options = {
         addGrailsProjectDependency('grails-plugin')
         comment('testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver')

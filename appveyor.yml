@@ -13,9 +13,9 @@ install:
   - gradlew.bat clean
   - set JAVA_OPTS=-XX:MaxPermSize=1024m -Xmx1512m
 build_script:
-  - gradlew.bat -u -i clean assemble
+  - gradlew.bat -u -i clean assemble createTestApp createWebsocketsTestApp
 test_script:
-  - gradlew.bat -u -i -S test functionalTest
+  - gradlew.bat -u -i -S check
 cache:
   - .gradle
   - C:\Users\appveyor\.gradle

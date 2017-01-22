@@ -7,3 +7,5 @@ target
 grails-plugin/grails-app/assets/javascripts/grooscript-grails.js
 build/
 prodDb.mv.db
+test-app
+websockets-test-app

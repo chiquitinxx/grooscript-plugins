@@ -11,7 +11,7 @@ More info about [grooscript](http://grooscript.org/)
 Multi-project
 ---
 
-Actually, there are 5 projects:
+Grails 3 build, there are 5 projects:
 
 - grails-core: library used by grooscript gradle and grails plugins
 - grails-plugin: grooscript grails 3 plugin(*)
