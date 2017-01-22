@@ -13,7 +13,7 @@ install:
   - gradlew.bat clean
   - set JAVA_OPTS=-XX:MaxPermSize=1024m -Xmx1512m
 build_script:
-  - gradlew.bat -u -i clean assemble createTestApp createWebsocketsTestApp
+  - gradlew.bat -u -i clean assemble
 test_script:
   - gradlew.bat -u -i -S check
 cache:
