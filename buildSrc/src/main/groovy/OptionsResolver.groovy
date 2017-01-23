@@ -24,11 +24,24 @@ grails {
     }
 
     void addDependency(String type, String text) {
-        buildFile.text = buildFile.text.replaceAll(/\ndependencies \{/,"""\ndependencies {
+        buildFile.text = buildFile.text.replaceFirst(/\ndependencies \{/,"""\ndependencies {
     ${type} \"${text}\"""")
+    }
+
+    void addBuildscriptDependency(String type, String text) {
+        buildFile.text = buildFile.text.replace('classpath "org.grails:grails-gradle-plugin',
+                """${type} \"${text}\"
+        classpath "org.grails:grails-gradle-plugin""")
     }
 
     void comment(String text) {
         buildFile.text = buildFile.text.replaceAll(text, "//${text}")
+    }
+
+    void applyPlugin(String name) {
+        buildFile.text = buildFile.text.replaceFirst(/\nrepositories \{/,
+                """apply plugin:'${name}'
+
+repositories {""")
     }
 }

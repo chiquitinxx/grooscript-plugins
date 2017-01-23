@@ -26,11 +26,21 @@ TO-DO
 
 - Test components (how check final test? not in normal DOM).
 - Update documentation.
-- Test components included in the jar.
 
 Build
 ---
 
-To make all checks (included geb tests using chrome remote driver):
+To make all checks (included geb tests using chrome remote driver if you built test apps):
 
     ./gradlew check
+    
+Test jar & components
+---
+
+To test jar generation with components, first test app must be created with:
+
+    ./gradlew createTestApp
+    
+Later, run the test with:
+
+    ./gradlew checkComponentInJar

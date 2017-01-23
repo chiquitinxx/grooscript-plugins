@@ -24,7 +24,8 @@ class GenerateGrailsStaticFilesSpec extends AbstractFunctionalSpec {
 
         when:
         def result = runWithArguments('generateGrailsFiles')
-        def generatedFile = new File(testProjectDir.root.absolutePath + SEP + 'build' + SEP + 'Component.gcs')
+        def generatedFile = new File(testProjectDir.root.absolutePath + SEP + 'build' +
+                SEP + 'resources' + SEP + 'main' + SEP + 'Component.gcs')
 
         then:
         result.task(":generateGrailsFiles").outcome == SUCCESS

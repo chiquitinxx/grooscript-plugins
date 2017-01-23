@@ -46,9 +46,10 @@ class ComponentsGenerator {
         conversions.setBaseDir(project.projectDir.absolutePath + SEP)
         String jsCode = conversions.convertComponent(fullClassName, name)
         String shortName = conversions.getShortName(fullClassName)
-        project.buildDir.mkdirs()
+        File destinationDir = new File(project.buildDir.absolutePath + SEP + 'resources' + SEP + 'main')
+        destinationDir.mkdirs()
         def (result, errorMessage) = conversions.saveConversionForPackaging(
-                project.buildDir,
+                destinationDir,
                 shortName + Conversion.COMPONENT_EXTENSION,
                 jsCode)
         if (!result) {

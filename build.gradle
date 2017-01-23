@@ -1,3 +1,7 @@
+plugins {
+    id "com.wiredforcode.spawn" version "0.8.2"
+}
+
 apply plugin: 'idea'
 
 ext.compatibilityVersion = 1.7
@@ -11,17 +15,22 @@ idea.project {
     languageLevel = compatibilityVersion
 }
 
-task createTestApp(type: CreateGrailsApp) {
+task createTestApp(type: CreateGrailsApp, dependsOn: [':gradle-plugin:install', ':grails-core:install']) {
+
     sources = 'test-app-sources'
     app = 'test-app'
     options = {
         addGrailsProjectDependency('grails-plugin')
         comment('testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver')
         comment('testRuntime "net.sourceforge.htmlunit:htmlunit')
+        comment('apply plugin:"war"')
         addDependency('testCompile', 'org.seleniumhq.selenium:selenium-support:3.0.1')
         addDependency('testCompile', 'org.seleniumhq.selenium:selenium-chrome-driver:3.0.1')
         addDependency('testCompile', 'io.github.bonigarcia:webdrivermanager:1.5.0')
         addDependency('testCompile', 'org.gebish:geb-spock:1.1.1')
+        addBuildscriptDependency('classpath', "org.grooscript:grooscript-gradle-plugin:" +
+                project.findProject(':gradle-plugin').version)
+        applyPlugin('org.grooscript.conversion')
     }
 }
 
@@ -32,10 +41,30 @@ task createWebsocketsTestApp(type: CreateGrailsApp) {
         addGrailsProjectDependency('grails-plugin')
         comment('testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver')
         comment('testRuntime "net.sourceforge.htmlunit:htmlunit')
+        comment('apply plugin:"war"')
         addDependency('compile', 'org.grails.plugins:grails-spring-websocket:2.3.0')
         addDependency('testCompile', 'org.seleniumhq.selenium:selenium-support:3.0.1')
         addDependency('testCompile', 'org.seleniumhq.selenium:selenium-chrome-driver:3.0.1')
         addDependency('testCompile', 'io.github.bonigarcia:webdrivermanager:1.5.0')
         addDependency('testCompile', 'org.gebish:geb-spock:1.1.1')
+    }
+}
+
+import com.wiredforcode.gradle.spawn.*
+
+task startTestAppJar(type: SpawnProcessTask, dependsOn: ':test-app:build') {
+    command "java -jar ${project.findProject(':test-app').projectDir}/build/libs/test-app-0.1.jar"
+    ready 'Grails application running at http://localhost:8080 in environment: production'
+}
+
+task stopTestAppJar(type: KillProcessTask)
+
+task checkComponentInJar(dependsOn: 'startTestAppJar') {
+    finalizedBy 'stopTestAppJar'
+    doLast {
+        String urlText = 'http://localhost:8080/tagComponent'.toURL().text
+        if (!urlText.contains('<my-message></my-message>')) {
+            throw new GradleException('Error checking components in Jar.')
+        }
     }
 }
