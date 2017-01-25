@@ -1,7 +1,8 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply from: "$projectDir/gradle/publishing.gradle"
 
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 group = 'org.grooscript'
 
 repositories {

@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+    }
+}
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+bintray {
+    user = project.hasProperty('bintray_user') ? bintray_user : ''
+    key = project.hasProperty('bintray_key') ? bintray_key : ''
+
+    publications = ['mavenJava']
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+    pkg {
+        repo = 'grooscript'
+        name = "org.grooscript:grails-core"
+        desc = 'Library to work with grails'
+        websiteUrl = 'http://grooscript.org/'
+        issueTrackerUrl = 'https://github.com/chiquitinxx/grooscript-plugins/issues'
+        vcsUrl = 'https://github.com/chiquitinxx/grooscript-plugins.git'
+        licenses = ['Apache-2.0']
+        labels = ['groovy', 'grooscript', 'grails']
+        version {
+            name = '0.0.1'
+            desc = 'First version'
+            vcsTag = '0.0.1'
+        }
+    }
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+        }
+    }
+}
