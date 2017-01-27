@@ -28,7 +28,7 @@ task createTestApp(type: CreateGrailsApp, dependsOn: [':gradle-plugin:install', 
         addDependency('testCompile', 'org.seleniumhq.selenium:selenium-chrome-driver:3.0.1')
         addDependency('testCompile', 'io.github.bonigarcia:webdrivermanager:1.5.0')
         addDependency('testCompile', 'org.gebish:geb-spock:1.1.1')
-        addBuildscriptDependency('classpath', "org.grooscript:grooscript-gradle-plugin:" +
+        addBuildscriptDependency('classpath', "org.grooscript:gradle-plugin:" +
                 project.findProject(':gradle-plugin').version)
         applyPlugin('org.grooscript.conversion')
     }

@@ -12,7 +12,7 @@ You can use the plugin with:
 
     compile "org.grails.plugins:grooscript:1.2.2"
 
-You can use [gradle plugin](https://github.com/chiquitinxx/grooscript-gradle-plugin) to convert groovy 
+You can use [gradle plugin](https://github.com/chiquitinxx/grooscript-plugins/tree/master/gradle-plugin) to convert groovy 
 files, templates,... and combine with this plugin to use in your gsp's.
 
 More info about [grooscript](http://grooscript.org/)

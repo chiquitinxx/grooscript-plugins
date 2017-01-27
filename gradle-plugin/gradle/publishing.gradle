@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
@@ -19,7 +19,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 install {
     repositories.mavenInstaller {
-        pom.artifactId = 'grooscript-gradle-plugin'
+        pom.artifactId = 'gradle-plugin'
     }
 }
 
@@ -33,19 +33,19 @@ bintray {
     publish = true //If version should be auto published after an upload
     pkg {
         repo = 'grooscript'
-        name = "org.grooscript:grooscript-gradle-plugin"
-        desc = 'Convert groovy code to javascript'
+        name = "org.grooscript:gradle-plugin"
+        desc = 'Gradle plugin to convert groovy code to javascript'
         websiteUrl = 'http://grooscript.org/'
-        issueTrackerUrl = 'https://github.com/chiquitinxx/grooscript-gradle-plugin/issues'
-        vcsUrl = 'https://github.com/chiquitinxx/grooscript-gradle-plugin.git'
+        issueTrackerUrl = 'https://github.com/chiquitinxx/grooscript-plugins/issues'
+        vcsUrl = 'https://github.com/chiquitinxx/grooscript-plugins.git'
         licenses = ['Apache-2.0']
         labels = ['groovy', 'javascript', 'grooscript', 'gradle', 'plugin']
         version {
-            name = '1.2.3'
-            desc = 'Upgrade to last grooscript version and fixes'
-            vcsTag = '1.2.3'
+            name = '1.3.0'
+            desc = 'Upgrade grooscript libs and add grails tasks'
+            vcsTag = '1.3.0'
             attributes = [
-                    'gradle-plugin': ['org.grooscript.conversion', 'org.grooscript', 'grooscript-gradle-plugin'].join(':')
+                    'gradle-plugin': ['org.grooscript.conversion', 'org.grooscript', 'gradle-plugin'].join(':')
             ]
         }
     }

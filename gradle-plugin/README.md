@@ -1,7 +1,7 @@
-grooscript-gradle-plugin
+gradle-plugin
 ===
 
-Gradle plugin to convert your groovy files to javascript using grooscript. Last version published is 1.2.3.
+Gradle plugin to convert your groovy files to javascript using grooscript. Last version published is 1.3.0.
 
 build.gradle to use the plugin with gradle 2.0+ version:
 
@@ -11,7 +11,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.grooscript:grooscript-gradle-plugin:1.2.3'
+        classpath 'org.grooscript:gradle-plugin:1.3.0'
     }
 }
 
@@ -22,7 +22,7 @@ build.gradle to use the plugin with gradle 2.1+:
 
 <pre>
 plugins {
-  id "org.grooscript.conversion" version "1.2.3"
+  id "org.grooscript.conversion" version "1.3.0"
 }
 </pre>
 
@@ -66,7 +66,7 @@ requireJs {
 }
 </pre>
 
-There are 8 tasks:
+There are 9 tasks:
 
 __convert__ - to convert groovy files to javascript
 
@@ -83,6 +83,8 @@ __syncGsLibs__ - synchronize grooscript libraries with plugin
 __requireJs__ - to generate require.js modules from groovy code
 
 __requireJsThread__ - listen changes in groovy code to regenerate require.js modules
+
+__generateGrailsFiles__ - this task is done automatically if you are in a grails project, to generate static files needed by grooscript grails plugin
 
 More info about tasks [here](http://grooscript.org/gradle/tasks.html)
 
