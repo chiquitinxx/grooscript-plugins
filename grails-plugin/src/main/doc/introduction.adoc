@@ -5,8 +5,8 @@
 The plugin converts your Groovy code to javascript, allowing to use your Groovy code in your gsp files.
 
 If you want to convert groovy files to javascript, use groovy templates on the client side, generate
-require.js modules from your groovy code. Don't forget to use https://github.com/chiquitinxx/grooscript-gradle-plugin[gradle plugin].
-You can use both plugins in your grails 3 project.
+require.js modules from your groovy code. Don't forget to use https://github.com/chiquitinxx/grooscript-plugins/tree/master/gradle-plugin[gradle plugin].
+You can use both plugins in your grails 3 project, and you must use both if you use grooscript:component tag.
 
 So, your *groovy code will run in your browser*!
 
@@ -15,23 +15,22 @@ So, your *groovy code will run in your browser*!
 If you have any ideas on how to
 
 - improve this plugin,
-- use grooscript phantomjs support,
 - statically compile your templates,
-- or improve domain classes options,
+- or improve component options,
 - or anything else...
 
-don't hesitate to *open an issue or improvement* on https://github.com/chiquitinxx/grooscript-grails3-plugin/issues[Github]
+don't hesitate to *open an issue or improvement* on https://github.com/chiquitinxx/grooscript-plugins[Github]
 or email me at grooscript@gmail.com.
 
 I have created this documentation with http://asciidoctor.org/[asciidoctor]!
 
 == Requisites
 
-This plugin works with Grails 3. You also need assets pipeline and the cache plugin.
+This plugin works with Grails 3. It also need assets pipeline and the cache plugin.
 
 - Use _<asset:deferredScripts/>_ in your gsp files with grooscript tags.
-- You have to import *grosscript-grails.js* when you use grooscript tags.
-- The plugin uses __jquery__, so remember to add that dependency.
+- You don't have to import *grosscript-grails.js* when you use grooscript tags, plugin does for you.
+- The plugin *don't* need __jquery__, but you can work with it.
 
 To use the plugin just add it to your grails 3 dependencies in your +build.gradle+:
 
@@ -46,6 +45,15 @@ dependencies {
 --
 
 == What is new in {plugin-version}
+
+- Use grails events between server and client using websockets.
+- No need to add grooscript libs in your gsp's.
+- Removed jquery as dependency.
+- Removes grooscript:remoteDomain feature.
+- Improve file generation of components for the jar / war, no need execute a task, gradle plugin does it automatically.
+- Add more tests.
+
+== What is new in 1.2.x
 
 - New tag for reload pages in development
 

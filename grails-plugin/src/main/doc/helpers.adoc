@@ -11,14 +11,16 @@ You can use the `GrooscriptGrails` class from your groovy code, in grooscript ta
 package org.grooscript.grails.util
 
 class GrooscriptGrails {
-    static void sendClientMessage(String channel, message) //<1>
+    static findComponentById(String id) //<1>
     static void doRemoteCall(String controller, String action, Map params, Closure onSuccess, Closure onFailure) //<2>
     static void sendWebsocketMessage(String channel, message) //<3>
+    static void notifyEvent(String eventName, data) //<4>
 }
 --
-<1> Send a message to event listeners
+<1> Finf a component by id
 <2> Do a remote ajax call
 <3> Send a message to server via websockets
+<4> Send a grails event
 
 Example (calls `addBook` on controller `books`):
 

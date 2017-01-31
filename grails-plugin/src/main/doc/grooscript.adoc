@@ -7,8 +7,6 @@ You don't need to know Grooscript, the plugin does the work for you. But you can
 take a look to http://grooscript.org/doc.html to get more info. Grooscript compiles the code,
 inspects the AST tree, and generates the javascript code.
 
-Just remember you need `grooscript-grails.js` to run some converted code. Add `<asset:javascript src="grooscript-grails.js"/>` to your gsp.
-
 == Spring bean
 
 There is *grooscriptConverter* bean to convert Groovy code to javascript. You can inject it in your grails artifacts:

@@ -19,7 +19,7 @@ plugins {
     id "com.github.hierynomus.license" version "0.13.1"
 }
 
-version "2.0.0-SNAPSHOT"
+version "1.3.0"
 group "org.grails.plugins"
 
 apply plugin: 'maven'
@@ -84,14 +84,14 @@ bintray {
         name = "${project.group}:grooscript"
         desc = 'Grooscript Grails 3 Plugin'
         websiteUrl = 'http://grooscript.org/grails3-plugin'
-        issueTrackerUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin/issues"
-        vcsUrl = "https://github.com/chiquitinxx/grooscript-grails3-plugin"
+        issueTrackerUrl = "https://github.com/chiquitinxx/grooscript-plugins/issues"
+        vcsUrl = "https://github.com/chiquitinxx/grooscript-plugins/tree/master/grails-plugin"
         licenses = ['Apache-2.0']
         labels = ['grails', 'javascript', 'grooscript', 'groovy', 'plugin']
         version {
             attributes = ['grails-plugin': "org.grails.plugins:grooscript"]
             name = project.version
-            desc = 'Events refactored'
+            desc = 'Improvements and new features'
             gpg {
                 sign = false
                 passphrase = System.getenv("SIGNING_PASSPHRASE") ?: project.hasProperty("signingPassphrase") ? project.signingPassphrase : ''

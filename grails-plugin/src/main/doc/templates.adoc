@@ -21,7 +21,6 @@ This tag transform the code in a javascript function that returns html code. The
 onLoad:: by default is true, so the function runs on document ready, and then you html code appears.
 functionName:: by default a random name is used. But you can define name of the function and use it.
 itemSelector:: jquery selector of the dom object where html code will be injected.
-onEvent:: to execute the function when event or events are launched.
 
 You can combine grooscript tags to create dynamic applications in the client side using *groovy*. The variable *data*
 is available inside the template tag, that is the param used in the template function call.

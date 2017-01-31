@@ -22,21 +22,21 @@ You can define the websocket entrypoint (default is _/stomp_) or activate debug:
 <grooscript:initSpringWebsocket withDebug="true" endPoint="/hello"/>
 --
 
-== <grooscript:onServerEvent>
+== <grooscript:onWebsocket>
 
 You can react to websocket events from the server:
 
 [source,html]
 --
-<grooscript:onServerEvent path="/topic/hello">
+<grooscript:onWebsocket path="/topic/hello">
     $("#helloDiv").append '<p>'+data+'</p>'
-</grooscript:onServerEvent>
+</grooscript:onWebsocket>
 
-<grooscript:onServerEvent path="/topic/books" type="Book">
+<grooscript:onWebsocket path="/topic/books" type="Book">
     data.each { book ->
         $("#helloDiv").append '<p>'+book.coolFormat()+'</p>'
     }
-</grooscript:onServerEvent>
+</grooscript:onWebsocket>
 --
 
 _type_ is optional parameter with the type name of the _data_ that come from the server.
@@ -54,5 +54,5 @@ If any message comes for that path, then the page reloads.
 
 [TIP]
 --
-If you use _reloadOn_ or _onServerEvent_, no need to start websocket connection with _initSpringWebsocket_ tag
+If you use _reloadOn_ or _onWebsocket_, no need to start websocket connection with _initSpringWebsocket_ tag
 --
