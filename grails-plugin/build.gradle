@@ -55,7 +55,7 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     compile "org.grails.plugins:asset-pipeline"
     compile "org.grails.plugins:cache"
-    compile project(':grails-core')
+    compile 'org.grooscript:grails-core:0.0.1'
     compile("org.grooscript:grooscript:${grooscriptVersion}") {
         exclude module: 'groovy'
         exclude module: 'groovy-json'
