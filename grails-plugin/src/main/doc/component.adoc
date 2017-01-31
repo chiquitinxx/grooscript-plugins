@@ -13,7 +13,6 @@ You can use your groovy classes as web components and use them in your gsp's.
 - grooscript is used to convert the class, so take care with library limitations http://grooscript.org.
 - You have to add webcomponents lib if browser don't support it. That library is available in
 http://webcomponents.org/ or in the plugin (add with: <asset:javascript src="webcomponents.min.js"/>).
-- To use in production, you have to create conversions before create jar/war.
 
 === Create component class
 
@@ -92,12 +91,7 @@ available in the groovy class at runtime.
 === Generate components for production
 
 In development, class source is used to convert to javascript. In production source is not available, so
-you have to generate that conversion before create jar / war.
-
-[source,shell]
---
-> grails generate-component components.Counter
---
+just add grooscript gradle plugin > 1.3.0 that will do that work for you.
 
 === Helpers
 
