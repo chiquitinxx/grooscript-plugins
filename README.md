@@ -1,7 +1,7 @@
 Grooscript plugins
 ===
 
-[![Build Status](https://snap-ci.com/chiquitinxx/grooscript-plugins/branch/master/build_image)](https://snap-ci.com/chiquitinxx/grooscript-plugins/branch/master)
+[![Build Status](https://semaphoreci.com/api/v1/chiquitinxx/grooscript-plugins/branches/master/badge.svg)](https://semaphoreci.com/chiquitinxx/grooscript-plugins)
 [![Build status](https://ci.appveyor.com/api/projects/status/rdu67y0p9fac50pu/branch/master?svg=true)](https://ci.appveyor.com/project/chiquitinxx/grooscript-plugins/branch/master)
 
 This is a gradle multiproject where the grooscript gradle and grails plugins sources are.
