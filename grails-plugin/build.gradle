@@ -116,7 +116,7 @@ publishing {
                     it.replaceNode {}
                 }
             }
-            artifactId project.name
+            artifactId 'grooscript'
             from components.java
             artifact sourcesJar
             artifact javadocJar
